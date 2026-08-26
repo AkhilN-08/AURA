@@ -1,0 +1,82 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        forest: {
+          50: '#f0f5f0',
+          100: '#dce8dc',
+          200: '#b8d1b8',
+          300: '#8fb88f',
+          400: '#6a9e6a',
+          500: '#4a7c4a',
+          600: '#3a6339',
+          700: '#2d4d2d',
+          800: '#1f3720',
+          900: '#142514',
+        },
+        sage: {
+          50: '#f4f7f3',
+          100: '#e5ebe3',
+          200: '#c9d6c5',
+          300: '#a8bca2',
+          400: '#87a280',
+          500: '#6b8a64',
+          600: '#556e50',
+          700: '#44573f',
+          800: '#384635',
+          900: '#2d392b',
+        },
+        cream: {
+          50: '#FEFDFB',
+          100: '#FBF8F1',
+          200: '#F5EFE0',
+          300: '#EDE3C9',
+          400: '#E0D2AA',
+          500: '#D4C49A',
+        },
+        amber: {
+          50: '#FFFBF0',
+          100: '#FFF3D4',
+          200: '#FFE5A0',
+          300: '#FFD56B',
+          400: '#FFC233',
+          500: '#F0A500',
+          600: '#CC8800',
+          700: '#996600',
+        },
+        charcoal: {
+          50: '#f5f5f5',
+          100: '#e0e0e0',
+          200: '#bdbdbd',
+          300: '#9e9e9e',
+          400: '#757575',
+          500: '#616161',
+          600: '#424242',
+          700: '#2d2d2d',
+          800: '#1a1a1a',
+          900: '#0d0d0d',
+        },
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['Georgia', 'serif'],
+      },
+      borderRadius: {
+        '2xl': '1rem',
+        '3xl': '1.5rem',
+        '4xl': '2rem',
+      },
+      boxShadow: {
+        'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
+        'glow': '0 0 20px rgba(74, 124, 74, 0.15)',
+        'warm': '0 4px 20px rgba(240, 165, 0, 0.1)',
+      },
+    },
+  },
+  plugins: [],
+}
