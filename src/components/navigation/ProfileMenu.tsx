@@ -13,26 +13,6 @@ interface ProfileMenuProps {
   onClose: () => void
 }
 
-/** Liquid glass card wrapper */
-function LiquidCard({ children, className = '', glow = false }: { children: React.ReactNode; className?: string; glow?: boolean }) {
-  return (
-    <div className={`relative group ${className}`}>
-      <div className="relative overflow-hidden rounded-3xl bg-white/25 dark:bg-white/[0.03] backdrop-blur-[40px] border border-white/40 dark:border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.03),inset_0_1px_0_rgba(255,255,255,0.5)]">
-        {/* Liquid shimmer — top-left light refraction */}
-        {glow && (
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <div className="absolute -top-1/3 -left-1/3 w-[160%] h-[80%] bg-gradient-to-br from-white/30 via-white/5 to-transparent rotate-6 rounded-full blur-xl" />
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent" />
-          </div>
-        )}
-        <div className="relative z-10">
-          {children}
-        </div>
-      </div>
-    </div>
-  )
-}
-
 export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
   const { user, logout } = useAuth()
   const { sessions, getAverageAccuracy } = useGameProgress()
@@ -54,20 +34,20 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
 
       tl.fromTo(overlayRef.current,
         { opacity: 0 },
-        { opacity: 1, duration: 0.4, ease: 'power2.out' }
+        { opacity: 1, duration: 0.35, ease: 'power2.out' }
       )
       tl.fromTo(panelRef.current,
-        { x: '100%', backdropFilter: 'blur(0px)' },
-        { x: '0%', backdropFilter: 'blur(60px)', duration: 0.6, ease: 'power3.out' },
+        { x: '100%' },
+        { x: '0%', duration: 0.5, ease: 'power3.out' },
         0
       )
 
       itemsRef.current.forEach((item, i) => {
         if (item) {
           tl.fromTo(item,
-            { opacity: 0, y: 20, filter: 'blur(4px)' },
-            { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.6, ease: 'power2.out' },
-            0.2 + i * 0.05
+            { opacity: 0, y: 14 },
+            { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' },
+            0.15 + i * 0.04
           )
         }
       })
@@ -80,271 +60,232 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
 
   const handleClose = () => {
     if (!panelRef.current || !overlayRef.current) { onClose(); return }
-
     const tl = gsap.timeline({ onComplete: onClose })
-    tl.to(panelRef.current, { x: '100%', duration: 0.35, ease: 'power2.in' })
-    tl.to(overlayRef.current, { opacity: 0, duration: 0.25 }, 0.1)
+    tl.to(panelRef.current, { x: '100%', duration: 0.3, ease: 'power2.in' })
+    tl.to(overlayRef.current, { opacity: 0, duration: 0.2 }, 0.08)
   }
 
   const handleLogout = () => {
     handleClose()
-    setTimeout(() => {
-      logout()
-      navigate('/login')
-    }, 400)
+    setTimeout(() => { logout(); navigate('/login') }, 350)
   }
 
   if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 z-50">
-      {/* Overlay */}
+      {/* Overlay — pure blur, no color */}
       <div
         ref={overlayRef}
-        className="absolute inset-0 bg-charcoal-900/30 dark:bg-black/50 backdrop-blur-md"
+        className="absolute inset-0 backdrop-blur-xl bg-black/20 dark:bg-black/40"
         onClick={handleClose}
         style={{ opacity: 0 }}
       />
 
-      {/* Panel */}
+      {/* Panel — iOS liquid glass: fully transparent, pure blur */}
       <div
         ref={panelRef}
-        className="absolute top-0 right-0 bottom-0 w-[min(520px,100vw)] bg-white/20 dark:bg-[#0d0d1a]/60 backdrop-blur-[60px] border-l border-white/30 dark:border-white/[0.06] shadow-[-20px_0_60px_rgba(0,0,0,0.08),inset_1px_0_0_rgba(255,255,255,0.3)] overflow-y-auto"
-        style={{ transform: 'translateX(100%)' }}
+        className="absolute top-0 right-0 bottom-0 w-[min(460px,100vw)] backdrop-blur-[80px] bg-white/10 dark:bg-white/[0.04] border-l border-white/20 dark:border-white/[0.08] overflow-y-auto overscroll-contain"
+        style={{
+          transform: 'translateX(100%)',
+          boxShadow: '-1px 0 0 rgba(255,255,255,0.15)',
+        }}
       >
-        <div className="p-8 space-y-5">
+        <div className="p-7 pb-10 space-y-6">
           {/* Header */}
-          <div ref={el => { itemsRef.current[0] = el }} className="flex items-center justify-between pb-2">
-            <div>
-              <h2 className="text-2xl font-bold text-charcoal-800 dark:text-white tracking-tight">Profile</h2>
-              <p className="text-xs text-charcoal-400 dark:text-charcoal-500 mt-1">Manage your preferences</p>
-            </div>
+          <div ref={el => { itemsRef.current[0] = el }} className="flex items-center justify-between">
+            <h2 className="text-[22px] font-semibold text-charcoal-800 dark:text-white/90 tracking-[-0.02em]">Profile</h2>
             <button
               onClick={handleClose}
-              className="w-10 h-10 rounded-2xl bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-white/50 dark:border-white/10 flex items-center justify-center text-charcoal-400 hover:text-charcoal-700 dark:hover:text-white hover:bg-white/60 dark:hover:bg-white/10 transition-all duration-300"
-              aria-label="Close menu"
+              className="w-8 h-8 rounded-full bg-white/15 dark:bg-white/10 flex items-center justify-center text-charcoal-500 dark:text-white/50 hover:bg-white/25 dark:hover:bg-white/15 transition-all duration-200"
+              aria-label="Close"
             >
-              <X size={18} />
+              <X size={16} strokeWidth={2.5} />
             </button>
           </div>
 
-          {/* User Card — liquid glass hero */}
+          {/* User Card — transparent glass with gradient accent */}
           <div ref={el => { itemsRef.current[1] = el }}>
-            <LiquidCard glow>
-              <div className="p-6 space-y-5">
-                {/* Gradient header strip */}
-                <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-br from-sage-500 via-sage-400 to-sage-600 opacity-90 rounded-t-3xl" />
-                <div className="relative z-10 flex items-center gap-4 pt-2">
-                  <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md border-2 border-white/40 flex items-center justify-center text-2xl font-bold shadow-[0_0_24px_rgba(255,255,255,0.15)]">
-                    {user?.name?.charAt(0).toUpperCase() || '?'}
-                  </div>
-                  <div>
-                    <p className="text-lg font-semibold text-white drop-shadow-sm">{user?.name || 'User'}</p>
-                    <p className="text-sm text-white/70 flex items-center gap-1.5 mt-0.5">
-                      <Mail size={13} /> {user?.email || 'No email'}
-                    </p>
-                  </div>
+            <div className="rounded-[20px] bg-white/15 dark:bg-white/[0.06] backdrop-blur-xl border border-white/25 dark:border-white/[0.08] p-5">
+              <div className="flex items-center gap-4 mb-5">
+                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center text-xl font-bold text-white shadow-lg shadow-sage-500/20">
+                  {user?.name?.charAt(0).toUpperCase() || '?'}
                 </div>
-                {/* Stats row */}
-                <div className="relative z-10 grid grid-cols-3 gap-3">
-                  <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/15 hover:bg-white/20 transition-all duration-300">
-                    <p className="text-2xl font-bold">{sessions.length}</p>
-                    <p className="text-[11px] text-white/60 mt-1 font-medium">Games Played</p>
-                  </div>
-                  <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/15 hover:bg-white/20 transition-all duration-300">
-                    <p className="text-2xl font-bold">{sessions.length > 0 ? `${getAverageAccuracy()}%` : '—'}</p>
-                    <p className="text-[11px] text-white/60 mt-1 font-medium">Avg Accuracy</p>
-                  </div>
-                  <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/15 hover:bg-white/20 transition-all duration-300">
-                    <p className="text-2xl font-bold">{new Set(sessions.map(s => s.gameType)).size}</p>
-                    <p className="text-[11px] text-white/60 mt-1 font-medium">Games Tried</p>
-                  </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[17px] font-semibold text-charcoal-800 dark:text-white/90 truncate">{user?.name || 'User'}</p>
+                  <p className="text-[13px] text-charcoal-400 dark:text-white/40 truncate flex items-center gap-1.5 mt-0.5">
+                    <Mail size={12} /> {user?.email || 'No email'}
+                  </p>
                 </div>
               </div>
-            </LiquidCard>
-          </div>
-
-          {/* Quick Actions */}
-          <div ref={el => { itemsRef.current[2] = el }}>
-            <LiquidCard>
-              <div className="p-5 space-y-3">
-                <p className="text-[11px] font-bold text-charcoal-400 dark:text-charcoal-500 uppercase tracking-widest px-1">Quick Links</p>
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-2.5">
                 {[
-                  { icon: Gamepad2, label: 'Cognitive Games', path: '/games', desc: '7 memory and recall games', bgColor: 'rgba(236,72,153,0.1)', iconColor: '#EC4899' },
-                  { icon: Brain, label: 'Memory Assistant', path: '/assistant', desc: 'Reminders and voice prompts', bgColor: 'rgba(249,115,22,0.1)', iconColor: '#F97316' },
-                  { icon: BarChart3, label: 'Caregiver Dashboard', path: '/caregiver', desc: 'Activity insights and trends', bgColor: 'rgba(59,130,246,0.1)', iconColor: '#3B82F6' },
-                ].map((item, i) => (
-                  <button
-                    key={i}
-                    onClick={() => { handleClose(); setTimeout(() => navigate(item.path), 400) }}
-                    className="w-full flex items-center gap-4 p-3.5 rounded-2xl hover:bg-white/60 dark:hover:bg-white/5 transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)] text-left group"
-                  >
-                    <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: item.bgColor }}>
-                      <item.icon size={20} style={{ color: item.iconColor }} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-charcoal-800 dark:text-white text-sm">{item.label}</p>
-                      <p className="text-xs text-charcoal-400 dark:text-charcoal-500 mt-0.5">{item.desc}</p>
-                    </div>
-                    <ChevronRight size={16} className="text-charcoal-300 dark:text-charcoal-600 group-hover:text-charcoal-500 group-hover:translate-x-1 transition-all duration-300" />
-                  </button>
+                  { value: sessions.length, label: 'Played' },
+                  { value: sessions.length > 0 ? `${getAverageAccuracy()}%` : '—', label: 'Accuracy' },
+                  { value: new Set(sessions.map(s => s.gameType)).size, label: 'Types' },
+                ].map((stat, i) => (
+                  <div key={i} className="bg-white/10 dark:bg-white/[0.04] rounded-[14px] p-3 text-center border border-white/10 dark:border-white/[0.05]">
+                    <p className="text-[18px] font-semibold text-charcoal-800 dark:text-white/80">{stat.value}</p>
+                    <p className="text-[11px] text-charcoal-400 dark:text-white/35 mt-0.5">{stat.label}</p>
+                  </div>
                 ))}
               </div>
-            </LiquidCard>
+            </div>
           </div>
 
-          {/* Settings Grid — Language + Theme + Dark Mode */}
-          <div ref={el => { itemsRef.current[3] = el }}>
-            <LiquidCard glow>
-              <div className="p-5 space-y-5">
-                {/* Language */}
-                <div>
-                  <p className="text-[11px] font-bold text-charcoal-400 dark:text-charcoal-500 uppercase tracking-widest mb-3">Language</p>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => setLanguage('en')}
-                      className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all duration-300 border-2 ${
-                        language === 'en'
-                          ? 'bg-sage-500 text-white border-sage-500 shadow-md shadow-sage-200/50'
-                          : 'bg-white/50 dark:bg-white/5 text-charcoal-600 dark:text-charcoal-300 border-white/50 dark:border-white/10 hover:border-sage-300 dark:hover:border-sage-500/30'
-                      }`}
-                    >
-                      English
-                    </button>
-                    <button
-                      onClick={() => setLanguage('hi')}
-                      className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all duration-300 border-2 ${
-                        language === 'hi'
-                          ? 'bg-sage-500 text-white border-sage-500 shadow-md shadow-sage-200/50'
-                          : 'bg-white/50 dark:bg-white/5 text-charcoal-600 dark:text-charcoal-300 border-white/50 dark:border-white/10 hover:border-sage-300 dark:hover:border-sage-500/30'
-                      }`}
-                    >
-                      हिंदी
-                    </button>
-                  </div>
-                </div>
-
-                {/* Divider */}
-                <div className="h-px bg-gradient-to-r from-transparent via-charcoal-200/40 dark:via-white/10 to-transparent" />
-
-                {/* Theme */}
-                <div>
-                  <p className="text-[11px] font-bold text-charcoal-400 dark:text-charcoal-500 uppercase tracking-widest mb-3">Theme Preference</p>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => setGender('male')}
-                      className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all duration-300 border-2 flex items-center justify-center gap-2 ${
-                        gender === 'male'
-                          ? 'bg-blue-500 text-white border-blue-500 shadow-md shadow-blue-200/50'
-                          : 'bg-white/50 dark:bg-white/5 text-charcoal-600 dark:text-charcoal-300 border-white/50 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-500/30'
-                      }`}
-                    >
-                      👨 Male
-                    </button>
-                    <button
-                      onClick={() => setGender('female')}
-                      className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all duration-300 border-2 flex items-center justify-center gap-2 ${
-                        gender === 'female'
-                          ? 'bg-pink-500 text-white border-pink-500 shadow-md shadow-pink-200/50'
-                          : 'bg-white/50 dark:bg-white/5 text-charcoal-600 dark:text-charcoal-300 border-white/50 dark:border-white/10 hover:border-pink-300 dark:hover:border-pink-500/30'
-                      }`}
-                    >
-                      👩 Female
-                    </button>
-                  </div>
-                </div>
-
-                {/* Divider */}
-                <div className="h-px bg-gradient-to-r from-transparent via-charcoal-200/40 dark:via-white/10 to-transparent" />
-
-                {/* Dark Mode */}
+          {/* Quick Links — iOS list style */}
+          <div ref={el => { itemsRef.current[2] = el }}>
+            <div className="rounded-[20px] bg-white/15 dark:bg-white/[0.06] backdrop-blur-xl border border-white/25 dark:border-white/[0.08] overflow-hidden">
+              {[
+                { icon: Gamepad2, label: 'Cognitive Games', path: '/games', iconBg: 'rgba(236,72,153,0.15)', iconColor: '#EC4899' },
+                { icon: Brain, label: 'Memory Assistant', path: '/assistant', iconBg: 'rgba(249,115,22,0.15)', iconColor: '#F97316' },
+                { icon: BarChart3, label: 'Caregiver Dashboard', path: '/caregiver', iconBg: 'rgba(59,130,246,0.15)', iconColor: '#3B82F6' },
+              ].map((item, i) => (
                 <button
-                  onClick={toggleDark}
-                  className="w-full flex items-center gap-4 p-3.5 rounded-2xl hover:bg-white/50 dark:hover:bg-white/5 transition-all duration-300 text-left group"
+                  key={i}
+                  onClick={() => { handleClose(); setTimeout(() => navigate(item.path), 350) }}
+                  className={`w-full flex items-center gap-3.5 px-5 py-3.5 hover:bg-white/10 dark:hover:bg-white/[0.04] transition-all duration-200 text-left group ${i !== 0 ? 'border-t border-white/10 dark:border-white/[0.05]' : ''}`}
                 >
-                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
-                    isDark
-                      ? 'bg-indigo-900/60 text-indigo-300 shadow-[0_0_12px_rgba(99,102,241,0.2)]'
-                      : 'bg-amber-50 dark:bg-amber-500/10 text-amber-500'
-                  }`}>
-                    {isDark ? <Moon size={20} /> : <Sun size={20} />}
+                  <div className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0" style={{ backgroundColor: item.iconBg }}>
+                    <item.icon size={18} style={{ color: item.iconColor }} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-charcoal-800 dark:text-white text-sm">{isDark ? 'Dark Mode' : 'Light Mode'}</p>
-                    <p className="text-xs text-charcoal-400 dark:text-charcoal-500 mt-0.5">
-                      {isDark ? 'Easier on the eyes in low light' : 'Switch to a darker theme'}
-                    </p>
+                    <p className="text-[14px] font-medium text-charcoal-800 dark:text-white/80">{item.label}</p>
                   </div>
-                  <div className={`w-12 h-7 rounded-full flex items-center transition-all duration-300 ${
-                    isDark ? 'bg-indigo-500 justify-end' : 'bg-charcoal-200 dark:bg-charcoal-700 justify-start'
-                  }`}>
-                    <div className="w-5 h-5 bg-white rounded-full mx-1 shadow-sm" />
-                  </div>
+                  <ChevronRight size={16} className="text-charcoal-300/60 dark:text-white/20 group-hover:text-charcoal-500 dark:group-hover:text-white/40 transition-colors" />
                 </button>
-              </div>
-            </LiquidCard>
+              ))}
+            </div>
           </div>
 
-          {/* About AURA-NER */}
-          <div ref={el => { itemsRef.current[4] = el }}>
-            <LiquidCard>
-              <div className="p-5 space-y-4">
-                <p className="text-[11px] font-bold text-charcoal-400 dark:text-charcoal-500 uppercase tracking-widest px-1">About AURA-NER</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-sage-400/80 to-sage-600/80 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-[0_0_16px_rgba(236,72,153,0.15)]">
-                    <Flower2 size={18} className="text-white" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-charcoal-800 dark:text-white text-sm">AURA-NER</p>
-                    <p className="text-[11px] text-charcoal-400 dark:text-charcoal-500">v1.0.0 · Prototype</p>
-                  </div>
-                </div>
-                <p className="text-sm text-charcoal-500 dark:text-charcoal-400 leading-relaxed">
-                  AI-powered cognitive gaming and memory assistance for elderly people in the North Eastern Region, with caregivers and family as secondary users.
-                </p>
-                <div className="space-y-2.5">
+          {/* Settings — iOS grouped list */}
+          <div ref={el => { itemsRef.current[3] = el }}>
+            <div className="rounded-[20px] bg-white/15 dark:bg-white/[0.06] backdrop-blur-xl border border-white/25 dark:border-white/[0.08] overflow-hidden">
+              {/* Language */}
+              <div className="px-5 pt-4 pb-3">
+                <p className="text-[11px] font-semibold text-charcoal-400 dark:text-white/30 uppercase tracking-wider mb-2.5">Language</p>
+                <div className="flex gap-2">
                   {[
-                    { icon: Gamepad2, text: '7 cognitive games with adaptive difficulty' },
-                    { icon: Mic, text: 'Voice-enabled AI memory assistant' },
-                    { icon: BarChart3, text: 'Caregiver dashboard with real insights' },
-                    { icon: Brain, text: 'AI-assisted personalization engine' },
-                  ].map((feature, i) => (
-                    <div key={i} className="flex items-center gap-3 text-sm text-charcoal-500 dark:text-charcoal-400">
-                      <feature.icon size={14} className="flex-shrink-0" style={{ color: '#EC4899' }} />
-                      <span>{feature.text}</span>
-                    </div>
+                    { key: 'en' as const, label: 'English' },
+                    { key: 'hi' as const, label: 'हिंदी' },
+                  ].map(lang => (
+                    <button
+                      key={lang.key}
+                      onClick={() => setLanguage(lang.key)}
+                      className={`flex-1 py-2.5 rounded-[10px] text-[13px] font-medium transition-all duration-200 ${
+                        language === lang.key
+                          ? 'bg-white/20 dark:bg-white/10 text-charcoal-800 dark:text-white/90 border border-white/30 dark:border-white/15'
+                          : 'text-charcoal-500 dark:text-white/35 hover:bg-white/10 dark:hover:bg-white/[0.04] border border-transparent'
+                      }`}
+                    >
+                      {lang.label}
+                    </button>
                   ))}
                 </div>
               </div>
-            </LiquidCard>
+
+              <div className="mx-5 h-px bg-white/10 dark:bg-white/[0.05]" />
+
+              {/* Theme */}
+              <div className="px-5 py-3">
+                <p className="text-[11px] font-semibold text-charcoal-400 dark:text-white/30 uppercase tracking-wider mb-2.5">Appearance</p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setGender('male')}
+                    className={`flex-1 py-2.5 rounded-[10px] text-[13px] font-medium flex items-center justify-center gap-1.5 transition-all duration-200 ${
+                      gender === 'male'
+                        ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30'
+                        : 'text-charcoal-500 dark:text-white/35 hover:bg-white/10 dark:hover:bg-white/[0.04] border border-transparent'
+                    }`}
+                  >
+                    👨 Male
+                  </button>
+                  <button
+                    onClick={() => setGender('female')}
+                    className={`flex-1 py-2.5 rounded-[10px] text-[13px] font-medium flex items-center justify-center gap-1.5 transition-all duration-200 ${
+                      gender === 'female'
+                        ? 'bg-pink-500/20 text-pink-600 dark:text-pink-400 border border-pink-500/30'
+                        : 'text-charcoal-500 dark:text-white/35 hover:bg-white/10 dark:hover:bg-white/[0.04] border border-transparent'
+                    }`}
+                  >
+                    👩 Female
+                  </button>
+                </div>
+              </div>
+
+              <div className="mx-5 h-px bg-white/10 dark:bg-white/[0.05]" />
+
+              {/* Dark Mode */}
+              <button
+                onClick={toggleDark}
+                className="w-full flex items-center gap-3.5 px-5 py-3.5 hover:bg-white/10 dark:hover:bg-white/[0.04] transition-all duration-200 text-left"
+              >
+                <div className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0" style={{ backgroundColor: isDark ? 'rgba(99,102,241,0.15)' : 'rgba(245,158,11,0.15)' }}>
+                  {isDark ? <Moon size={18} style={{ color: '#818CF8' }} /> : <Sun size={18} style={{ color: '#F59E0B' }} />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[14px] font-medium text-charcoal-800 dark:text-white/80">{isDark ? 'Dark Mode' : 'Light Mode'}</p>
+                </div>
+                <div className={`w-[46px] h-[28px] rounded-full flex items-center transition-all duration-300 ${isDark ? 'bg-sage-500 justify-end' : 'bg-charcoal-300/40 dark:bg-white/15 justify-start'}`}>
+                  <div className="w-[22px] h-[22px] bg-white rounded-full mx-[3px] shadow-sm" />
+                </div>
+              </button>
+            </div>
+          </div>
+
+          {/* About */}
+          <div ref={el => { itemsRef.current[4] = el }}>
+            <div className="rounded-[20px] bg-white/15 dark:bg-white/[0.06] backdrop-blur-xl border border-white/25 dark:border-white/[0.08] p-5">
+              <p className="text-[11px] font-semibold text-charcoal-400 dark:text-white/30 uppercase tracking-wider mb-3">About AURA-NER</p>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-[12px] bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center shadow-lg shadow-sage-500/15">
+                  <Flower2 size={18} className="text-white" />
+                </div>
+                <div>
+                  <p className="text-[14px] font-semibold text-charcoal-800 dark:text-white/80">AURA-NER</p>
+                  <p className="text-[11px] text-charcoal-400 dark:text-white/30">v1.0.0</p>
+                </div>
+              </div>
+              <p className="text-[13px] text-charcoal-500 dark:text-white/40 leading-relaxed mb-3">
+                AI-powered cognitive gaming and memory assistance for elderly people in the North Eastern Region.
+              </p>
+              <div className="space-y-2">
+                {[
+                  { icon: Gamepad2, text: '7 cognitive games' },
+                  { icon: Mic, text: 'Voice AI assistant' },
+                  { icon: BarChart3, text: 'Caregiver insights' },
+                  { icon: Brain, text: 'AI personalization' },
+                ].map((f, i) => (
+                  <div key={i} className="flex items-center gap-2.5 text-[13px] text-charcoal-500 dark:text-white/40">
+                    <f.icon size={13} style={{ color: '#EC4899' }} />
+                    <span>{f.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* Tech Stack */}
           <div ref={el => { itemsRef.current[5] = el }}>
-            <LiquidCard>
-              <div className="p-5">
-                <p className="text-[11px] font-bold text-charcoal-400 dark:text-charcoal-500 uppercase tracking-widest mb-3">Built With</p>
-                <div className="flex flex-wrap gap-2">
-                  {['React', 'TypeScript', 'Three.js', 'GSAP', 'Tailwind CSS', 'Recharts'].map((tech) => (
-                    <span key={tech} className="text-[11px] px-3 py-1.5 rounded-lg bg-white/50 dark:bg-white/5 text-charcoal-500 dark:text-charcoal-400 border border-white/50 dark:border-white/10 font-medium">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+            <div className="rounded-[20px] bg-white/15 dark:bg-white/[0.06] backdrop-blur-xl border border-white/25 dark:border-white/[0.08] p-4">
+              <div className="flex flex-wrap gap-1.5">
+                {['React', 'TypeScript', 'Three.js', 'GSAP', 'Tailwind', 'Recharts'].map(tech => (
+                  <span key={tech} className="text-[11px] px-2.5 py-1 rounded-[8px] bg-white/10 dark:bg-white/[0.04] text-charcoal-500 dark:text-white/35 border border-white/10 dark:border-white/[0.05]">
+                    {tech}
+                  </span>
+                ))}
               </div>
-            </LiquidCard>
+            </div>
           </div>
 
-          {/* Medical Disclaimer */}
-          <div ref={el => { itemsRef.current[6] = el }}>
-            <div className="rounded-2xl bg-amber-50/40 dark:bg-amber-500/5 border border-amber-200/40 dark:border-amber-500/10 p-4">
-              <div className="flex items-start gap-3">
-                <Shield size={16} className="text-amber-500 mt-0.5 flex-shrink-0" />
-                <p className="text-xs text-charcoal-500 dark:text-charcoal-400 leading-relaxed">
-                  <strong className="text-charcoal-600 dark:text-charcoal-300">Medical Disclaimer:</strong> AURA-NER is a support platform prototype.
-                  It is not a diagnostic tool or replacement for medical professionals.
-                </p>
-              </div>
+          {/* Disclaimer */}
+          <div ref={el => { itemsRef.current[6] = el }} className="rounded-[16px] bg-amber-500/[0.06] dark:bg-amber-500/[0.04] border border-amber-500/10 px-4 py-3">
+            <div className="flex items-start gap-2.5">
+              <Shield size={14} className="text-amber-500/70 mt-0.5 flex-shrink-0" />
+              <p className="text-[11px] text-charcoal-500 dark:text-white/35 leading-relaxed">
+                <strong className="text-charcoal-600 dark:text-white/50">Disclaimer:</strong> AURA-NER is a support prototype, not a medical tool.
+              </p>
             </div>
           </div>
 
@@ -352,19 +293,21 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
           <div ref={el => { itemsRef.current[7] = el }}>
             <button
               onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-2.5 px-6 py-4 rounded-2xl border-2 border-red-200/50 dark:border-red-500/15 text-red-500 hover:bg-red-50/60 dark:hover:bg-red-500/10 hover:border-red-300/60 transition-all duration-300 font-medium"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-[14px] text-red-500/80 dark:text-red-400/70 hover:bg-red-500/[0.08] dark:hover:bg-red-500/[0.06] transition-all duration-200 text-[14px] font-medium border border-red-500/10 dark:border-red-500/[0.06]"
             >
-              <LogOut size={18} />
+              <LogOut size={16} />
               Sign Out
             </button>
           </div>
 
           {/* Footer */}
-          <div ref={el => { itemsRef.current[8] = el }} className="text-center pb-6 pt-2">
-            <p className="text-xs text-charcoal-300 dark:text-charcoal-600 flex items-center justify-center gap-1">
-              Made with <Heart size={10} className="text-sage-400" /> for memory that matters
+          <div ref={el => { itemsRef.current[8] = el }} className="text-center pt-1 pb-2">
+            <p className="text-[11px] text-charcoal-400 dark:text-white/20">
+              Made with <Heart size={9} className="inline text-sage-400" /> for memory that matters
             </p>
-            <p className="text-xs text-charcoal-300 dark:text-charcoal-600 mt-1">AURA-NER © 2024 · <span className="text-sage-400 font-medium">Developed by Team OriginX</span></p>
+            <p className="text-[11px] text-charcoal-400 dark:text-white/20 mt-1">
+              © 2024 · <span className="text-sage-400/80 font-medium">Developed by Team OriginX</span>
+            </p>
           </div>
         </div>
       </div>
