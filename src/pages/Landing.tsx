@@ -189,14 +189,13 @@ export default function Landing() {
             </div>
           </div>
 
-          <div className="border-t border-charcoal-700 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="border-t border-charcoal-700 pt-8 flex flex-col items-center gap-3">
             <p className="text-charcoal-400 text-sm flex items-center gap-1">
               {t('Made with')} <Heart size={14} className="text-sage-400" /> {t('for memory that matters')}
             </p>
-            <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
-              <span className="text-charcoal-400 text-sm">AURA-NER © 2024</span>
-              <span className="text-charcoal-500 text-xs">·</span>
-              <span className="text-sage-400 text-sm font-medium">{t('Developed by Team OriginX')}</span>
+            <p className="text-sage-400 text-sm font-semibold">{t('Developed by Team OriginX')}</p>
+            <div className="flex items-center gap-4">
+              <span className="text-charcoal-400 text-xs">AURA-NER © 2024</span>
               <a href="https://github.com/AkhilN-08/AURA" target="_blank" rel="noopener noreferrer" className="text-charcoal-400 hover:text-white transition-colors">
                 <Github size={18} />
               </a>

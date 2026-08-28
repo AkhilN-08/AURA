@@ -74,7 +74,7 @@ const THEMES: Record<string, ThemeColors> = {
 }
 
 export function useGenderTheme() {
-  const { user } = useAuth()
+  const { user, setGender: authSetGender } = useAuth()
   const gender = user?.gender || null
   const theme = THEMES[gender === 'male' ? 'male' : gender === 'female' ? 'female' : 'neutral']
 
@@ -96,9 +96,8 @@ export function useGenderTheme() {
     root.style.setProperty('--theme-liquid-from', theme.liquidFrom)
     root.style.setProperty('--theme-liquid-to', theme.liquidTo)
 
-    // Update body scrollbar
     document.documentElement.style.setProperty('--scrollbar-color', theme.primaryLight)
   }, [theme])
 
-  return { gender, theme, THEMES }
+  return { gender, setGender: authSetGender, theme, THEMES }
 }

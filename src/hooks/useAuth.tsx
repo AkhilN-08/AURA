@@ -28,6 +28,7 @@ interface AuthContextType {
   login: (email: string, password: string) => { success: boolean; error?: string }
   signup: (name: string, email: string, password: string, gender?: Gender) => { success: boolean; error?: string }
   logout: () => void
+  setGender: (gender: Gender) => void
   completeAssessment: (result: AssessmentResult) => void
   retakeAssessment: () => void
 }
@@ -116,8 +117,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     )
   }
 
+  const setGender = (gender: Gender) => {
+    if (!currentUser) return
+    const updatedUser = { ...currentUser, gender }
+    setCurrentUser(updatedUser)
+    setUsers(prev =>
+      prev.map(u =>
+        u.email === currentUser.email ? { ...u, gender } : u
+      )
+    )
+  }
+
   return (
-    <AuthContext.Provider value={{ user: currentUser, login, signup, logout, completeAssessment, retakeAssessment }}>
+    <AuthContext.Provider value={{ user: currentUser, login, signup, logout, setGender, completeAssessment, retakeAssessment }}>
       {children}
     </AuthContext.Provider>
   )

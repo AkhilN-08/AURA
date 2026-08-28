@@ -46,12 +46,9 @@ export default function CustomCursor() {
     const onMove = (e: MouseEvent) => {
       mouseRef.current.x = e.clientX
       mouseRef.current.y = e.clientY
-      const cx = `${e.clientX}px`
-      const cy = `${e.clientY}px`
-      orb.style.left = cx
-      orb.style.top = cy
-      dot.style.left = cx
-      dot.style.top = cy
+      // Use transform instead of left/top for GPU-accelerated smooth movement
+      orb.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`
+      dot.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`
     }
 
     const onEnterInteractive = () => setIsHovering(true)
@@ -65,23 +62,19 @@ export default function CustomCursor() {
       if (now - lastSpawnRef.current < 120) return
       lastSpawnRef.current = now
 
-      const count = 1
-      for (let i = 0; i < count; i++) {
-        const pinkish = Math.random() > 0.5
-        particlesRef.current.push({
-          x: x + (Math.random() - 0.5) * 12,
-          y: y + (Math.random() - 0.5) * 12,
-          size: 2.5 + Math.random() * 4,
-          rot: Math.random() * Math.PI * 2,
-          rotSpeed: (Math.random() - 0.5) * 0.05,
-          vy: 0.15 + Math.random() * 0.35,
-          vx: (Math.random() - 0.5) * 0.25,
-          opacity: 0.3 + Math.random() * 0.2,
-          life: 0,
-          maxLife: 35 + Math.random() * 25,
-          hue: pinkish ? 330 + Math.random() * 20 : 210 + Math.random() * 30,
-        })
-      }
+      particlesRef.current.push({
+        x: x + (Math.random() - 0.5) * 12,
+        y: y + (Math.random() - 0.5) * 12,
+        size: 2.5 + Math.random() * 4,
+        rot: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 0.05,
+        vy: 0.15 + Math.random() * 0.35,
+        vx: (Math.random() - 0.5) * 0.25,
+        opacity: 0.3 + Math.random() * 0.2,
+        life: 0,
+        maxLife: 35 + Math.random() * 25,
+        hue: Math.random() > 0.5 ? 330 + Math.random() * 20 : 210 + Math.random() * 30,
+      })
     }
 
     const drawPetal = (p: TrailParticle) => {
@@ -161,7 +154,7 @@ export default function CustomCursor() {
         className="absolute inset-0"
         style={{ pointerEvents: 'none' }}
       />
-      {/* Outer glow orb — larger, more visible */}
+      {/* Outer glow orb — uses transform for smooth GPU-accelerated movement */}
       <div
         id="cursor-orb"
         className="absolute rounded-full"
@@ -176,11 +169,11 @@ export default function CustomCursor() {
           boxShadow: isHovering
             ? '0 0 20px 6px rgba(251,207,232,0.25), 0 0 50px 15px rgba(249,168,212,0.12)'
             : '0 0 20px 6px rgba(236,72,153,0.2), 0 0 50px 15px rgba(244,114,182,0.1)',
-          willChange: 'left, top',
+          willChange: 'transform',
           transition: 'width 0.4s cubic-bezier(0.25,0.1,0.25,1), height 0.4s cubic-bezier(0.25,0.1,0.25,1), background 0.4s, box-shadow 0.4s',
         }}
       />
-      {/* Solid center dot — always visible, easy to spot */}
+      {/* Solid center dot — uses transform for smooth GPU-accelerated movement */}
       <div
         id="cursor-dot"
         className="absolute rounded-full"
@@ -195,7 +188,7 @@ export default function CustomCursor() {
           boxShadow: isHovering
             ? '0 0 8px 3px rgba(236,72,153,0.5), 0 0 16px 6px rgba(236,72,153,0.2)'
             : '0 0 6px 2px rgba(236,72,153,0.4), 0 0 12px 4px rgba(236,72,153,0.15)',
-          willChange: 'left, top',
+          willChange: 'transform',
           transition: 'width 0.3s, height 0.3s, background 0.3s, box-shadow 0.3s',
         }}
       />

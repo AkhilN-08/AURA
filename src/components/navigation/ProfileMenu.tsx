@@ -5,6 +5,7 @@ import { X, User, Mail, Flower2, Heart, LogOut, Gamepad2, Brain, Mic, BarChart3,
 import { useAuth } from '../../hooks/useAuth'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { useTranslation } from '../../hooks/useTranslation'
+import { useGenderTheme } from '../../hooks/useGenderTheme'
 
 interface ProfileMenuProps {
   isOpen: boolean
@@ -15,6 +16,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
   const { user, logout } = useAuth()
   const { sessions, getAverageAccuracy } = useGameProgress()
   const { language, setLanguage, t } = useTranslation()
+  const { gender, setGender } = useGenderTheme()
   const navigate = useNavigate()
   const panelRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -172,7 +174,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                   <Flower2 size={18} className="text-white" />
                 </div>
                 <div>
-                  <p className="font-semibold text-charcoal-800">AURA-NER NER</p>
+                  <p className="font-semibold text-charcoal-800">AURA-NER</p>
                   <p className="text-xs text-charcoal-400">v1.0.0 · Prototype</p>
                 </div>
               </div>
@@ -182,7 +184,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
               </p>
               <div className="space-y-2">
                 {[
-                  { icon: Gamepad2, text: '3 cognitive games with adaptive difficulty' },
+                  { icon: Gamepad2, text: '7 cognitive games with adaptive difficulty' },
                   { icon: Mic, text: 'Voice-enabled AI memory assistant' },
                   { icon: BarChart3, text: 'Caregiver dashboard with real insights' },
                   { icon: Brain, text: 'AI-assisted personalization engine' },
@@ -223,8 +225,35 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
             </div>
           </div>
 
+          {/* Gender / Theme Selector */}
+          <div ref={el => { itemsRef.current[9] = el }} className="rounded-3xl bg-white/50 backdrop-blur-sm border border-white/40 p-5">
+            <p className="text-xs font-semibold text-charcoal-400 uppercase tracking-wider mb-3">Theme Preference</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setGender('male')}
+                className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all duration-200 border-2 flex items-center justify-center gap-2 ${
+                  gender === 'male'
+                    ? 'bg-blue-500 text-white border-blue-500 shadow-md shadow-blue-200'
+                    : 'bg-cream-50 text-charcoal-600 border-cream-200 hover:border-blue-300'
+                }`}
+              >
+                👨 Male
+              </button>
+              <button
+                onClick={() => setGender('female')}
+                className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all duration-200 border-2 flex items-center justify-center gap-2 ${
+                  gender === 'female'
+                    ? 'bg-pink-500 text-white border-pink-500 shadow-md shadow-pink-200'
+                    : 'bg-cream-50 text-charcoal-600 border-cream-200 hover:border-pink-300'
+                }`}
+              >
+                👩 Female
+              </button>
+            </div>
+          </div>
+
           {/* Tech Stack */}
-          <div ref={el => { itemsRef.current[5] = el }} className="rounded-3xl bg-white/50 backdrop-blur-sm border border-white/40 p-5">
+          <div ref={el => { itemsRef.current[6] = el }} className="rounded-3xl bg-white/50 backdrop-blur-sm border border-white/40 p-5">
             <p className="text-xs font-semibold text-charcoal-400 uppercase tracking-wider mb-3">Built With</p>
             <div className="flex flex-wrap gap-2">
               {['React', 'TypeScript', 'Three.js', 'GSAP', 'Tailwind CSS', 'Recharts'].map((tech) => (
@@ -236,7 +265,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
           </div>
 
           {/* Medical Disclaimer */}
-          <div ref={el => { itemsRef.current[6] = el }} className="rounded-2xl bg-amber-50/60 border border-amber-100/60 p-4">
+          <div ref={el => { itemsRef.current[7] = el }} className="rounded-2xl bg-amber-50/60 border border-amber-100/60 p-4">
             <div className="flex items-start gap-2.5">
               <Shield size={16} className="text-amber-500 mt-0.5 flex-shrink-0" />
               <p className="text-xs text-charcoal-500 leading-relaxed">
@@ -247,7 +276,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
           </div>
 
           {/* Logout */}
-          <div ref={el => { itemsRef.current[7] = el }}>
+          <div ref={el => { itemsRef.current[8] = el }}>
             <button
               onClick={handleLogout}
               className="w-full flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl border-2 border-red-200/60 text-red-500 hover:bg-red-50/60 hover:border-red-300/60 transition-all duration-300 font-medium"
@@ -258,11 +287,11 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
           </div>
 
           {/* Footer */}
-          <div ref={el => { itemsRef.current[8] = el }} className="text-center pb-4">
+          <div ref={el => { itemsRef.current[9] = el }} className="text-center pb-4">
             <p className="text-xs text-charcoal-300 flex items-center justify-center gap-1">
               Made with <Heart size={10} className="text-sage-400" /> for memory that matters
             </p>
-            <p className="text-xs text-charcoal-300 mt-1">AURA-NER © 2024 · <span className="text-sage-400 font-medium">Team OriginX</span></p>
+            <p className="text-xs text-charcoal-300 mt-1 text-center w-full block">AURA-NER © 2024 · <span className="text-sage-400 font-medium">Developed by Team OriginX</span></p>
           </div>
         </div>
       </div>
