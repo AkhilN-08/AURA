@@ -11,6 +11,7 @@ import AssistantButton from './components/assistant/AssistantButton'
 import CustomCursor from './components/ui/CustomCursor'
 import AmbientBackground from './components/ui/AmbientBackground'
 import AccessibilityToggle from './components/ui/AccessibilityToggle'
+import { TranslationProvider } from './hooks/useTranslation'
 import { useLocation } from 'react-router-dom'
 import type { ReactNode } from 'react'
 
@@ -99,7 +100,9 @@ function AppRoutes() {
 export default function App() {
   return (
     <AuthProvider>
-      <AppRoutes />
+      <TranslationProvider>
+        <AppRoutes />
+      </TranslationProvider>
     </AuthProvider>
   )
 }

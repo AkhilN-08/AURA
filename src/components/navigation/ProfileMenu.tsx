@@ -4,6 +4,7 @@ import gsap from 'gsap'
 import { X, User, Mail, Flower2, Heart, LogOut, Gamepad2, Brain, Mic, BarChart3, Shield, ExternalLink, ChevronRight } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { useGameProgress } from '../../hooks/useGameProgress'
+import { useTranslation } from '../../hooks/useTranslation'
 
 interface ProfileMenuProps {
   isOpen: boolean
@@ -13,6 +14,7 @@ interface ProfileMenuProps {
 export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
   const { user, logout } = useAuth()
   const { sessions, getAverageAccuracy } = useGameProgress()
+  const { language, setLanguage, t } = useTranslation()
   const navigate = useNavigate()
   const panelRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -194,8 +196,35 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
             </div>
           </div>
 
-          {/* Tech Stack */}
+          {/* Language Selector */}
           <div ref={el => { itemsRef.current[4] = el }} className="rounded-3xl bg-white/50 backdrop-blur-sm border border-white/40 p-5">
+            <p className="text-xs font-semibold text-charcoal-400 uppercase tracking-wider mb-3">Language</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setLanguage('en')}
+                className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all duration-200 border-2 ${
+                  language === 'en'
+                    ? 'bg-sage-500 text-white border-sage-500 shadow-md shadow-sage-200'
+                    : 'bg-cream-50 text-charcoal-600 border-cream-200 hover:border-sage-300'
+                }`}
+              >
+                English
+              </button>
+              <button
+                onClick={() => setLanguage('hi')}
+                className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all duration-200 border-2 ${
+                  language === 'hi'
+                    ? 'bg-sage-500 text-white border-sage-500 shadow-md shadow-sage-200'
+                    : 'bg-cream-50 text-charcoal-600 border-cream-200 hover:border-sage-300'
+                }`}
+              >
+                हिंदी
+              </button>
+            </div>
+          </div>
+
+          {/* Tech Stack */}
+          <div ref={el => { itemsRef.current[5] = el }} className="rounded-3xl bg-white/50 backdrop-blur-sm border border-white/40 p-5">
             <p className="text-xs font-semibold text-charcoal-400 uppercase tracking-wider mb-3">Built With</p>
             <div className="flex flex-wrap gap-2">
               {['React', 'TypeScript', 'Three.js', 'GSAP', 'Tailwind CSS', 'Recharts'].map((tech) => (
@@ -207,7 +236,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
           </div>
 
           {/* Medical Disclaimer */}
-          <div ref={el => { itemsRef.current[5] = el }} className="rounded-2xl bg-amber-50/60 border border-amber-100/60 p-4">
+          <div ref={el => { itemsRef.current[6] = el }} className="rounded-2xl bg-amber-50/60 border border-amber-100/60 p-4">
             <div className="flex items-start gap-2.5">
               <Shield size={16} className="text-amber-500 mt-0.5 flex-shrink-0" />
               <p className="text-xs text-charcoal-500 leading-relaxed">
@@ -218,7 +247,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
           </div>
 
           {/* Logout */}
-          <div ref={el => { itemsRef.current[6] = el }}>
+          <div ref={el => { itemsRef.current[7] = el }}>
             <button
               onClick={handleLogout}
               className="w-full flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl border-2 border-red-200/60 text-red-500 hover:bg-red-50/60 hover:border-red-300/60 transition-all duration-300 font-medium"
@@ -229,7 +258,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
           </div>
 
           {/* Footer */}
-          <div ref={el => { itemsRef.current[7] = el }} className="text-center pb-4">
+          <div ref={el => { itemsRef.current[8] = el }} className="text-center pb-4">
             <p className="text-xs text-charcoal-300 flex items-center justify-center gap-1">
               Made with <Heart size={10} className="text-sage-400" /> for memory that matters
             </p>
