@@ -29,6 +29,7 @@ export default function CustomCursor() {
     }
 
     const orb = document.getElementById('cursor-orb')!
+    const dot = document.getElementById('cursor-dot')!
     const canvas = trailRef.current!
     const ctx = canvas.getContext('2d')!
 
@@ -46,6 +47,7 @@ export default function CustomCursor() {
       mouseRef.current.x = e.clientX
       mouseRef.current.y = e.clientY
       orb.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`
+      dot.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`
     }
 
     const onEnterInteractive = () => setIsHovering(true)
@@ -56,23 +58,23 @@ export default function CustomCursor() {
     // Spawn blossom trail particles
     const spawnTrail = (x: number, y: number) => {
       const now = performance.now()
-      if (now - lastSpawnRef.current < 40) return // throttle to ~25/sec
+      if (now - lastSpawnRef.current < 50) return
       lastSpawnRef.current = now
 
-      const count = Math.random() > 0.6 ? 2 : 1
+      const count = Math.random() > 0.5 ? 2 : 1
       for (let i = 0; i < count; i++) {
         const pinkish = Math.random() > 0.5
         particlesRef.current.push({
-          x: x + (Math.random() - 0.5) * 14,
-          y: y + (Math.random() - 0.5) * 14,
-          size: 2 + Math.random() * 4,
+          x: x + (Math.random() - 0.5) * 12,
+          y: y + (Math.random() - 0.5) * 12,
+          size: 2.5 + Math.random() * 4,
           rot: Math.random() * Math.PI * 2,
-          rotSpeed: (Math.random() - 0.5) * 0.06,
-          vy: 0.2 + Math.random() * 0.4,
-          vx: (Math.random() - 0.5) * 0.3,
-          opacity: 0.35 + Math.random() * 0.25,
+          rotSpeed: (Math.random() - 0.5) * 0.05,
+          vy: 0.15 + Math.random() * 0.35,
+          vx: (Math.random() - 0.5) * 0.25,
+          opacity: 0.4 + Math.random() * 0.3,
           life: 0,
-          maxLife: 50 + Math.random() * 40,
+          maxLife: 45 + Math.random() * 35,
           hue: pinkish ? 330 + Math.random() * 20 : 210 + Math.random() * 30,
         })
       }
@@ -89,8 +91,7 @@ export default function CustomCursor() {
       ctx.bezierCurveTo(p.size * 0.5, -p.size * 0.3, p.size * 0.4, p.size * 0.3, 0, p.size)
       ctx.bezierCurveTo(-p.size * 0.4, p.size * 0.3, -p.size * 0.5, -p.size * 0.3, 0, -p.size)
       ctx.fill()
-      // tiny white highlight
-      ctx.fillStyle = `rgba(255,255,255,${p.opacity * 0.2})`
+      ctx.fillStyle = `rgba(255,255,255,${p.opacity * 0.25})`
       ctx.beginPath()
       ctx.ellipse(-p.size * 0.08, -p.size * 0.1, p.size * 0.08, p.size * 0.18, -0.3, 0, Math.PI * 2)
       ctx.fill()
@@ -107,14 +108,13 @@ export default function CustomCursor() {
       particlesRef.current = particlesRef.current.filter(p => {
         p.life++
         const progress = p.life / p.maxLife
-        // fade in first 15%, steady, fade out last 40%
-        if (progress < 0.15) p.opacity = (progress / 0.15) * 0.4
-        else if (progress > 0.6) p.opacity = Math.max(0, 0.4 * (1 - (progress - 0.6) / 0.4))
-        else p.opacity = 0.4
+        if (progress < 0.12) p.opacity = (progress / 0.12) * 0.5
+        else if (progress > 0.6) p.opacity = Math.max(0, 0.5 * (1 - (progress - 0.6) / 0.4))
+        else p.opacity = 0.5
 
-        p.x += p.vx + Math.sin(p.life * 0.06) * 0.3
+        p.x += p.vx + Math.sin(p.life * 0.06) * 0.25
         p.y += p.vy
-        p.vy += 0.008
+        p.vy += 0.006
         p.rot += p.rotSpeed
 
         if (p.life >= p.maxLife) return false
@@ -146,7 +146,8 @@ export default function CustomCursor() {
 
   if (isHidden) return null
 
-  const size = isHovering ? 52 : 38
+  const orbSize = isHovering ? 56 : 44
+  const dotSize = isHovering ? 8 : 6
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[9999] hidden lg:block" aria-hidden>
@@ -156,22 +157,40 @@ export default function CustomCursor() {
         className="absolute inset-0"
         style={{ pointerEvents: 'none' }}
       />
-      {/* Translucent light orb — darker/more visible */}
+      {/* Outer glow orb — larger, more visible */}
       <div
         id="cursor-orb"
         className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full"
         style={{
-          width: size,
-          height: size,
+          width: orbSize,
+          height: orbSize,
           background: isHovering
-            ? 'radial-gradient(circle, rgba(251,207,232,0.3) 0%, rgba(249,168,212,0.14) 35%, rgba(255,255,255,0.05) 65%, transparent 100%)'
-            : 'radial-gradient(circle, rgba(244,114,182,0.25) 0%, rgba(236,72,153,0.12) 35%, rgba(255,255,255,0.05) 65%, transparent 100%)',
+            ? 'radial-gradient(circle, rgba(251,207,232,0.45) 0%, rgba(249,168,212,0.2) 40%, rgba(255,255,255,0.08) 70%, transparent 100%)'
+            : 'radial-gradient(circle, rgba(244,114,182,0.4) 0%, rgba(236,72,153,0.18) 40%, rgba(255,255,255,0.06) 70%, transparent 100%)',
           boxShadow: isHovering
-            ? '0 0 35px 10px rgba(251,207,232,0.12), 0 0 70px 20px rgba(249,168,212,0.06)'
-            : '0 0 35px 10px rgba(236,72,153,0.10), 0 0 70px 20px rgba(244,114,182,0.05)',
+            ? '0 0 20px 6px rgba(251,207,232,0.25), 0 0 50px 15px rgba(249,168,212,0.12)'
+            : '0 0 20px 6px rgba(236,72,153,0.2), 0 0 50px 15px rgba(244,114,182,0.1)',
           transform: 'translate(-100px, -100px)',
           willChange: 'transform',
-          transition: `width 0.4s cubic-bezier(0.4,0,0.2,1), height 0.4s cubic-bezier(0.4,0,0.2,1), background 0.5s, box-shadow 0.5s`,
+          transition: 'width 0.4s cubic-bezier(0.25,0.1,0.25,1), height 0.4s cubic-bezier(0.25,0.1,0.25,1), background 0.4s, box-shadow 0.4s',
+        }}
+      />
+      {/* Solid center dot — always visible, easy to spot */}
+      <div
+        id="cursor-dot"
+        className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full"
+        style={{
+          width: dotSize,
+          height: dotSize,
+          background: isHovering
+            ? 'radial-gradient(circle, #F472B6 30%, #EC4899 100%)'
+            : 'radial-gradient(circle, #EC4899 30%, #DB2777 100%)',
+          boxShadow: isHovering
+            ? '0 0 8px 3px rgba(236,72,153,0.5), 0 0 16px 6px rgba(236,72,153,0.2)'
+            : '0 0 6px 2px rgba(236,72,153,0.4), 0 0 12px 4px rgba(236,72,153,0.15)',
+          transform: 'translate(-100px, -100px)',
+          willChange: 'transform',
+          transition: 'width 0.3s, height 0.3s, background 0.3s, box-shadow 0.3s',
         }}
       />
     </div>
