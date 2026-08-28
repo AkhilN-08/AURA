@@ -319,7 +319,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
           </div>
 
           {/* Footer */}
-          <div ref={el => { itemsRef.current[9] = el }} className="text-center pb-4">
+          <div ref={el => { itemsRef.current[11] = el }} className="text-center pb-4">
             <p className="text-xs text-charcoal-300 flex items-center justify-center gap-1">
               Made with <Heart size={10} className="text-sage-400" /> for memory that matters
             </p>
