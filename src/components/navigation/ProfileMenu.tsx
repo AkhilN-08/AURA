@@ -94,7 +94,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
         <div className="p-7 pb-10 space-y-6">
           {/* Header */}
           <div ref={el => { itemsRef.current[0] = el }} className="flex items-center justify-between">
-            <h2 className="text-[22px] font-semibold text-charcoal-800 dark:text-white/90 tracking-[-0.02em]">Profile</h2>
+            <h2 className="text-[22px] font-semibold text-charcoal-900 dark:text-white/95 tracking-[-0.02em]">Profile</h2>
             <button
               onClick={handleClose}
               className="w-8 h-8 rounded-full bg-white/15 dark:bg-white/10 flex items-center justify-center text-charcoal-500 dark:text-white/50 hover:bg-white/25 dark:hover:bg-white/15 transition-all duration-200"
@@ -112,8 +112,8 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                   {user?.name?.charAt(0).toUpperCase() || '?'}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[17px] font-semibold text-charcoal-800 dark:text-white/90 truncate">{user?.name || 'User'}</p>
-                  <p className="text-[13px] text-charcoal-400 dark:text-white/40 truncate flex items-center gap-1.5 mt-0.5">
+                  <p className="text-[17px] font-semibold text-charcoal-900 dark:text-white/95 truncate">{user?.name || 'User'}</p>
+                  <p className="text-[13px] text-charcoal-600 dark:text-white/60 truncate flex items-center gap-1.5 mt-0.5">
                     <Mail size={12} /> {user?.email || 'No email'}
                   </p>
                 </div>
@@ -126,8 +126,8 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                   { value: new Set(sessions.map(s => s.gameType)).size, label: 'Types' },
                 ].map((stat, i) => (
                   <div key={i} className="bg-white/10 dark:bg-white/[0.04] rounded-[14px] p-3 text-center border border-white/10 dark:border-white/[0.05]">
-                    <p className="text-[18px] font-semibold text-charcoal-800 dark:text-white/80">{stat.value}</p>
-                    <p className="text-[11px] text-charcoal-400 dark:text-white/35 mt-0.5">{stat.label}</p>
+                    <p className="text-[18px] font-semibold text-charcoal-900 dark:text-white/90">{stat.value}</p>
+                    <p className="text-[11px] text-charcoal-600 dark:text-white/55 mt-0.5">{stat.label}</p>
                   </div>
                 ))}
               </div>
@@ -151,9 +151,9 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                     <item.icon size={18} style={{ color: item.iconColor }} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-medium text-charcoal-800 dark:text-white/80">{item.label}</p>
+                    <p className="text-[14px] font-medium text-charcoal-900 dark:text-white/90">{item.label}</p>
                   </div>
-                  <ChevronRight size={16} className="text-charcoal-300/60 dark:text-white/20 group-hover:text-charcoal-500 dark:group-hover:text-white/40 transition-colors" />
+                  <ChevronRight size={16} className="text-charcoal-600/90 dark:text-white/55 group-hover:text-charcoal-500 dark:group-hover:text-white/40 transition-colors" />
                 </button>
               ))}
             </div>
@@ -164,7 +164,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
             <div className="rounded-[20px] bg-white/15 dark:bg-white/[0.06] backdrop-blur-xl border border-white/25 dark:border-white/[0.08] overflow-hidden">
               {/* Language */}
               <div className="px-5 pt-4 pb-3">
-                <p className="text-[11px] font-semibold text-charcoal-400 dark:text-white/30 uppercase tracking-wider mb-2.5">Language</p>
+                <p className="text-[11px] font-semibold text-charcoal-700 dark:text-white/60 uppercase tracking-wider mb-2.5">Language</p>
                 <div className="flex gap-2">
                   {[
                     { key: 'en' as const, label: 'English' },
@@ -175,8 +175,8 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                       onClick={() => setLanguage(lang.key)}
                       className={`flex-1 py-2.5 rounded-[10px] text-[13px] font-medium transition-all duration-200 ${
                         language === lang.key
-                          ? 'bg-white/20 dark:bg-white/10 text-charcoal-800 dark:text-white/90 border border-white/30 dark:border-white/15'
-                          : 'text-charcoal-500 dark:text-white/35 hover:bg-white/10 dark:hover:bg-white/[0.04] border border-transparent'
+                          ? 'bg-white/20 dark:bg-white/10 text-charcoal-900 dark:text-white/95 border border-white/30 dark:border-white/15'
+                          : 'text-charcoal-700 dark:text-white/55 hover:bg-white/10 dark:hover:bg-white/[0.04] border border-transparent'
                       }`}
                     >
                       {lang.label}
@@ -189,14 +189,14 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
 
               {/* Theme */}
               <div className="px-5 py-3">
-                <p className="text-[11px] font-semibold text-charcoal-400 dark:text-white/30 uppercase tracking-wider mb-2.5">Appearance</p>
+                <p className="text-[11px] font-semibold text-charcoal-700 dark:text-white/60 uppercase tracking-wider mb-2.5">Appearance</p>
                 <div className="flex gap-2">
                   <button
                     onClick={() => setGender('male')}
                     className={`flex-1 py-2.5 rounded-[10px] text-[13px] font-medium flex items-center justify-center gap-1.5 transition-all duration-200 ${
                       gender === 'male'
                         ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30'
-                        : 'text-charcoal-500 dark:text-white/35 hover:bg-white/10 dark:hover:bg-white/[0.04] border border-transparent'
+                        : 'text-charcoal-700 dark:text-white/55 hover:bg-white/10 dark:hover:bg-white/[0.04] border border-transparent'
                     }`}
                   >
                     👨 Male
@@ -206,7 +206,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                     className={`flex-1 py-2.5 rounded-[10px] text-[13px] font-medium flex items-center justify-center gap-1.5 transition-all duration-200 ${
                       gender === 'female'
                         ? 'bg-pink-500/20 text-pink-600 dark:text-pink-400 border border-pink-500/30'
-                        : 'text-charcoal-500 dark:text-white/35 hover:bg-white/10 dark:hover:bg-white/[0.04] border border-transparent'
+                        : 'text-charcoal-700 dark:text-white/55 hover:bg-white/10 dark:hover:bg-white/[0.04] border border-transparent'
                     }`}
                   >
                     👩 Female
@@ -225,7 +225,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                   {isDark ? <Moon size={18} style={{ color: '#818CF8' }} /> : <Sun size={18} style={{ color: '#F59E0B' }} />}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[14px] font-medium text-charcoal-800 dark:text-white/80">{isDark ? 'Dark Mode' : 'Light Mode'}</p>
+                  <p className="text-[14px] font-medium text-charcoal-900 dark:text-white/90">{isDark ? 'Dark Mode' : 'Light Mode'}</p>
                 </div>
                 <div className={`w-[46px] h-[28px] rounded-full flex items-center transition-all duration-300 ${isDark ? 'bg-sage-500 justify-end' : 'bg-charcoal-300/40 dark:bg-white/15 justify-start'}`}>
                   <div className="w-[22px] h-[22px] bg-white rounded-full mx-[3px] shadow-sm" />
@@ -237,17 +237,17 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
           {/* About */}
           <div ref={el => { itemsRef.current[4] = el }}>
             <div className="rounded-[20px] bg-white/15 dark:bg-white/[0.06] backdrop-blur-xl border border-white/25 dark:border-white/[0.08] p-5">
-              <p className="text-[11px] font-semibold text-charcoal-400 dark:text-white/30 uppercase tracking-wider mb-3">About AURA-NER</p>
+              <p className="text-[11px] font-semibold text-charcoal-700 dark:text-white/60 uppercase tracking-wider mb-3">About AURA-NER</p>
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 rounded-[12px] bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center shadow-lg shadow-sage-500/15">
                   <Flower2 size={18} className="text-white" />
                 </div>
                 <div>
-                  <p className="text-[14px] font-semibold text-charcoal-800 dark:text-white/80">AURA-NER</p>
-                  <p className="text-[11px] text-charcoal-400 dark:text-white/30">v1.0.0</p>
+                  <p className="text-[14px] font-semibold text-charcoal-900 dark:text-white/90">AURA-NER</p>
+                  <p className="text-[11px] text-charcoal-700 dark:text-white/60">v1.0.0</p>
                 </div>
               </div>
-              <p className="text-[13px] text-charcoal-500 dark:text-white/40 leading-relaxed mb-3">
+              <p className="text-[13px] text-charcoal-700 dark:text-white/60 leading-relaxed mb-3">
                 AI-powered cognitive gaming and memory assistance for elderly people in the North Eastern Region.
               </p>
               <div className="space-y-2">
@@ -257,7 +257,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                   { icon: BarChart3, text: 'Caregiver insights' },
                   { icon: Brain, text: 'AI personalization' },
                 ].map((f, i) => (
-                  <div key={i} className="flex items-center gap-2.5 text-[13px] text-charcoal-500 dark:text-white/40">
+                  <div key={i} className="flex items-center gap-2.5 text-[13px] text-charcoal-700 dark:text-white/60">
                     <f.icon size={13} style={{ color: '#EC4899' }} />
                     <span>{f.text}</span>
                   </div>
@@ -271,7 +271,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
             <div className="rounded-[20px] bg-white/15 dark:bg-white/[0.06] backdrop-blur-xl border border-white/25 dark:border-white/[0.08] p-4">
               <div className="flex flex-wrap gap-1.5">
                 {['React', 'TypeScript', 'Three.js', 'GSAP', 'Tailwind', 'Recharts'].map(tech => (
-                  <span key={tech} className="text-[11px] px-2.5 py-1 rounded-[8px] bg-white/10 dark:bg-white/[0.04] text-charcoal-500 dark:text-white/35 border border-white/10 dark:border-white/[0.05]">
+                  <span key={tech} className="text-[11px] px-2.5 py-1 rounded-[8px] bg-white/10 dark:bg-white/[0.04] text-charcoal-700 dark:text-white/55 border border-white/10 dark:border-white/[0.05]">
                     {tech}
                   </span>
                 ))}
@@ -283,8 +283,8 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
           <div ref={el => { itemsRef.current[6] = el }} className="rounded-[16px] bg-amber-500/[0.06] dark:bg-amber-500/[0.04] border border-amber-500/10 px-4 py-3">
             <div className="flex items-start gap-2.5">
               <Shield size={14} className="text-amber-500/70 mt-0.5 flex-shrink-0" />
-              <p className="text-[11px] text-charcoal-500 dark:text-white/35 leading-relaxed">
-                <strong className="text-charcoal-600 dark:text-white/50">Disclaimer:</strong> AURA-NER is a support prototype, not a medical tool.
+              <p className="text-[11px] text-charcoal-700 dark:text-white/55 leading-relaxed">
+                <strong className="text-charcoal-700 dark:text-white/60">Disclaimer:</strong> AURA-NER is a support prototype, not a medical tool.
               </p>
             </div>
           </div>
@@ -302,10 +302,10 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
 
           {/* Footer */}
           <div ref={el => { itemsRef.current[8] = el }} className="text-center pt-1 pb-2">
-            <p className="text-[11px] text-charcoal-400 dark:text-white/20">
+            <p className="text-[11px] text-charcoal-500 dark:text-white/40">
               Made with <Heart size={9} className="inline text-sage-400" /> for memory that matters
             </p>
-            <p className="text-[11px] text-charcoal-400 dark:text-white/20 mt-1">
+            <p className="text-[11px] text-charcoal-500 dark:text-white/40 mt-1">
               © 2024 · <span className="text-sage-400/80 font-medium">Developed by Team OriginX</span>
             </p>
           </div>
