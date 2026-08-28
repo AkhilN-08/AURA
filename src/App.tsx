@@ -10,6 +10,7 @@ import Navbar from './components/navigation/Navbar'
 import AssistantButton from './components/assistant/AssistantButton'
 import CustomCursor from './components/ui/CustomCursor'
 import AmbientBackground from './components/ui/AmbientBackground'
+import AccessibilityToggle from './components/ui/AccessibilityToggle'
 import { useLocation } from 'react-router-dom'
 import type { ReactNode } from 'react'
 
@@ -35,6 +36,7 @@ function AuthenticatedLayout({ children }: { children: ReactNode }) {
       <Navbar />
       <main>{children}</main>
       <AssistantButton />
+      <AccessibilityToggle />
       {!isGamesPage && <AmbientBackground />}
     </div>
   )
