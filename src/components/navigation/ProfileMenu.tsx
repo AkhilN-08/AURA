@@ -17,15 +17,14 @@ interface ProfileMenuProps {
 function LiquidCard({ children, className = '', glow = false }: { children: React.ReactNode; className?: string; glow?: boolean }) {
   return (
     <div className={`relative group ${className}`}>
-      {/* Liquid glass background */}
-      <div className="relative overflow-hidden rounded-3xl bg-white/40 dark:bg-white/5 backdrop-blur-2xl border border-white/50 dark:border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
-        {/* Liquid highlight shimmer */}
+      <div className="relative overflow-hidden rounded-3xl bg-white/25 dark:bg-white/[0.03] backdrop-blur-[40px] border border-white/40 dark:border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.03),inset_0_1px_0_rgba(255,255,255,0.5)]">
+        {/* Liquid shimmer — top-left light refraction */}
         {glow && (
-          <div className="absolute inset-0 opacity-30 pointer-events-none">
-            <div className="absolute -top-1/2 -left-1/4 w-[200%] h-[100%] bg-gradient-to-br from-white/40 via-transparent to-transparent rotate-12" />
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute -top-1/3 -left-1/3 w-[160%] h-[80%] bg-gradient-to-br from-white/30 via-white/5 to-transparent rotate-6 rounded-full blur-xl" />
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent" />
           </div>
         )}
-        {/* Content */}
         <div className="relative z-10">
           {children}
         </div>
@@ -110,7 +109,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
       {/* Panel */}
       <div
         ref={panelRef}
-        className="absolute top-0 right-0 bottom-0 w-[min(520px,100vw)] bg-white/30 dark:bg-[#0d0d1a]/80 backdrop-blur-[60px] border-l border-white/40 dark:border-white/8 shadow-[-20px_0_60px_rgba(0,0,0,0.1)] overflow-y-auto"
+        className="absolute top-0 right-0 bottom-0 w-[min(520px,100vw)] bg-white/20 dark:bg-[#0d0d1a]/60 backdrop-blur-[60px] border-l border-white/30 dark:border-white/[0.06] shadow-[-20px_0_60px_rgba(0,0,0,0.08),inset_1px_0_0_rgba(255,255,255,0.3)] overflow-y-auto"
         style={{ transform: 'translateX(100%)' }}
       >
         <div className="p-8 space-y-5">
@@ -171,17 +170,17 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
               <div className="p-5 space-y-3">
                 <p className="text-[11px] font-bold text-charcoal-400 dark:text-charcoal-500 uppercase tracking-widest px-1">Quick Links</p>
                 {[
-                  { icon: Gamepad2, label: 'Cognitive Games', path: '/games', desc: '7 memory and recall games', color: 'bg-sage-50 dark:bg-sage-500/10 text-sage-500', iconColor: 'text-sage-500' },
-                  { icon: Brain, label: 'Memory Assistant', path: '/assistant', desc: 'Reminders and voice prompts', color: 'bg-amber-50 dark:bg-amber-500/10 text-amber-500', iconColor: 'text-amber-500' },
-                  { icon: BarChart3, label: 'Caregiver Dashboard', path: '/caregiver', desc: 'Activity insights and trends', color: 'bg-blue-50 dark:bg-blue-500/10 text-blue-500', iconColor: 'text-blue-500' },
+                  { icon: Gamepad2, label: 'Cognitive Games', path: '/games', desc: '7 memory and recall games', bgColor: 'rgba(236,72,153,0.1)', iconColor: '#EC4899' },
+                  { icon: Brain, label: 'Memory Assistant', path: '/assistant', desc: 'Reminders and voice prompts', bgColor: 'rgba(249,115,22,0.1)', iconColor: '#F97316' },
+                  { icon: BarChart3, label: 'Caregiver Dashboard', path: '/caregiver', desc: 'Activity insights and trends', bgColor: 'rgba(59,130,246,0.1)', iconColor: '#3B82F6' },
                 ].map((item, i) => (
                   <button
                     key={i}
                     onClick={() => { handleClose(); setTimeout(() => navigate(item.path), 400) }}
                     className="w-full flex items-center gap-4 p-3.5 rounded-2xl hover:bg-white/60 dark:hover:bg-white/5 transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)] text-left group"
                   >
-                    <div className={`w-11 h-11 rounded-xl ${item.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}>
-                      <item.icon size={20} className={item.iconColor} />
+                    <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: item.bgColor }}>
+                      <item.icon size={20} style={{ color: item.iconColor }} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-charcoal-800 dark:text-white text-sm">{item.label}</p>
@@ -311,7 +310,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                     { icon: Brain, text: 'AI-assisted personalization engine' },
                   ].map((feature, i) => (
                     <div key={i} className="flex items-center gap-3 text-sm text-charcoal-500 dark:text-charcoal-400">
-                      <feature.icon size={14} className="text-sage-400 flex-shrink-0" />
+                      <feature.icon size={14} className="flex-shrink-0" style={{ color: '#EC4899' }} />
                       <span>{feature.text}</span>
                     </div>
                   ))}
