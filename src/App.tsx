@@ -14,6 +14,7 @@ import AccessibilityToggle from './components/ui/AccessibilityToggle'
 import { TranslationProvider } from './hooks/useTranslation'
 import { useGenderTheme } from './hooks/useGenderTheme'
 import { useLocation } from 'react-router-dom'
+import PageTransition from './components/ui/PageTransition'
 import type { ReactNode } from 'react'
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
@@ -36,7 +37,9 @@ function AuthenticatedLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-transparent">
       <Navbar />
-      <main>{children}</main>
+      <main>
+        <PageTransition key={location.pathname}>{children}</PageTransition>
+      </main>
       <AssistantButton />
       <AccessibilityToggle />
       {!isGamesPage && <AmbientBackground />}
@@ -52,10 +55,10 @@ function AppRoutes() {
     <>
       <CustomCursor />
       <Routes>
-        <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
+        <Route path="/login" element={user ? <Navigate to="/" replace /> : <PageTransition><Login /></PageTransition>} />
         <Route path="/assessment" element={
           <ProtectedRoute>
-            <Assessment />
+            <PageTransition><Assessment /></PageTransition>
           </ProtectedRoute>
         } />
         <Route path="/" element={
