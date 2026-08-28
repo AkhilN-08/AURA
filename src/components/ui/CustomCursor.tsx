@@ -46,8 +46,12 @@ export default function CustomCursor() {
     const onMove = (e: MouseEvent) => {
       mouseRef.current.x = e.clientX
       mouseRef.current.y = e.clientY
-      orb.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`
-      dot.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`
+      const cx = `${e.clientX}px`
+      const cy = `${e.clientY}px`
+      orb.style.left = cx
+      orb.style.top = cy
+      dot.style.left = cx
+      dot.style.top = cy
     }
 
     const onEnterInteractive = () => setIsHovering(true)
@@ -160,36 +164,38 @@ export default function CustomCursor() {
       {/* Outer glow orb — larger, more visible */}
       <div
         id="cursor-orb"
-        className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full"
+        className="absolute rounded-full"
         style={{
           width: orbSize,
           height: orbSize,
+          marginLeft: -orbSize / 2,
+          marginTop: -orbSize / 2,
           background: isHovering
             ? 'radial-gradient(circle, rgba(251,207,232,0.45) 0%, rgba(249,168,212,0.2) 40%, rgba(255,255,255,0.08) 70%, transparent 100%)'
             : 'radial-gradient(circle, rgba(244,114,182,0.4) 0%, rgba(236,72,153,0.18) 40%, rgba(255,255,255,0.06) 70%, transparent 100%)',
           boxShadow: isHovering
             ? '0 0 20px 6px rgba(251,207,232,0.25), 0 0 50px 15px rgba(249,168,212,0.12)'
             : '0 0 20px 6px rgba(236,72,153,0.2), 0 0 50px 15px rgba(244,114,182,0.1)',
-          transform: 'translate(-100px, -100px)',
-          willChange: 'transform',
+          willChange: 'left, top',
           transition: 'width 0.4s cubic-bezier(0.25,0.1,0.25,1), height 0.4s cubic-bezier(0.25,0.1,0.25,1), background 0.4s, box-shadow 0.4s',
         }}
       />
       {/* Solid center dot — always visible, easy to spot */}
       <div
         id="cursor-dot"
-        className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full"
+        className="absolute rounded-full"
         style={{
           width: dotSize,
           height: dotSize,
+          marginLeft: -dotSize / 2,
+          marginTop: -dotSize / 2,
           background: isHovering
             ? 'radial-gradient(circle, #F472B6 30%, #EC4899 100%)'
             : 'radial-gradient(circle, #EC4899 30%, #DB2777 100%)',
           boxShadow: isHovering
             ? '0 0 8px 3px rgba(236,72,153,0.5), 0 0 16px 6px rgba(236,72,153,0.2)'
             : '0 0 6px 2px rgba(236,72,153,0.4), 0 0 12px 4px rgba(236,72,153,0.15)',
-          transform: 'translate(-100px, -100px)',
-          willChange: 'transform',
+          willChange: 'left, top',
           transition: 'width 0.3s, height 0.3s, background 0.3s, box-shadow 0.3s',
         }}
       />
