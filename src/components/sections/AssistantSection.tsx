@@ -23,8 +23,8 @@ export default function AssistantSection() {
       gsap.fromTo(demoRef.current,
         { opacity: 0, x: -60, scale: 0.95 },
         {
-          opacity: 1, x: 0, scale: 1, duration: 1, ease: 'power3.out',
-          scrollTrigger: { trigger: demoRef.current, start: 'top 85%', toggleActions: 'play none none reverse' }
+          opacity: 1, x: 0, scale: 1, duration: 0.7, ease: 'power2.out',
+          scrollTrigger: { trigger: demoRef.current, start: 'top 80%', toggleActions: 'play none none none' }
         }
       )
 
@@ -33,8 +33,8 @@ export default function AssistantSection() {
         gsap.fromTo(features,
           { opacity: 0, x: 60, y: 20 },
           {
-            opacity: 1, x: 0, y: 0, duration: 0.8, stagger: 0.2, ease: 'power3.out',
-            scrollTrigger: { trigger: featuresRef.current, start: 'top 85%', toggleActions: 'play none none reverse' }
+            opacity: 1, x: 0, y: 0, duration: 0.6, stagger: 0.12, ease: 'power2.out',
+            scrollTrigger: { trigger: featuresRef.current, start: 'top 80%', toggleActions: 'play none none none' }
           }
         )
       }
@@ -42,7 +42,7 @@ export default function AssistantSection() {
       if (ctaRef.current) {
         gsap.fromTo(ctaRef.current,
           { opacity: 0, y: 30 },
-          { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', scrollTrigger: { trigger: ctaRef.current, start: 'top 90%', toggleActions: 'play none none reverse' } }
+          { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', scrollTrigger: { trigger: ctaRef.current, start: 'top 85%', toggleActions: 'play none none none' } }
         )
       }
     }, sectionRef)

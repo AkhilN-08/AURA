@@ -36,14 +36,14 @@ export default function Landing() {
       // Hero content parallax
       if (heroContentRef.current) {
         gsap.to(heroContentRef.current, {
-          y: -150,
+          y: -120,
           opacity: 0,
-          ease: 'none',
+          ease: 'power1.inOut',
           scrollTrigger: {
             trigger: heroRef.current,
             start: 'top top',
             end: 'bottom top',
-            scrub: 0.5,
+            scrub: 0.15,
           },
         })
       }
@@ -52,14 +52,14 @@ export default function Landing() {
       if (nerRef.current) {
         const emojis = nerRef.current.querySelectorAll('.ner-emoji')
         gsap.fromTo(emojis,
-          { opacity: 0, y: 50, scale: 0.5, rotate: -20 },
+          { opacity: 0, y: 40, scale: 0.6, rotate: -10 },
           {
             opacity: 1, y: 0, scale: 1, rotate: 0,
-            duration: 0.7, stagger: 0.12, ease: 'back.out(2.5)',
+            duration: 0.5, stagger: 0.08, ease: 'power2.out',
             scrollTrigger: {
               trigger: nerRef.current,
               start: 'top 80%',
-              toggleActions: 'play none none reverse',
+              toggleActions: 'play none none none',
             }
           }
         )

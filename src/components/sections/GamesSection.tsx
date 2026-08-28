@@ -32,23 +32,23 @@ export default function GamesSection() {
           { opacity: 0, y: 100, scale: 0.85 },
           {
             opacity: 1, y: 0, scale: 1,
-            duration: 0.9, stagger: 0.15, ease: 'back.out(1.5)',
+            duration: 0.7, stagger: 0.1, ease: 'power2.out',
             scrollTrigger: {
               trigger: cardsRef.current,
-              start: 'top 85%',
-              toggleActions: 'play none none reverse',
+              start: 'top 80%',
+              toggleActions: 'play none none none',
             }
           }
         )
 
         cards.forEach((card, i) => {
           gsap.to(card, {
-            y: -8,
-            duration: 2.5 + i * 0.4,
+            y: -5,
+            duration: 3 + i * 0.5,
             ease: 'sine.inOut',
             yoyo: true,
             repeat: -1,
-            delay: i * 0.6,
+            delay: i * 0.7,
           })
         })
       }
@@ -57,8 +57,8 @@ export default function GamesSection() {
         gsap.fromTo(ctaRef.current,
           { opacity: 0, scale: 0.85 },
           {
-            opacity: 1, scale: 1, duration: 0.8, ease: 'back.out(1.7)',
-            scrollTrigger: { trigger: ctaRef.current, start: 'top 90%', toggleActions: 'play none none reverse' }
+            opacity: 1, scale: 1, duration: 0.6, ease: 'power2.out',
+            scrollTrigger: { trigger: ctaRef.current, start: 'top 85%', toggleActions: 'play none none none' }
           }
         )
       }
