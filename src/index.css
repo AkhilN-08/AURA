@@ -15,19 +15,19 @@
 
   body {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background-color: #FEFDFB;
+    background-color: #F8FAFF;
     color: #2d2d2d;
     overflow-x: hidden;
     position: relative;
   }
 
   ::selection {
-    background-color: rgba(74, 124, 74, 0.2);
-    color: #1f3720;
+    background-color: rgba(59, 130, 246, 0.2);
+    color: #1E3A5F;
   }
 
   :focus-visible {
-    outline: 3px solid #4a7c4a;
+    outline: 3px solid #3B82F6;
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -154,14 +154,14 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #FBF8F1;
+  background: #F0F4FF;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #a8bca2;
+  background: #93C5FD;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #87a280;
+  background: #60A5FA;
 }

@@ -105,8 +105,8 @@ export default function Caregiver() {
                   <YAxis tick={{ fontSize: 12, fill: '#757575' }} domain={[0, 100]} />
                   <Tooltip contentStyle={tooltipStyle} />
                   <Legend />
-                  <Bar dataKey="memory" fill="#4a7c4a" radius={[4, 4, 0, 0]} name="Memory Match" />
-                  <Bar dataKey="recall" fill="#6b8a64" radius={[4, 4, 0, 0]} name="Recall & Recognition" />
+                  <Bar dataKey="memory" fill="#3B82F6" radius={[4, 4, 0, 0]} name="Memory Match" />
+                  <Bar dataKey="recall" fill="#60A5FA" radius={[4, 4, 0, 0]} name="Recall & Recognition" />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
@@ -127,7 +127,7 @@ export default function Caregiver() {
                   <XAxis dataKey="week" tick={{ fontSize: 12, fill: '#757575' }} />
                   <YAxis tick={{ fontSize: 12, fill: '#757575' }} domain={[0, 100]} />
                   <Tooltip contentStyle={tooltipStyle} />
-                  <Line type="monotone" dataKey="accuracy" stroke="#4a7c4a" strokeWidth={3} dot={{ fill: '#4a7c4a', r: 5 }} name="Accuracy %" />
+                  <Line type="monotone" dataKey="accuracy" stroke="#3B82F6" strokeWidth={3} dot={{ fill: '#3B82F6', r: 5 }} name="Accuracy %" />
                 </LineChart>
               </ResponsiveContainer>
             ) : (

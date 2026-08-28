@@ -35,30 +35,30 @@ function MemoryTree({ mouse }: { mouse: React.RefObject<{ x: number; y: number }
   return (
     <group ref={groupRef} position={[0, -1.5, 0]}>
       <mesh geometry={trunkGeometry} position={[0, 0, -0.04]}>
-        <meshStandardMaterial color="#5c3d2e" roughness={0.8} />
+        <meshStandardMaterial color="#8B7355" roughness={0.8} />
       </mesh>
       {[1.0, 1.4, 1.8].map((y, i) => (
         <mesh key={i} position={[i % 2 === 0 ? 0.3 : -0.3, y, 0]} rotation={[0, 0, i % 2 === 0 ? -0.5 : 0.5]}>
           <cylinderGeometry args={[0.02, 0.04, 0.6, 6]} />
-          <meshStandardMaterial color="#5c3d2e" roughness={0.8} />
+          <meshStandardMaterial color="#8B7355" roughness={0.8} />
         </mesh>
       ))}
       <Float speed={1.5} rotationIntensity={0.1} floatIntensity={0.3}>
         <mesh position={[0, 2.2, 0]}>
           <sphereGeometry args={[0.9, 16, 16]} />
-          <meshStandardMaterial color="#4a7c4a" roughness={0.6} transparent opacity={0.85} />
+          <meshStandardMaterial color="#60A5FA" roughness={0.6} transparent opacity={0.85} />
         </mesh>
         <mesh position={[0.4, 1.8, 0.2]}>
           <sphereGeometry args={[0.5, 12, 12]} />
-          <meshStandardMaterial color="#6b8a64" roughness={0.6} transparent opacity={0.8} />
+          <meshStandardMaterial color="#93C5FD" roughness={0.6} transparent opacity={0.8} />
         </mesh>
         <mesh position={[-0.4, 1.9, -0.1]}>
           <sphereGeometry args={[0.45, 12, 12]} />
-          <meshStandardMaterial color="#5a8050" roughness={0.6} transparent opacity={0.8} />
+          <meshStandardMaterial color="#7DD3FC" roughness={0.6} transparent opacity={0.8} />
         </mesh>
         <mesh position={[0.2, 2.6, -0.2]}>
           <sphereGeometry args={[0.35, 10, 10]} />
-          <meshStandardMaterial color="#7ab070" roughness={0.6} transparent opacity={0.75} />
+          <meshStandardMaterial color="#BAE6FD" roughness={0.6} transparent opacity={0.75} />
         </mesh>
       </Float>
       {[
@@ -67,7 +67,7 @@ function MemoryTree({ mouse }: { mouse: React.RefObject<{ x: number; y: number }
         <Float key={i} speed={2 + i * 0.3} floatIntensity={0.2}>
           <mesh position={pos as [number, number, number]}>
             <sphereGeometry args={[0.06, 8, 8]} />
-            <meshStandardMaterial color="#FFD56B" emissive="#FFC233" emissiveIntensity={0.5} roughness={0.3} />
+            <meshStandardMaterial color="#FBCFE8" emissive="#F9A8D4" emissiveIntensity={0.5} roughness={0.3} />
           </mesh>
         </Float>
       ))}
@@ -75,7 +75,7 @@ function MemoryTree({ mouse }: { mouse: React.RefObject<{ x: number; y: number }
   )
 }
 
-function FloatingLeaves({ mouse }: { mouse: React.RefObject<{ x: number; y: number }> }) {
+function FloatingPetals({ mouse }: { mouse: React.RefObject<{ x: number; y: number }> }) {
   const count = 30
   const meshRef = useRef<THREE.InstancedMesh>(null)
   const dummy = useMemo(() => new THREE.Object3D(), [])
@@ -104,7 +104,7 @@ function FloatingLeaves({ mouse }: { mouse: React.RefObject<{ x: number; y: numb
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
       <planeGeometry args={[1, 0.6]} />
-      <meshStandardMaterial color="#6b8a64" side={THREE.DoubleSide} transparent opacity={0.6} />
+      <meshStandardMaterial color="#F9A8D4" side={THREE.DoubleSide} transparent opacity={0.6} />
     </instancedMesh>
   )
 }
@@ -139,7 +139,7 @@ function GlowingParticles({ mouse }: { mouse: React.RefObject<{ x: number; y: nu
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
       <sphereGeometry args={[1, 8, 8]} />
-      <meshStandardMaterial color="#FFD56B" emissive="#FFC233" emissiveIntensity={1} transparent opacity={0.7} />
+      <meshStandardMaterial color="#FBCFE8" emissive="#F9A8D4" emissiveIntensity={1} transparent opacity={0.7} />
     </instancedMesh>
   )
 }
@@ -148,14 +148,14 @@ function Scene({ mouse }: { mouse: React.RefObject<{ x: number; y: number }> }) 
   return (
     <>
       <ambientLight intensity={0.4} />
-      <directionalLight position={[5, 5, 5]} intensity={0.6} color="#FFF8E7" />
-      <pointLight position={[-3, 3, 2]} intensity={0.4} color="#87a280" />
-      <pointLight position={[2, 4, -1]} intensity={0.3} color="#FFD56B" />
+      <directionalLight position={[5, 5, 5]} intensity={0.6} color="#E0F2FE" />
+      <pointLight position={[-3, 3, 2]} intensity={0.4} color="#93C5FD" />
+      <pointLight position={[2, 4, -1]} intensity={0.3} color="#FBCFE8" />
       <MemoryTree mouse={mouse} />
-      <FloatingLeaves mouse={mouse} />
+      <FloatingPetals mouse={mouse} />
       <GlowingParticles mouse={mouse} />
-      <Sparkles count={40} size={2} scale={[10, 8, 5]} speed={0.3} color="#FFD56B" opacity={0.3} />
-      <fog attach="fog" args={['#f0f5f0', 5, 18]} />
+      <Sparkles count={40} size={2} scale={[10, 8, 5]} speed={0.3} color="#FBCFE8" opacity={0.3} />
+      <fog attach="fog" args={['#EFF6FF', 5, 18]} />
       <Environment preset="forest" />
     </>
   )
@@ -165,7 +165,7 @@ function WebGLFallback() {
   return (
     <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-forest-50 to-cream-100 pointer-events-none">
       <div className="text-center p-8">
-        <div className="text-6xl mb-4">🌳</div>
+        <div className="text-6xl mb-4">Ã°ÂÂÂ¸</div>
         <p className="text-charcoal-500 text-lg">
           Interactive 3D mode isn't available on this device.
           <br />You can still explore AURA below.

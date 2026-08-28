@@ -86,7 +86,7 @@ export default function Landing() {
               waveAmplitude={0.8}
               particleSize={1.2}
               lerpSpeed={0.04}
-              color="#6b8a64"
+              color="#93C5FD"
               autoAnimate={true}
               particleVariance={0.8}
               rotationSpeed={0.15}
@@ -131,7 +131,7 @@ export default function Landing() {
             {['🎋', '🪷', '🏔️', '🍵', '🥁', '🏮'].map((emoji, i) => (
               <div
                 key={i}
-                className="ner-emoji bg-white/60 backdrop-blur-xl rounded-2xl p-5 border border-white/50 shadow-[0_4px_20px_rgba(0,0,0,0.04)] flex items-center justify-center text-4xl hover:scale-110 hover:rotate-6 hover:shadow-[0_8px_30px_rgba(74,124,74,0.12)] transition-all duration-500 cursor-default"
+                className="ner-emoji bg-white/60 backdrop-blur-xl rounded-2xl p-5 border border-white/50 shadow-[0_4px_20px_rgba(0,0,0,0.04)] flex items-center justify-center text-4xl hover:scale-110 hover:rotate-6 hover:shadow-[0_8px_30px_rgba(59,130,246,0.12)] transition-all duration-500 cursor-default"
                 style={{ opacity: reducedMotion ? 1 : 0 }}
               >
                 {emoji}
@@ -149,7 +149,7 @@ export default function Landing() {
           <div className="grid md:grid-cols-4 gap-12 mb-12">
             <div>
               <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-forest-400/80 to-forest-600/80 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-[0_0_16px_rgba(74,124,74,0.2)]">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-forest-400/80 to-forest-600/80 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-[0_0_16px_rgba(59,130,246,0.2)]">
                   <Flower2 size={22} className="text-white" />
                 </div>
                 <span className="text-xl font-bold text-white">AURA</span>

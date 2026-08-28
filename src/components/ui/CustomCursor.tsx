@@ -83,25 +83,25 @@ export default function CustomCursor() {
       <div
         ref={dotRef}
         className="absolute w-2 h-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-forest-600"
-        style={{ transition: 'width 0.3s, height 0.3s, background 0.3s', width: isHovering ? 8 : 4, height: isHovering ? 8 : 4, background: isHovering ? '#FFD56B' : '#2d4d2d' }}
+        style={{ transition: 'width 0.3s, height 0.3s, background 0.3s', width: isHovering ? 8 : 4, height: isHovering ? 8 : 4, background: isHovering ? '#FBCFE8' : '#2563EB' }}
       />
-      {/* Trailing ring — liquid glass */}
+      {/* Trailing ring â liquid glass */}
       <div
         ref={ringRef}
         className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full"
         style={{
           width: isHovering ? 64 : 40,
           height: isHovering ? 64 : 40,
-          border: `1.5px solid ${isHovering ? 'rgba(255,213,107,0.6)' : 'rgba(74,124,74,0.3)'}`,
+          border: `1.5px solid ${isHovering ? 'rgba(251,207,232,0.6)' : 'rgba(59,130,246,0.3)'}`,
           background: isHovering
-            ? 'radial-gradient(circle, rgba(255,213,107,0.08) 0%, rgba(255,255,255,0.03) 100%)'
-            : 'radial-gradient(circle, rgba(74,124,74,0.04) 0%, rgba(255,255,255,0.02) 100%)',
+            ? 'radial-gradient(circle, rgba(251,207,232,0.08) 0%, rgba(255,255,255,0.03) 100%)'
+            : 'radial-gradient(circle, rgba(59,130,246,0.04) 0%, rgba(255,255,255,0.02) 100%)',
           backdropFilter: 'blur(2px)',
           WebkitBackdropFilter: 'blur(2px)',
           transition: 'width 0.4s cubic-bezier(0.23,1,0.32,1), height 0.4s cubic-bezier(0.23,1,0.32,1), border 0.4s, background 0.4s',
           boxShadow: isHovering
-            ? '0 0 20px rgba(255,213,107,0.15), inset 0 0 10px rgba(255,255,255,0.05)'
-            : '0 0 12px rgba(74,124,74,0.06)',
+            ? '0 0 20px rgba(251,207,232,0.15), inset 0 0 10px rgba(255,255,255,0.05)'
+            : '0 0 12px rgba(59,130,246,0.06)',
         }}
       />
       {/* Ambient glow */}
@@ -112,8 +112,8 @@ export default function CustomCursor() {
           width: isHovering ? 120 : 80,
           height: isHovering ? 120 : 80,
           background: isHovering
-            ? 'radial-gradient(circle, rgba(255,213,107,0.06) 0%, transparent 70%)'
-            : 'radial-gradient(circle, rgba(74,124,74,0.04) 0%, transparent 70%)',
+            ? 'radial-gradient(circle, rgba(251,207,232,0.06) 0%, transparent 70%)'
+            : 'radial-gradient(circle, rgba(59,130,246,0.04) 0%, transparent 70%)',
           transition: 'width 0.6s, height 0.6s, background 0.6s',
         }}
       />

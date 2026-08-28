@@ -121,7 +121,7 @@ export default function CaregiverSection() {
             { icon: Activity, title: 'Game Performance', desc: 'How each game session went — scores, accuracy, and progress.', iconColor: 'sage' as const },
             { icon: Bell, title: 'Reminder Status', desc: 'See which reminders were acknowledged and completed.', iconColor: 'amber' as const },
           ].map((item, i) => (
-            <div key={i} className="caregiver-card group relative overflow-hidden rounded-3xl bg-white/60 backdrop-blur-xl border border-white/50 p-8 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_40px_rgba(74,124,74,0.1)] hover:-translate-y-2 transition-all duration-500" style={{ opacity: reducedMotion ? 1 : 0 }}>
+            <div key={i} className="caregiver-card group relative overflow-hidden rounded-3xl bg-white/60 backdrop-blur-xl border border-white/50 p-8 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_40px_rgba(59,130,246,0.1)] hover:-translate-y-2 transition-all duration-500" style={{ opacity: reducedMotion ? 1 : 0 }}>
               <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
               <div className="relative z-10">
                 <div className="mx-auto mb-5">
@@ -137,7 +137,7 @@ export default function CaregiverSection() {
         </div>
 
         <div ref={ctaRef} className="text-center" style={{ opacity: reducedMotion ? 1 : 0 }}>
-          <Link to="/caregiver" className="inline-flex items-center gap-2 bg-gradient-to-r from-forest-500 to-forest-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-[0_0_20px_rgba(74,124,74,0.25)] hover:shadow-[0_0_30px_rgba(74,124,74,0.4)] hover:scale-105 transition-all duration-300 group">
+          <Link to="/caregiver" className="inline-flex items-center gap-2 bg-gradient-to-r from-forest-500 to-forest-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-[0_0_20px_rgba(59,130,246,0.25)] hover:shadow-[0_0_30px_rgba(59,130,246,0.4)] hover:scale-105 transition-all duration-300 group">
             View Dashboard
             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
           </Link>

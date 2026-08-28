@@ -10,10 +10,10 @@ interface Orb {
 }
 
 const ORBS: Orb[] = [
-  { x: 20, y: 30, size: 300, color: 'rgba(74,124,74,0.06)', blur: 80 },
-  { x: 75, y: 20, size: 250, color: 'rgba(255,213,107,0.05)', blur: 70 },
-  { x: 50, y: 60, size: 350, color: 'rgba(107,138,100,0.04)', blur: 90 },
-  { x: 85, y: 70, size: 200, color: 'rgba(240,165,0,0.04)', blur: 60 },
+  { x: 20, y: 30, size: 300, color: 'rgba(59,130,246,0.06)', blur: 80 },
+  { x: 75, y: 20, size: 250, color: 'rgba(251,207,232,0.05)', blur: 70 },
+  { x: 50, y: 60, size: 350, color: 'rgba(147,197,253,0.04)', blur: 90 },
+  { x: 85, y: 70, size: 200, color: 'rgba(249,168,212,0.04)', blur: 60 },
 ]
 
 export default function GlowOrbs() {

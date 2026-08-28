@@ -86,7 +86,7 @@ export default function GamesSection() {
         <div ref={cardsRef} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {GAMES.map((game, i) => (
             <div key={i} className="game-card group" style={{ opacity: reducedMotion ? 1 : 0 }}>
-              <div className="relative overflow-hidden rounded-3xl bg-white/60 backdrop-blur-xl border border-white/50 p-6 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_40px_rgba(74,124,74,0.1)] hover:-translate-y-2 transition-all duration-500 h-full">
+              <div className="relative overflow-hidden rounded-3xl bg-white/60 backdrop-blur-xl border border-white/50 p-6 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_40px_rgba(59,130,246,0.1)] hover:-translate-y-2 transition-all duration-500 h-full">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
                 <div className="relative z-10">
                   <div className="mx-auto mb-5">
@@ -103,7 +103,7 @@ export default function GamesSection() {
         </div>
 
         <div ref={ctaRef} className="text-center mt-14" style={{ opacity: reducedMotion ? 1 : 0 }}>
-          <Link to="/games" className="inline-flex items-center gap-2 bg-gradient-to-r from-forest-500 to-forest-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-[0_0_20px_rgba(74,124,74,0.25)] hover:shadow-[0_0_30px_rgba(74,124,74,0.4)] hover:scale-105 transition-all duration-300 group">
+          <Link to="/games" className="inline-flex items-center gap-2 bg-gradient-to-r from-forest-500 to-forest-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-[0_0_20px_rgba(59,130,246,0.25)] hover:shadow-[0_0_30px_rgba(59,130,246,0.4)] hover:scale-105 transition-all duration-300 group">
             Start Playing
             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
           </Link>

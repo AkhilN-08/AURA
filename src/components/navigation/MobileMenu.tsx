@@ -94,7 +94,7 @@ export default function MobileMenu({ isOpen, onClose, links, onLogout, onOpenPro
             ref={el => { itemsRef.current[links.length + 1] = el }}
             to="/games"
             onClick={onClose}
-            className="mt-4 text-center bg-gradient-to-r from-forest-500 to-forest-600 text-white px-6 py-4 rounded-2xl font-semibold shadow-[0_0_20px_rgba(74,124,74,0.3)]"
+            className="mt-4 text-center bg-gradient-to-r from-forest-500 to-forest-600 text-white px-6 py-4 rounded-2xl font-semibold shadow-[0_0_20px_rgba(59,130,246,0.3)]"
           >
             Get Started
           </Link>

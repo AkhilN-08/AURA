@@ -39,7 +39,7 @@ interface TreeData {
 }
 
 const PETAL_COLORS = [
-  'rgba(255,182,193,', 'rgba(255,160,180,', 'rgba(255,200,190,',
+  'rgba(255,182,193,', 'rgba(255,160,180,', 'rgba(252,231,243,',
   'rgba(255,218,185,', 'rgba(255,230,210,', 'rgba(240,190,200,',
 ]
 
@@ -195,9 +195,9 @@ export default function PetalTree() {
       ctx.fillRect(0, 0, w, h)
 
       const glow = ctx.createRadialGradient(w * 0.5, h * 0.35, 0, w * 0.5, h * 0.35, h * 0.5)
-      glow.addColorStop(0, 'rgba(255,200,120,0.12)')
-      glow.addColorStop(0.4, 'rgba(255,180,100,0.06)')
-      glow.addColorStop(1, 'rgba(255,180,100,0)')
+      glow.addColorStop(0, 'rgba(251,207,232,0.12)')
+      glow.addColorStop(0.4, 'rgba(249,168,212,0.06)')
+      glow.addColorStop(1, 'rgba(249,168,212,0)')
       ctx.fillStyle = glow
       ctx.fillRect(0, 0, w, h)
     }
@@ -224,7 +224,7 @@ export default function PetalTree() {
     const drawGround = () => {
       const groundY = h * 0.82
       const grad = ctx.createLinearGradient(0, groundY, 0, h)
-      grad.addColorStop(0, 'rgba(20,35,18,0.9)')
+      grad.addColorStop(0, 'rgba(15,25,50,0.9)')
       grad.addColorStop(0.3, 'rgba(18,30,16,0.95)')
       grad.addColorStop(1, 'rgba(14,24,12,1)')
       ctx.fillStyle = grad
@@ -443,8 +443,8 @@ export default function PetalTree() {
     const drawAmbientLight = () => {
       const pulse = Math.sin(time * 0.005) * 0.5 + 0.5
       const glow = ctx.createRadialGradient(w * 0.5, h * 0.3, 0, w * 0.5, h * 0.3, h * 0.4)
-      glow.addColorStop(0, `rgba(255,200,120,${0.03 + pulse * 0.02})`)
-      glow.addColorStop(1, 'rgba(255,200,120,0)')
+      glow.addColorStop(0, `rgba(251,207,232,${0.03 + pulse * 0.02})`)
+      glow.addColorStop(1, 'rgba(251,207,232,0)')
       ctx.fillStyle = glow
       ctx.fillRect(0, 0, w, h)
     }

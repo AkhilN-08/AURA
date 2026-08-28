@@ -78,7 +78,7 @@ export default function AISection() {
 
           <div ref={metricsRef} className="space-y-4">
             {LEVELS.map((level, i) => (
-              <div key={i} className="ai-metric relative overflow-hidden rounded-3xl bg-white/60 backdrop-blur-xl border border-white/50 p-5 shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(74,124,74,0.08)] transition-all duration-500" style={{ opacity: reducedMotion ? 1 : 0 }}>
+              <div key={i} className="ai-metric relative overflow-hidden rounded-3xl bg-white/60 backdrop-blur-xl border border-white/50 p-5 shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(59,130,246,0.08)] transition-all duration-500" style={{ opacity: reducedMotion ? 1 : 0 }}>
                 <div className="absolute inset-0 bg-gradient-to-r from-white/10 via-transparent to-transparent pointer-events-none" />
                 <div className="relative z-10 flex items-center gap-4">
                   <LiquidIcon size="md" color={level.iconColor}>

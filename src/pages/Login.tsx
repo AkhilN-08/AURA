@@ -86,7 +86,7 @@ export default function Login() {
         <GlowOrbs />
         <div ref={formRef} className="w-full max-w-md relative z-10">
           <div className="flex items-center gap-2.5 mb-10 lg:hidden login-anim">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-forest-400/80 to-forest-600/80 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-[0_0_16px_rgba(74,124,74,0.2)]">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-forest-400/80 to-forest-600/80 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-[0_0_16px_rgba(59,130,246,0.2)]">
               <Flower2 className="text-white" size={22} />
             </div>
             <span className="text-xl font-bold text-charcoal-800">AURA</span>
@@ -142,7 +142,7 @@ export default function Login() {
 
             <div className="login-anim">
               <button type="submit" disabled={loading}
-                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-forest-500 to-forest-600 text-white px-8 py-4 rounded-2xl font-semibold text-lg shadow-[0_0_20px_rgba(74,124,74,0.25)] hover:shadow-[0_0_30px_rgba(74,124,74,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 disabled:opacity-60">
+                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-forest-500 to-forest-600 text-white px-8 py-4 rounded-2xl font-semibold text-lg shadow-[0_0_20px_rgba(59,130,246,0.25)] hover:shadow-[0_0_30px_rgba(59,130,246,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 disabled:opacity-60">
                 {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <>{mode === 'login' ? 'Sign In' : 'Create Account'}<ArrowRight size={18} /></>}
               </button>
             </div>

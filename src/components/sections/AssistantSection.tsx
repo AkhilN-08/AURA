@@ -99,7 +99,7 @@ export default function AssistantSection() {
               { icon: Calendar, title: 'Daily Routine', desc: 'Morning greetings and activity suggestions based on the time of day.', iconColor: 'forest' as const },
               { icon: Mic, title: 'Voice-First', desc: 'Speak naturally. The assistant listens and responds with care.', iconColor: 'sage' as const },
             ].map((feature, i) => (
-              <div key={i} className="feature-item relative overflow-hidden rounded-3xl bg-white/60 backdrop-blur-xl border border-white/50 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(74,124,74,0.08)] hover:-translate-y-1 transition-all duration-500" style={{ opacity: reducedMotion ? 1 : 0 }}>
+              <div key={i} className="feature-item relative overflow-hidden rounded-3xl bg-white/60 backdrop-blur-xl border border-white/50 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(59,130,246,0.08)] hover:-translate-y-1 transition-all duration-500" style={{ opacity: reducedMotion ? 1 : 0 }}>
                 <div className="absolute inset-0 bg-gradient-to-r from-white/15 via-transparent to-transparent pointer-events-none" />
                 <div className="relative z-10 flex items-start gap-4">
                   <LiquidIcon size="md" color={feature.iconColor}>
@@ -116,7 +116,7 @@ export default function AssistantSection() {
         </div>
 
         <div ref={ctaRef} className="text-center" style={{ opacity: reducedMotion ? 1 : 0 }}>
-          <Link to="/assistant" className="inline-flex items-center gap-2 bg-gradient-to-r from-forest-500 to-forest-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-[0_0_20px_rgba(74,124,74,0.25)] hover:shadow-[0_0_30px_rgba(74,124,74,0.4)] hover:scale-105 transition-all duration-300 group">
+          <Link to="/assistant" className="inline-flex items-center gap-2 bg-gradient-to-r from-forest-500 to-forest-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-[0_0_20px_rgba(59,130,246,0.25)] hover:shadow-[0_0_30px_rgba(59,130,246,0.4)] hover:scale-105 transition-all duration-300 group">
             Try the Assistant
             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
           </Link>

@@ -100,7 +100,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
           </div>
 
           {/* User Card */}
-          <div ref={el => { itemsRef.current[1] = el }} className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-forest-500 to-forest-600 p-6 text-white shadow-[0_8px_30px_rgba(74,124,74,0.25)]">
+          <div ref={el => { itemsRef.current[1] = el }} className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-forest-500 to-forest-600 p-6 text-white shadow-[0_8px_30px_rgba(59,130,246,0.25)]">
             <div className="absolute inset-0 opacity-10">
               {[...Array(8)].map((_, i) => (
                 <div key={i} className="absolute rounded-full bg-white" style={{
@@ -166,7 +166,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
             <p className="text-xs font-semibold text-charcoal-400 uppercase tracking-wider px-1">About AURA</p>
             <div className="rounded-3xl bg-white/50 backdrop-blur-sm border border-white/40 p-5 space-y-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-forest-400/80 to-forest-600/80 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-[0_0_12px_rgba(74,124,74,0.15)]">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-forest-400/80 to-forest-600/80 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-[0_0_12px_rgba(59,130,246,0.15)]">
                   <Flower2 size={18} className="text-white" />
                 </div>
                 <div>
