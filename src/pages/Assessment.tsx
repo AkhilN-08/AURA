@@ -135,7 +135,7 @@ function StepObjectRecall({ onComplete }: { onComplete: (score: number) => void 
   return (
     <div className="text-center">
       <div className="flex items-center justify-center gap-2 mb-2">
-        <Eye size={20} className="text-forest-500" />
+        <Eye size={20} className="text-sage-500" />
         <h3 className="text-lg font-semibold text-charcoal-800">Step 1 · Object Recall</h3>
       </div>
       <p className="text-charcoal-400 text-sm mb-8">
@@ -170,7 +170,7 @@ function StepObjectRecall({ onComplete }: { onComplete: (score: number) => void 
                 onClick={() => toggle(obj)}
                 className={`w-20 h-20 rounded-2xl text-4xl flex items-center justify-center transition-all duration-200
                   ${selected.has(obj)
-                    ? 'bg-forest-100 border-2 border-forest-500 scale-110 shadow-lg'
+                    ? 'bg-sage-100 border-2 border-sage-500 scale-110 shadow-lg'
                     : 'bg-white/60 border border-white/50 hover:bg-white/80 hover:scale-105'
                   }`}
               >
@@ -188,7 +188,7 @@ function StepObjectRecall({ onComplete }: { onComplete: (score: number) => void 
       )}
 
       {phase === 'done' && (
-        <CheckCircle2 size={48} className="text-forest-500 mx-auto animate-bounce" />
+        <CheckCircle2 size={48} className="text-sage-500 mx-auto animate-bounce" />
       )}
     </div>
   )
@@ -344,7 +344,7 @@ function StepFocus({ onComplete }: { onComplete: (score: number) => void }) {
                 onClick={() => handleClick(ri, ci)}
                 className={`w-14 h-14 md:w-16 md:h-16 rounded-2xl text-2xl flex items-center justify-center transition-all duration-200
                   ${clicked && ri === grid.answer[0] && ci === grid.answer[1]
-                    ? 'ring-4 ring-forest-400 scale-110'
+                    ? 'ring-4 ring-sage-400 scale-110'
                     : 'hover:scale-105'
                   }`}
               >
@@ -356,7 +356,7 @@ function StepFocus({ onComplete }: { onComplete: (score: number) => void }) {
       </div>
 
       {clicked && (
-        <CheckCircle2 size={32} className="text-forest-500 mx-auto animate-bounce" />
+        <CheckCircle2 size={32} className="text-sage-500 mx-auto animate-bounce" />
       )}
     </div>
   )
@@ -391,7 +391,7 @@ function StepWordRecall({ onComplete }: { onComplete: (score: number) => void })
   return (
     <div className="text-center">
       <div className="flex items-center justify-center gap-2 mb-2">
-        <Brain size={20} className="text-forest-500" />
+        <Brain size={20} className="text-sage-500" />
         <h3 className="text-lg font-semibold text-charcoal-800">Step 4 · Word Recall</h3>
       </div>
       <p className="text-charcoal-400 text-sm mb-8">
@@ -403,7 +403,7 @@ function StepWordRecall({ onComplete }: { onComplete: (score: number) => void })
       {phase === 'show' && (
         <div className="flex flex-wrap justify-center gap-3 mb-8">
           {words.map((word, i) => (
-            <span key={i} className="bg-forest-100 text-forest-700 px-5 py-3 rounded-2xl text-lg font-medium animate-pulse">
+            <span key={i} className="bg-sage-100 text-sage-700 px-5 py-3 rounded-2xl text-lg font-medium animate-pulse">
               {word}
             </span>
           ))}
@@ -417,7 +417,7 @@ function StepWordRecall({ onComplete }: { onComplete: (score: number) => void })
             value={input}
             onChange={e => setInput(e.target.value)}
             placeholder="Enter words..."
-            className="w-full max-w-md mx-auto block text-center text-lg py-4 rounded-2xl bg-white/60 backdrop-blur-xl border border-white/50 text-charcoal-800 focus:outline-none focus:ring-2 focus:ring-forest-400 mb-6"
+            className="w-full max-w-md mx-auto block text-center text-lg py-4 rounded-2xl bg-white/60 backdrop-blur-xl border border-white/50 text-charcoal-800 focus:outline-none focus:ring-2 focus:ring-sage-400 mb-6"
             autoFocus
             onKeyDown={e => e.key === 'Enter' && input.length > 0 && submit()}
           />
@@ -432,7 +432,7 @@ function StepWordRecall({ onComplete }: { onComplete: (score: number) => void })
       )}
 
       {phase === 'done' && (
-        <CheckCircle2 size={48} className="text-forest-500 mx-auto animate-bounce" />
+        <CheckCircle2 size={48} className="text-sage-500 mx-auto animate-bounce" />
       )}
     </div>
   )
@@ -496,7 +496,7 @@ function StepReaction({ onComplete }: { onComplete: (score: number) => void }) {
           ${phase === 'wait' ? 'bg-charcoal-200 text-charcoal-600 hover:bg-charcoal-300 cursor-pointer' : ''}
           ${phase === 'ready' ? 'bg-red-400 text-white cursor-pointer animate-pulse' : ''}
           ${phase === 'go' ? 'bg-green-400 text-white cursor-pointer scale-110' : ''}
-          ${phase === 'done' ? 'bg-forest-400 text-white' : ''}
+          ${phase === 'done' ? 'bg-sage-400 text-white' : ''}
         `}
       >
         {phase === 'wait' && 'Start'}
@@ -588,7 +588,7 @@ export default function Assessment() {
       <div className="w-full max-w-xl" ref={containerRef}>
         {/* Header */}
         <div className="text-center mb-10">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-forest-400 to-forest-600 flex items-center justify-center mx-auto mb-4 shadow-lg">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center mx-auto mb-4 shadow-lg">
             <Brain size={32} className="text-white" />
           </div>
           <h1 className="text-2xl font-bold text-charcoal-800 mb-2">Cognitive Assessment</h1>
@@ -606,7 +606,7 @@ export default function Assessment() {
           </div>
           <div className="w-full h-2 bg-charcoal-100 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-forest-400 to-forest-600 rounded-full transition-all duration-700 ease-out"
+              className="h-full bg-gradient-to-r from-sage-400 to-sage-600 rounded-full transition-all duration-700 ease-out"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -626,17 +626,17 @@ export default function Assessment() {
         {/* Results screen */}
         {step >= TOTAL_STEPS && (
           <div className="card p-8 text-center">
-            <div className="w-16 h-16 rounded-full bg-forest-100 flex items-center justify-center mx-auto mb-4">
-              <CheckCircle2 size={36} className="text-forest-500" />
+            <div className="w-16 h-16 rounded-full bg-sage-100 flex items-center justify-center mx-auto mb-4">
+              <CheckCircle2 size={36} className="text-sage-500" />
             </div>
             <h2 className="text-xl font-bold text-charcoal-800 mb-2">Assessment Complete!</h2>
             <p className="text-charcoal-400 text-sm mb-6">
               We're personalizing your experience based on your results...
             </p>
             <div className="grid grid-cols-2 gap-3 text-left mb-6">
-              <div className="bg-forest-50/50 rounded-xl p-3">
+              <div className="bg-sage-50/50 rounded-xl p-3">
                 <p className="text-xs text-charcoal-400">Object Recall</p>
-                <p className="text-lg font-bold text-forest-600">{scores[0]}%</p>
+                <p className="text-lg font-bold text-sage-600">{scores[0]}%</p>
               </div>
               <div className="bg-amber-50/50 rounded-xl p-3">
                 <p className="text-xs text-charcoal-400">Sequence Memory</p>
@@ -646,9 +646,9 @@ export default function Assessment() {
                 <p className="text-xs text-charcoal-400">Focus</p>
                 <p className="text-lg font-bold text-sage-600">{scores[2]}%</p>
               </div>
-              <div className="bg-forest-50/50 rounded-xl p-3">
+              <div className="bg-sage-50/50 rounded-xl p-3">
                 <p className="text-xs text-charcoal-400">Word Recall</p>
-                <p className="text-lg font-bold text-forest-600">{scores[3]}%</p>
+                <p className="text-lg font-bold text-sage-600">{scores[3]}%</p>
               </div>
             </div>
             <div className="animate-pulse text-charcoal-400 text-sm flex items-center justify-center gap-2">

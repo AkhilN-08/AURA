@@ -27,7 +27,7 @@ const GAMES: Record<string, {
     title: 'Memory Match',
     description: 'Flip cards and find matching pairs. A classic way to exercise memory.',
     icon: Brain,
-    color: 'from-forest-400 to-forest-600',
+    color: 'from-sage-400 to-sage-600',
   },
   'object-recall': {
     id: 'object-recall',
@@ -48,7 +48,7 @@ const GAMES: Record<string, {
     title: 'Word Association',
     description: 'Memorize related word pairs, then match them from memory.',
     icon: BookOpen,
-    color: 'from-blue-400 to-blue-600',
+    color: 'from-sage-400 to-sage-600',
   },
   'pattern-grid': {
     id: 'pattern-grid',
@@ -82,7 +82,7 @@ const LEVEL_LABELS: Record<string, string> = {
 }
 
 const LEVEL_COLORS: Record<string, string> = {
-  'mild': 'text-forest-600 bg-forest-50',
+  'mild': 'text-sage-600 bg-sage-50',
   'moderate': 'text-amber-600 bg-amber-50',
   'significant': 'text-sage-600 bg-sage-50',
 }
@@ -142,7 +142,7 @@ export default function Games() {
             {assessment && (
               <div className="card p-5 mb-6 bg-white/70">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-forest-400 to-forest-600 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center">
                     <BarChart3 size={20} className="text-white" />
                   </div>
                   <div>
@@ -151,13 +151,13 @@ export default function Games() {
                   </div>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
-                  <div className="bg-forest-50/50 rounded-xl p-3 text-center">
+                  <div className="bg-sage-50/50 rounded-xl p-3 text-center">
                     <p className="text-xs text-charcoal-400 mb-1">Overall</p>
-                    <p className="text-lg font-bold text-forest-600">{assessment.overallScore}%</p>
+                    <p className="text-lg font-bold text-sage-600">{assessment.overallScore}%</p>
                   </div>
-                  <div className="bg-forest-50/50 rounded-xl p-3 text-center">
+                  <div className="bg-sage-50/50 rounded-xl p-3 text-center">
                     <p className="text-xs text-charcoal-400 mb-1">Memory</p>
-                    <p className="text-lg font-bold text-forest-600">{assessment.memoryScore}%</p>
+                    <p className="text-lg font-bold text-sage-600">{assessment.memoryScore}%</p>
                   </div>
                   <div className="bg-amber-50/50 rounded-xl p-3 text-center">
                     <p className="text-xs text-charcoal-400 mb-1">Sequence</p>
@@ -167,9 +167,9 @@ export default function Games() {
                     <p className="text-xs text-charcoal-400 mb-1">Focus</p>
                     <p className="text-lg font-bold text-sage-600">{assessment.focusScore}%</p>
                   </div>
-                  <div className="bg-forest-50/50 rounded-xl p-3 text-center">
+                  <div className="bg-sage-50/50 rounded-xl p-3 text-center">
                     <p className="text-xs text-charcoal-400 mb-1">Words</p>
-                    <p className="text-lg font-bold text-forest-600">{assessment.wordScore}%</p>
+                    <p className="text-lg font-bold text-sage-600">{assessment.wordScore}%</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">
@@ -181,7 +181,7 @@ export default function Games() {
                   </span>
                   <button
                     onClick={() => { retakeAssessment(); navigate('/assessment') }}
-                    className="ml-auto text-xs text-blue-500 hover:text-blue-700 flex items-center gap-1 transition-colors"
+                    className="ml-auto text-xs text-sage-500 hover:text-sage-700 flex items-center gap-1 transition-colors"
                   >
                     <RotateCcw size={12} /> Retake Assessment
                   </button>
@@ -191,22 +191,22 @@ export default function Games() {
 
             {/* Overall stats */}
             {sessions.length > 0 && (
-              <div className="card bg-forest-50 border-forest-200 mb-12">
+              <div className="card bg-sage-50 border-sage-200 mb-12">
                 <div className="flex items-center gap-3 mb-3">
-                  <Trophy size={20} className="text-forest-500" />
+                  <Trophy size={20} className="text-sage-500" />
                   <h3 className="font-semibold text-charcoal-800">Your Progress</h3>
                 </div>
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
-                    <p className="text-2xl font-bold text-forest-600">{getAverageAccuracy()}%</p>
+                    <p className="text-2xl font-bold text-sage-600">{getAverageAccuracy()}%</p>
                     <p className="text-sm text-charcoal-400">Overall Accuracy</p>
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-forest-600">{sessions.length}</p>
+                    <p className="text-2xl font-bold text-sage-600">{sessions.length}</p>
                     <p className="text-sm text-charcoal-400">Games Played</p>
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-forest-600 capitalize">{currentDifficulty}</p>
+                    <p className="text-2xl font-bold text-sage-600 capitalize">{currentDifficulty}</p>
                     <p className="text-sm text-charcoal-400">Current Level</p>
                   </div>
                 </div>
@@ -232,12 +232,12 @@ export default function Games() {
                       <game.icon className="text-white" size={28} />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-charcoal-800 group-hover:text-forest-600 transition-colors">
+                      <h3 className="text-xl font-semibold text-charcoal-800 group-hover:text-sage-600 transition-colors">
                         {game.title}
                       </h3>
                       <p className="text-charcoal-400">{game.description}</p>
                     </div>
-                    <div className="text-charcoal-300 group-hover:text-forest-500 transition-colors">
+                    <div className="text-charcoal-300 group-hover:text-sage-500 transition-colors">
                       →
                     </div>
                   </button>

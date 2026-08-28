@@ -11,7 +11,7 @@ gsap.registerPlugin(ScrollTrigger)
 const LEVELS = [
   { icon: Target, label: 'Easy', description: 'Gentle pace, fewer items', accuracy: '60–70%', width: '60%', color: 'bg-sage-400', iconColor: 'sage' as const },
   { icon: TrendingUp, label: 'Moderate', description: 'Balanced challenge', accuracy: '70–85%', width: '75%', color: 'bg-forest-400', iconColor: 'forest' as const },
-  { icon: Zap, label: 'Personalized', description: 'Adapted to individual pace', accuracy: '75–85%', width: '80%', color: 'bg-forest-500', iconColor: 'forest' as const },
+  { icon: Zap, label: 'Personalized', description: 'Adapted to individual pace', accuracy: '75–85%', width: '80%', color: 'bg-sage-500', iconColor: 'forest' as const },
   { icon: Zap, label: 'Adaptive', description: 'Real-time difficulty shifts', accuracy: '85%+', width: '95%', color: 'bg-amber-500', iconColor: 'amber' as const },
 ]
 

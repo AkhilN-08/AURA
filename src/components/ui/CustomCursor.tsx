@@ -165,10 +165,10 @@ export default function CustomCursor() {
           height: size,
           background: isHovering
             ? 'radial-gradient(circle, rgba(251,207,232,0.3) 0%, rgba(249,168,212,0.14) 35%, rgba(255,255,255,0.05) 65%, transparent 100%)'
-            : 'radial-gradient(circle, rgba(120,180,255,0.28) 0%, rgba(96,165,250,0.14) 35%, rgba(255,255,255,0.05) 65%, transparent 100%)',
+            : 'radial-gradient(circle, rgba(244,114,182,0.25) 0%, rgba(236,72,153,0.12) 35%, rgba(255,255,255,0.05) 65%, transparent 100%)',
           boxShadow: isHovering
             ? '0 0 35px 10px rgba(251,207,232,0.12), 0 0 70px 20px rgba(249,168,212,0.06)'
-            : '0 0 35px 10px rgba(96,165,250,0.12), 0 0 70px 20px rgba(147,197,253,0.06)',
+            : '0 0 35px 10px rgba(236,72,153,0.10), 0 0 70px 20px rgba(244,114,182,0.05)',
           transform: 'translate(-100px, -100px)',
           willChange: 'transform',
           transition: `width 0.4s cubic-bezier(0.4,0,0.2,1), height 0.4s cubic-bezier(0.4,0,0.2,1), background 0.5s, box-shadow 0.5s`,

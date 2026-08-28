@@ -52,7 +52,7 @@ export default function AssistantSection() {
 
   return (
     <section ref={sectionRef} className="py-28 md:py-40 px-4 relative overflow-hidden">
-      <div className="absolute top-1/3 right-0 w-96 h-96 bg-forest-100/20 rounded-full blur-3xl pointer-events-none -translate-x-1/4" />
+      <div className="absolute top-1/3 right-0 w-96 h-96 bg-sage-100/20 rounded-full blur-3xl pointer-events-none -translate-x-1/4" />
 
       <div className="max-w-6xl mx-auto relative">
         <div className="text-center mb-20">
@@ -79,14 +79,14 @@ export default function AssistantSection() {
                 <div className="bg-white/70 backdrop-blur-sm rounded-2xl rounded-tr-sm p-4 ml-8 border border-white/60">
                   <p className="text-charcoal-700">"Remind me to call my daughter at 6 PM."</p>
                 </div>
-                <div className="bg-forest-50/80 backdrop-blur-sm rounded-2xl rounded-tl-sm p-4 mr-8 border border-forest-100/60">
-                  <p className="text-forest-700">"Of course. I'll remind you at 6 PM to call your daughter."</p>
+                <div className="bg-sage-50/80 backdrop-blur-sm rounded-2xl rounded-tl-sm p-4 mr-8 border border-sage-100/60">
+                  <p className="text-sage-700">"Of course. I'll remind you at 6 PM to call your daughter."</p>
                 </div>
                 <div className="bg-white/70 backdrop-blur-sm rounded-2xl rounded-tr-sm p-4 ml-8 border border-white/60">
                   <p className="text-charcoal-700">"What did I have for breakfast?"</p>
                 </div>
-                <div className="bg-forest-50/80 backdrop-blur-sm rounded-2xl rounded-tl-sm p-4 mr-8 border border-forest-100/60">
-                  <p className="text-forest-700">"You had rice and tea this morning. A lovely start to the day."</p>
+                <div className="bg-sage-50/80 backdrop-blur-sm rounded-2xl rounded-tl-sm p-4 mr-8 border border-sage-100/60">
+                  <p className="text-sage-700">"You had rice and tea this morning. A lovely start to the day."</p>
                 </div>
               </div>
             </div>
@@ -116,7 +116,7 @@ export default function AssistantSection() {
         </div>
 
         <div ref={ctaRef} className="text-center" style={{ opacity: reducedMotion ? 1 : 0 }}>
-          <Link to="/assistant" className="inline-flex items-center gap-2 bg-gradient-to-r from-forest-500 to-forest-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-[0_0_20px_rgba(59,130,246,0.25)] hover:shadow-[0_0_30px_rgba(59,130,246,0.4)] hover:scale-105 transition-all duration-300 group">
+          <Link to="/assistant" className="inline-flex items-center gap-2 bg-gradient-to-r from-sage-400 to-sage-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-[0_0_20px_rgba(236,72,153,0.25)] hover:shadow-[0_0_30px_rgba(236,72,153,0.4)] hover:scale-105 transition-all duration-300 group">
             Try the Assistant
             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
           </Link>

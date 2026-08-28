@@ -86,7 +86,7 @@ export default function Login() {
         <GlowOrbs />
         <div ref={formRef} className="w-full max-w-md relative z-10">
           <div className="flex items-center gap-2.5 mb-10 lg:hidden login-anim">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-forest-400/80 to-forest-600/80 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-[0_0_16px_rgba(59,130,246,0.2)]">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sage-400/80 to-sage-600/80 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-[0_0_16px_rgba(236,72,153,0.2)]">
               <Flower2 className="text-white" size={22} />
             </div>
             <span className="text-xl font-bold text-charcoal-800">AURA-NER</span>
@@ -106,7 +106,7 @@ export default function Login() {
                 <div className="relative">
                   <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-charcoal-300" />
                   <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Your name"
-                    className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white/60 backdrop-blur-xl border border-white/50 text-charcoal-800 placeholder-charcoal-300 focus:outline-none focus:ring-2 focus:ring-forest-400 focus:border-transparent transition-all shadow-[0_2px_12px_rgba(0,0,0,0.04)]" required />
+                    className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white/60 backdrop-blur-xl border border-white/50 text-charcoal-800 placeholder-charcoal-300 focus:outline-none focus:ring-2 focus:ring-sage-400 focus:border-transparent transition-all shadow-[0_2px_12px_rgba(0,0,0,0.04)]" required />
                 </div>
               </div>
             )}
@@ -116,7 +116,7 @@ export default function Login() {
               <div className="relative">
                 <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-charcoal-300" />
                 <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"
-                  className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white/60 backdrop-blur-xl border border-white/50 text-charcoal-800 placeholder-charcoal-300 focus:outline-none focus:ring-2 focus:ring-forest-400 focus:border-transparent transition-all shadow-[0_2px_12px_rgba(0,0,0,0.04)]" required />
+                  className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white/60 backdrop-blur-xl border border-white/50 text-charcoal-800 placeholder-charcoal-300 focus:outline-none focus:ring-2 focus:ring-sage-400 focus:border-transparent transition-all shadow-[0_2px_12px_rgba(0,0,0,0.04)]" required />
               </div>
             </div>
 
@@ -125,7 +125,7 @@ export default function Login() {
               <div className="relative">
                 <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-charcoal-300" />
                 <input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} placeholder="At least 6 characters"
-                  className="w-full pl-12 pr-12 py-3.5 rounded-2xl bg-white/60 backdrop-blur-xl border border-white/50 text-charcoal-800 placeholder-charcoal-300 focus:outline-none focus:ring-2 focus:ring-forest-400 focus:border-transparent transition-all shadow-[0_2px_12px_rgba(0,0,0,0.04)]" required minLength={6} />
+                  className="w-full pl-12 pr-12 py-3.5 rounded-2xl bg-white/60 backdrop-blur-xl border border-white/50 text-charcoal-800 placeholder-charcoal-300 focus:outline-none focus:ring-2 focus:ring-sage-400 focus:border-transparent transition-all shadow-[0_2px_12px_rgba(0,0,0,0.04)]" required minLength={6} />
                 <button type="button" onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-charcoal-300 hover:text-charcoal-500 transition-colors"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}>
@@ -142,7 +142,7 @@ export default function Login() {
 
             <div className="login-anim">
               <button type="submit" disabled={loading}
-                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-forest-500 to-forest-600 text-white px-8 py-4 rounded-2xl font-semibold text-lg shadow-[0_0_20px_rgba(59,130,246,0.25)] hover:shadow-[0_0_30px_rgba(59,130,246,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 disabled:opacity-60">
+                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-sage-400 to-sage-600 text-white px-8 py-4 rounded-2xl font-semibold text-lg shadow-[0_0_20px_rgba(236,72,153,0.25)] hover:shadow-[0_0_30px_rgba(236,72,153,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 disabled:opacity-60">
                 {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <>{mode === 'login' ? 'Sign In' : 'Create Account'}<ArrowRight size={18} /></>}
               </button>
             </div>
@@ -151,7 +151,7 @@ export default function Login() {
           <p className="text-center text-charcoal-400 text-sm mt-8 login-anim">
             {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}{' '}
             <button onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setError('') }}
-              className="text-forest-600 font-medium hover:text-forest-700 transition-colors">
+              className="text-sage-600 font-medium hover:text-sage-700 transition-colors">
               {mode === 'login' ? 'Sign up' : 'Sign in'}
             </button>
           </p>

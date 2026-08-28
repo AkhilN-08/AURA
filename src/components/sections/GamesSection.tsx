@@ -69,7 +69,7 @@ export default function GamesSection() {
 
   return (
     <section ref={sectionRef} className="py-28 md:py-40 px-4 relative overflow-hidden">
-      <div className="absolute top-1/4 -left-32 w-72 h-72 bg-forest-200/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/4 -left-32 w-72 h-72 bg-sage-200/15 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/4 -right-32 w-72 h-72 bg-amber-200/15 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-6xl mx-auto relative">
@@ -94,7 +94,7 @@ export default function GamesSection() {
                       <game.icon size={24} />
                     </LiquidIcon>
                   </div>
-                  <h3 className="text-lg font-semibold text-charcoal-800 mb-2 group-hover:text-forest-600 transition-colors">{game.title}</h3>
+                  <h3 className="text-lg font-semibold text-charcoal-800 mb-2 group-hover:text-sage-600 transition-colors">{game.title}</h3>
                   <p className="text-charcoal-400 text-sm leading-relaxed">{game.description}</p>
                 </div>
               </div>
@@ -103,7 +103,7 @@ export default function GamesSection() {
         </div>
 
         <div ref={ctaRef} className="text-center mt-14" style={{ opacity: reducedMotion ? 1 : 0 }}>
-          <Link to="/games" className="inline-flex items-center gap-2 bg-gradient-to-r from-forest-500 to-forest-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-[0_0_20px_rgba(59,130,246,0.25)] hover:shadow-[0_0_30px_rgba(59,130,246,0.4)] hover:scale-105 transition-all duration-300 group">
+          <Link to="/games" className="inline-flex items-center gap-2 bg-gradient-to-r from-sage-400 to-sage-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-[0_0_20px_rgba(236,72,153,0.25)] hover:shadow-[0_0_30px_rgba(236,72,153,0.4)] hover:scale-105 transition-all duration-300 group">
             Start Playing
             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
           </Link>

@@ -65,7 +65,7 @@ export default function CaregiverSection() {
 
   return (
     <section ref={sectionRef} className="py-28 md:py-40 px-4 relative">
-      <div className="absolute bottom-0 left-0 w-72 h-72 bg-forest-100/15 rounded-full blur-3xl pointer-events-none translate-y-1/2" />
+      <div className="absolute bottom-0 left-0 w-72 h-72 bg-sage-100/15 rounded-full blur-3xl pointer-events-none translate-y-1/2" />
 
       <div className="max-w-6xl mx-auto relative">
         <div className="text-center mb-20">
@@ -83,8 +83,8 @@ export default function CaregiverSection() {
           <div className="absolute inset-0 bg-gradient-to-br from-white/15 via-transparent to-forest-50/20 pointer-events-none" />
           <div className="relative z-10">
             <div className="caregiver-card grid sm:grid-cols-3 gap-6 mb-8">
-              <div className="bg-forest-50/70 backdrop-blur-sm rounded-2xl p-6 text-center border border-forest-100/50">
-                <p className="stat-value text-3xl font-bold text-forest-600">5</p>
+              <div className="bg-sage-50/70 backdrop-blur-sm rounded-2xl p-6 text-center border border-sage-100/50">
+                <p className="stat-value text-3xl font-bold text-sage-600">5</p>
                 <p className="text-sm text-charcoal-400 mt-1">Activities This Week</p>
               </div>
               <div className="bg-amber-50/70 backdrop-blur-sm rounded-2xl p-6 text-center border border-amber-100/50">
@@ -129,7 +129,7 @@ export default function CaregiverSection() {
                     <item.icon size={24} />
                   </LiquidIcon>
                 </div>
-                <h3 className="font-semibold text-charcoal-800 mb-2 group-hover:text-forest-600 transition-colors">{item.title}</h3>
+                <h3 className="font-semibold text-charcoal-800 mb-2 group-hover:text-sage-600 transition-colors">{item.title}</h3>
                 <p className="text-charcoal-400 text-sm">{item.desc}</p>
               </div>
             </div>
@@ -137,7 +137,7 @@ export default function CaregiverSection() {
         </div>
 
         <div ref={ctaRef} className="text-center" style={{ opacity: reducedMotion ? 1 : 0 }}>
-          <Link to="/caregiver" className="inline-flex items-center gap-2 bg-gradient-to-r from-forest-500 to-forest-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-[0_0_20px_rgba(59,130,246,0.25)] hover:shadow-[0_0_30px_rgba(59,130,246,0.4)] hover:scale-105 transition-all duration-300 group">
+          <Link to="/caregiver" className="inline-flex items-center gap-2 bg-gradient-to-r from-sage-400 to-sage-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-[0_0_20px_rgba(236,72,153,0.25)] hover:shadow-[0_0_30px_rgba(236,72,153,0.4)] hover:scale-105 transition-all duration-300 group">
             View Dashboard
             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
           </Link>

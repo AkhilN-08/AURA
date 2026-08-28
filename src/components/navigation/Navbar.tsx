@@ -49,7 +49,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 group" aria-label="AURA-NER NER Home">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-forest-400/80 to-forest-600/80 backdrop-blur-sm border border-white/30 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-[0_0_16px_rgba(59,130,246,0.2)]">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sage-400/80 to-sage-600/80 backdrop-blur-sm border border-white/30 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-[0_0_16px_rgba(59,130,246,0.2)]">
               <Flower2 className="text-white" size={22} />
             </div>
             <span className="text-xl font-bold text-charcoal-800 tracking-tight">AURA-NER</span>
@@ -63,7 +63,7 @@ export default function Navbar() {
                 to={link.href}
                 className={`relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-400 ${
                   location.pathname === link.href
-                    ? 'bg-forest-500/90 text-white shadow-[0_0_12px_rgba(59,130,246,0.3)]'
+                    ? 'bg-sage-500/90 text-white shadow-[0_0_12px_rgba(59,130,246,0.3)]'
                     : 'text-charcoal-500 hover:text-charcoal-800 hover:bg-white/50'
                 }`}
               >
@@ -82,7 +82,7 @@ export default function Navbar() {
                   className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/40 backdrop-blur-sm border border-white/50 hover:bg-white/70 hover:shadow-[0_4px_16px_rgba(0,0,0,0.04)] transition-all duration-300 group"
                   aria-label="Open profile menu"
                 >
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-forest-400 to-forest-600 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
                     <span className="text-xs font-bold text-white">
                       {user.name.charAt(0).toUpperCase()}
                     </span>
@@ -102,7 +102,7 @@ export default function Navbar() {
             )}
             <Link
               to="/games"
-              className="hidden md:inline-flex items-center gap-2 bg-gradient-to-r from-forest-500 to-forest-600 text-white px-6 py-2.5 rounded-xl text-sm font-semibold shadow-[0_0_20px_rgba(59,130,246,0.25)] hover:shadow-[0_0_30px_rgba(59,130,246,0.4)] hover:scale-105 transition-all duration-300"
+              className="hidden md:inline-flex items-center gap-2 bg-gradient-to-r from-forest-500 to-sage-600 text-white px-6 py-2.5 rounded-xl text-sm font-semibold shadow-[0_0_20px_rgba(59,130,246,0.25)] hover:shadow-[0_0_30px_rgba(59,130,246,0.4)] hover:scale-105 transition-all duration-300"
             >
               Get Started
             </Link>

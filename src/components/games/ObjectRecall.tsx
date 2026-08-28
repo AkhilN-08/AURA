@@ -114,8 +114,8 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
             <span className="font-medium">{elapsed}s</span>
           </div>
         </div>
-        <div className="bg-forest-50 px-4 py-2 rounded-xl">
-          <span className="text-sm font-medium text-forest-600">{difficulty} mode</span>
+        <div className="bg-sage-50 px-4 py-2 rounded-xl">
+          <span className="text-sm font-medium text-sage-600">{difficulty} mode</span>
         </div>
       </div>
 
@@ -134,7 +134,7 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
 
       {phase === 'showing' && (
         <div className="text-center">
-          <p className="text-lg font-medium text-forest-600 mb-8 animate-pulse">
+          <p className="text-lg font-medium text-sage-600 mb-8 animate-pulse">
             Remember these objects...
           </p>
           <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
@@ -164,8 +164,8 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
                   key={obj.id}
                   onClick={() => handleSelect(obj.id)}
                   className={`card text-center py-6 transition-all duration-200
-                    ${isSelected ? 'ring-2 ring-forest-500 bg-forest-50 scale-105' : 'hover:bg-cream-50'}
-                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-400`}
+                    ${isSelected ? 'ring-2 ring-forest-500 bg-sage-50 scale-105' : 'hover:bg-cream-50'}
+                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-400`}
                 >
                   <div className="text-4xl mb-2">{obj.emoji}</div>
                   <p className="text-sm text-charcoal-500">{obj.label}</p>
@@ -217,7 +217,7 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
               Next Round ({rounds + 2}/3)
             </button>
           ) : (
-            <div className="card bg-forest-50">
+            <div className="card bg-sage-50">
               <Trophy className="mx-auto text-amber-500 mb-4" size={48} />
               <h3 className="text-2xl font-bold text-charcoal-800 mb-2">Game Complete!</h3>
               <p className="text-charcoal-400">Average accuracy: {Math.round(totalScore / 3)}%</p>

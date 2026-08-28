@@ -39,7 +39,7 @@ export default function Caregiver() {
             </p>
           </div>
           <div className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3 shadow-soft border border-cream-200">
-            <Users size={20} className="text-forest-500" />
+            <Users size={20} className="text-sage-500" />
             <div>
               <p className="text-sm font-medium text-charcoal-800">{user?.name || 'User'}</p>
               <p className="text-xs text-charcoal-400">Family Member</p>
@@ -51,7 +51,7 @@ export default function Caregiver() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <div className="card">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-xl bg-forest-50 text-forest-500 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-sage-50 text-sage-500 flex items-center justify-center">
                 <Gamepad2 size={18} />
               </div>
               <span className="text-sm text-charcoal-400">Sessions This Week</span>
@@ -147,7 +147,7 @@ export default function Caregiver() {
               {recentSessions.length > 0 ? recentSessions.map((session, i) => (
                 <div key={i} className="flex items-center gap-4 p-3 rounded-xl bg-cream-50">
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg ${
-                    session.gameType === 'memory-match' ? 'bg-forest-100' :
+                    session.gameType === 'memory-match' ? 'bg-sage-100' :
                     session.gameType === 'object-recall' ? 'bg-sage-100' : 'bg-amber-100'
                   }`}>
                     {session.gameType === 'memory-match' ? '🧠' : session.gameType === 'object-recall' ? '👁️' : '🔢'}
@@ -181,7 +181,7 @@ export default function Caregiver() {
             <div className="space-y-4">
               {insights.map((insight, i) => (
                 <div key={i} className={`rounded-2xl p-5 ${
-                  i === 0 ? 'bg-forest-50 border border-forest-100' : 'bg-cream-50 border border-cream-200'
+                  i === 0 ? 'bg-sage-50 border border-forest-100' : 'bg-cream-50 border border-cream-200'
                 }`}>
                   <p className="text-charcoal-700 text-sm leading-relaxed">{insight}</p>
                 </div>

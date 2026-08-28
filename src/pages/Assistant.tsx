@@ -213,14 +213,14 @@ export default function Assistant() {
                     <div
                       className={`max-w-[80%] rounded-2xl px-4 py-2.5 ${
                         msg.role === 'user'
-                          ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-br-md'
-                          : 'bg-white/60 backdrop-blur-sm border border-blue-100 text-charcoal-700 rounded-bl-md shadow-sm'
+                          ? 'bg-gradient-to-r from-sage-400 to-sage-600 text-white rounded-br-md'
+                          : 'bg-white/60 backdrop-blur-sm border border-sage-100 text-charcoal-700 rounded-bl-md shadow-sm'
                       }`}
                     >
                       {msg.role === 'agent' && (
                         <div className="flex items-center gap-1.5 mb-1">
                           <span className="text-xs">🤖</span>
-                          <span className="text-[10px] font-medium text-blue-400 uppercase tracking-wide">AURA-NER</span>
+                          <span className="text-[10px] font-medium text-sage-400 uppercase tracking-wide">AURA-NER</span>
                         </div>
                       )}
                       <p className="text-sm leading-relaxed">{msg.text}</p>
@@ -232,7 +232,7 @@ export default function Assistant() {
                           <span className="text-[10px] bg-green-100 text-green-600 px-1.5 py-0.5 rounded-full">✓ Reminder saved</span>
                         )}
                         {msg.action?.type === 'call' && (
-                          <span className="text-[10px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded-full">📞 Calling...</span>
+                          <span className="text-[10px] bg-sage-100 text-sage-600 px-1.5 py-0.5 rounded-full">📞 Calling...</span>
                         )}
                         {msg.action?.type === 'navigate' && (
                           <span className="text-[10px] bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded-full">
@@ -246,12 +246,12 @@ export default function Assistant() {
 
                 {voice.isProcessing && (
                   <div className="flex justify-start">
-                    <div className="bg-white/60 backdrop-blur-sm border border-blue-100 rounded-2xl rounded-bl-md px-4 py-3 shadow-sm">
+                    <div className="bg-white/60 backdrop-blur-sm border border-sage-100 rounded-2xl rounded-bl-md px-4 py-3 shadow-sm">
                       <div className="flex items-center gap-2">
                         <div className="flex gap-1">
-                          <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                          <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                          <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                          <span className="w-1.5 h-1.5 bg-sage-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                          <span className="w-1.5 h-1.5 bg-sage-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                          <span className="w-1.5 h-1.5 bg-sage-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                         </div>
                         <span className="text-xs text-charcoal-400">Thinking...</span>
                       </div>
@@ -264,8 +264,8 @@ export default function Assistant() {
 
               {/* Live Transcript */}
               {voice.isListening && voice.transcript && (
-                <div className="px-4 py-2 bg-blue-50/50 border-t border-blue-100">
-                  <p className="text-xs text-blue-400 mb-0.5">Listening...</p>
+                <div className="px-4 py-2 bg-sage-50/50 border-t border-sage-100">
+                  <p className="text-xs text-sage-400 mb-0.5">Listening...</p>
                   <p className="text-sm text-charcoal-600 italic">{voice.transcript}</p>
                 </div>
               )}
@@ -289,7 +289,7 @@ export default function Assistant() {
                   className={`relative flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${
                     voice.isListening
                       ? 'bg-gradient-to-br from-red-400 to-pink-500 text-white shadow-lg shadow-red-200 animate-pulse'
-                      : 'bg-gradient-to-br from-blue-400 to-blue-600 text-white shadow-md shadow-blue-200 hover:shadow-lg hover:scale-105'
+                      : 'bg-gradient-to-br from-sage-400 to-sage-600 text-white shadow-md shadow-sage-200 hover:shadow-lg hover:scale-105'
                   } ${!voice.isSupported ? 'opacity-50 cursor-not-allowed' : ''}`}
                   aria-label={voice.isListening ? 'Stop listening' : 'Start voice input'}
                 >
@@ -307,7 +307,7 @@ export default function Assistant() {
                     onChange={e => setTextInput(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleTextSend()}
                     placeholder={voice.isListening ? "Listening..." : "Type a message or tap mic to speak..."}
-                    className="w-full px-4 py-2.5 rounded-xl bg-cream-50 border border-cream-200 focus:outline-none focus:ring-2 focus:ring-blue-300 text-sm text-charcoal-700 placeholder:text-charcoal-300"
+                    className="w-full px-4 py-2.5 rounded-xl bg-cream-50 border border-cream-200 focus:outline-none focus:ring-2 focus:ring-sage-300 text-sm text-charcoal-700 placeholder:text-charcoal-300"
                     disabled={voice.isListening}
                   />
                 </div>
@@ -316,7 +316,7 @@ export default function Assistant() {
                 {textInput.trim() && (
                   <button
                     onClick={handleTextSend}
-                    className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 transition-colors"
+                    className="flex-shrink-0 w-10 h-10 rounded-full bg-sage-500 text-white flex items-center justify-center hover:bg-sage-600 transition-colors"
                   >
                     <Send size={16} />
                   </button>
@@ -326,7 +326,7 @@ export default function Assistant() {
                 <button
                   onClick={() => setVoiceEnabled(!voiceEnabled)}
                   className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
-                    voiceEnabled ? 'text-blue-500 hover:bg-blue-50' : 'text-charcoal-300 hover:bg-cream-100'
+                    voiceEnabled ? 'text-sage-500 hover:bg-sage-50' : 'text-charcoal-300 hover:bg-cream-100'
                   }`}
                   title={voiceEnabled ? 'Voice output on' : 'Voice output off'}
                 >
@@ -378,10 +378,10 @@ export default function Assistant() {
             <div className="card">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-sm font-semibold text-charcoal-800 flex items-center gap-2">
-                  <ListChecks size={16} className="text-blue-500" />
+                  <ListChecks size={16} className="text-sage-500" />
                   Today's Tasks
                   {pendingTasks.length > 0 && (
-                    <span className="text-[10px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded-full">{pendingTasks.length}</span>
+                    <span className="text-[10px] bg-sage-100 text-sage-600 px-1.5 py-0.5 rounded-full">{pendingTasks.length}</span>
                   )}
                 </h2>
                 {todayTasks.length > 0 && (
@@ -397,12 +397,12 @@ export default function Assistant() {
                   onChange={e => setNewTaskTitle(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && addTask()}
                   placeholder="Add a task for today..."
-                  className="flex-1 px-3 py-2 rounded-lg bg-cream-50 border border-cream-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 placeholder:text-charcoal-300"
+                  className="flex-1 px-3 py-2 rounded-lg bg-cream-50 border border-cream-200 text-sm focus:outline-none focus:ring-2 focus:ring-sage-300 placeholder:text-charcoal-300"
                 />
                 <button
                   onClick={addTask}
                   disabled={!newTaskTitle.trim()}
-                  className="w-8 h-8 rounded-lg bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="w-8 h-8 rounded-lg bg-sage-500 text-white flex items-center justify-center hover:bg-sage-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <Plus size={14} />
                 </button>
@@ -415,7 +415,7 @@ export default function Assistant() {
                     <div key={task.id} className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-cream-50/50 transition-colors group">
                       <button
                         onClick={() => toggleTask(task.id)}
-                        className="w-5 h-5 rounded-md border-2 border-cream-300 hover:border-blue-400 flex items-center justify-center transition-colors flex-shrink-0"
+                        className="w-5 h-5 rounded-md border-2 border-cream-300 hover:border-sage-400 flex items-center justify-center transition-colors flex-shrink-0"
                       />
                       <span className="text-sm text-charcoal-700 flex-1 truncate">{task.title}</span>
                       <button
@@ -432,9 +432,9 @@ export default function Assistant() {
                         <div key={task.id} className="flex items-center gap-2.5 px-2 py-1.5">
                           <button
                             onClick={() => toggleTask(task.id)}
-                            className="w-5 h-5 rounded-md bg-blue-50 border-2 border-blue-300 flex items-center justify-center flex-shrink-0"
+                            className="w-5 h-5 rounded-md bg-sage-50 border-2 border-sage-300 flex items-center justify-center flex-shrink-0"
                           >
-                            <Check size={10} className="text-blue-500" />
+                            <Check size={10} className="text-sage-500" />
                           </button>
                           <span className="text-sm text-charcoal-400 line-through flex-1 truncate">{task.title}</span>
                           <button
@@ -461,12 +461,12 @@ export default function Assistant() {
                 <Bell size={18} />
                 Reminders
                 {pending.length > 0 && (
-                  <span className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full">{pending.length}</span>
+                  <span className="text-xs bg-sage-100 text-sage-600 px-2 py-0.5 rounded-full">{pending.length}</span>
                 )}
               </h2>
               <button
                 onClick={() => setShowNewForm(true)}
-                className="text-xs bg-blue-500 text-white px-3 py-1.5 rounded-lg hover:bg-blue-600 transition-colors inline-flex items-center gap-1"
+                className="text-xs bg-sage-500 text-white px-3 py-1.5 rounded-lg hover:bg-sage-600 transition-colors inline-flex items-center gap-1"
               >
                 <Plus size={12} /> New
               </button>
@@ -481,9 +481,9 @@ export default function Assistant() {
                     <div key={reminder.id} className="card-hover !p-3 flex items-center gap-3">
                       <button
                         onClick={() => toggleComplete(reminder.id)}
-                        className="w-7 h-7 rounded-full border-2 border-cream-300 hover:border-blue-400 flex items-center justify-center transition-colors flex-shrink-0"
+                        className="w-7 h-7 rounded-full border-2 border-cream-300 hover:border-sage-400 flex items-center justify-center transition-colors flex-shrink-0"
                       >
-                        {reminder.completed && <Check size={12} className="text-blue-500" />}
+                        {reminder.completed && <Check size={12} className="text-sage-500" />}
                       </button>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-charcoal-800 text-sm truncate">{reminder.title}</p>
@@ -517,8 +517,8 @@ export default function Assistant() {
                 <div className="space-y-1.5">
                   {completed.slice(0, 5).map(reminder => (
                     <div key={reminder.id} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-cream-50/50">
-                      <div className="w-5 h-5 rounded-full bg-blue-50 flex items-center justify-center">
-                        <Check size={10} className="text-blue-500" />
+                      <div className="w-5 h-5 rounded-full bg-sage-50 flex items-center justify-center">
+                        <Check size={10} className="text-sage-500" />
                       </div>
                       <p className="text-xs text-charcoal-400 line-through flex-1 truncate">{reminder.title}</p>
                       <button
@@ -543,7 +543,7 @@ export default function Assistant() {
             )}
 
             {/* Tips Card */}
-            <div className="card bg-gradient-to-br from-blue-50 to-pink-50 border-blue-100">
+            <div className="card bg-gradient-to-br from-sage-50 to-cream-100 border-sage-100">
               <h3 className="text-sm font-semibold text-charcoal-700 mb-2">💡 Voice Tips</h3>
               <ul className="space-y-1.5 text-xs text-charcoal-500">
                 <li>• Say <strong>"Remind me to take medicine at 8 AM"</strong></li>

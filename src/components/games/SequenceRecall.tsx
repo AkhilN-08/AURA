@@ -119,8 +119,8 @@ export default function SequenceRecall({ onComplete }: SequenceRecallProps) {
             <span className="font-medium">{elapsed}s</span>
           </div>
         </div>
-        <div className="bg-forest-50 px-4 py-2 rounded-xl">
-          <span className="text-sm font-medium text-forest-600">{difficulty} mode</span>
+        <div className="bg-sage-50 px-4 py-2 rounded-xl">
+          <span className="text-sm font-medium text-sage-600">{difficulty} mode</span>
         </div>
       </div>
 
@@ -139,7 +139,7 @@ export default function SequenceRecall({ onComplete }: SequenceRecallProps) {
 
       {phase === 'showing' && (
         <div className="text-center">
-          <p className="text-lg font-medium text-forest-600 mb-8 animate-pulse">
+          <p className="text-lg font-medium text-sage-600 mb-8 animate-pulse">
             Watch the sequence carefully...
           </p>
           <div className="flex items-center justify-center gap-3 mb-8 flex-wrap">
@@ -147,7 +147,7 @@ export default function SequenceRecall({ onComplete }: SequenceRecallProps) {
               <div
                 key={i}
                 className={`w-20 h-20 rounded-2xl flex items-center justify-center text-4xl transition-all duration-300
-                  ${i <= currentIndex ? 'bg-forest-50 border-2 border-forest-300 shadow-lg scale-110' : 'bg-cream-100 border-2 border-cream-200'}`}
+                  ${i <= currentIndex ? 'bg-sage-50 border-2 border-sage-300 shadow-lg scale-110' : 'bg-cream-100 border-2 border-cream-200'}`}
               >
                 {i <= currentIndex ? item : '?'}
               </div>
@@ -198,7 +198,7 @@ export default function SequenceRecall({ onComplete }: SequenceRecallProps) {
               <button
                 key={`${item}-${i}`}
                 onClick={() => handleSelectItem(item)}
-                className="aspect-square rounded-2xl text-3xl flex items-center justify-center bg-white border-2 border-cream-200 hover:border-forest-300 hover:bg-forest-50 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-400"
+                className="aspect-square rounded-2xl text-3xl flex items-center justify-center bg-white border-2 border-cream-200 hover:border-sage-300 hover:bg-sage-50 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-400"
               >
                 {item}
               </button>
@@ -232,7 +232,7 @@ export default function SequenceRecall({ onComplete }: SequenceRecallProps) {
                 <p className="text-xs text-charcoal-400 mb-2">Correct:</p>
                 <div className="flex gap-1">
                   {sequence.map((item, i) => (
-                    <div key={i} className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl border border-forest-200 bg-forest-50">
+                    <div key={i} className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl border border-forest-200 bg-sage-50">
                       {item}
                     </div>
                   ))}
@@ -249,7 +249,7 @@ export default function SequenceRecall({ onComplete }: SequenceRecallProps) {
               Next Round ({rounds + 2}/3)
             </button>
           ) : (
-            <div className="card bg-forest-50">
+            <div className="card bg-sage-50">
               <Trophy className="mx-auto text-amber-500 mb-4" size={48} />
               <h3 className="text-2xl font-bold text-charcoal-800 mb-2">Game Complete!</h3>
               <p className="text-charcoal-400">Average accuracy: {Math.round(totalScore / 3)}%</p>

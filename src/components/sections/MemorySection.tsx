@@ -75,7 +75,7 @@ export default function MemorySection() {
                       <item.icon size={28} />
                     </LiquidIcon>
                   </div>
-                  <h3 className="text-xl font-semibold text-charcoal-800 mb-3 group-hover:text-forest-600 transition-colors duration-300">{item.title}</h3>
+                  <h3 className="text-xl font-semibold text-charcoal-800 mb-3 group-hover:text-sage-600 transition-colors duration-300">{item.title}</h3>
                   <p className="text-charcoal-400 leading-relaxed">{item.description}</p>
                 </div>
               </div>

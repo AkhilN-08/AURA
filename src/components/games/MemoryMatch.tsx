@@ -148,8 +148,8 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
             <span className="font-medium">{elapsed}s</span>
           </div>
         </div>
-        <div className="bg-forest-50 px-4 py-2 rounded-xl">
-          <span className="text-sm font-medium text-forest-600">{difficulty} mode</span>
+        <div className="bg-sage-50 px-4 py-2 rounded-xl">
+          <span className="text-sm font-medium text-sage-600">{difficulty} mode</span>
         </div>
       </div>
 
@@ -165,12 +165,12 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
             disabled={card.isFlipped || card.isMatched || lockBoard}
             className={`aspect-square rounded-2xl text-3xl md:text-4xl font-bold
                        transition-all duration-300 ease-out
-                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-400
+                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-400
                        ${card.isMatched
-                         ? 'bg-forest-100 border-2 border-forest-300 scale-105'
+                         ? 'bg-sage-100 border-2 border-sage-300 scale-105'
                          : card.isFlipped
-                         ? 'bg-white border-2 border-forest-300 shadow-lg scale-105'
-                         : 'bg-forest-500 hover:bg-forest-400 hover:scale-[1.02] shadow-soft cursor-pointer'
+                         ? 'bg-white border-2 border-sage-300 shadow-lg scale-105'
+                         : 'bg-sage-500 hover:bg-sage-400 hover:scale-[1.02] shadow-soft cursor-pointer'
                        }`}
             aria-label={card.isFlipped || card.isMatched ? card.emoji : 'Hidden card'}
           >
@@ -182,7 +182,7 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
       {/* Game over */}
       {gameOver && (
         <div className="mt-8 text-center animate-fade-in">
-          <div className="card bg-forest-50 border-forest-200">
+          <div className="card bg-sage-50 border-forest-200">
             <Trophy className="mx-auto text-amber-500 mb-4" size={48} />
             <h3 className="text-2xl font-bold text-charcoal-800 mb-2">Wonderful!</h3>
             <p className="text-charcoal-400 mb-6">
@@ -190,11 +190,11 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
             </p>
             <div className="flex items-center justify-center gap-6 mb-6">
               <div className="text-center">
-                <p className="text-3xl font-bold text-forest-600">{accuracy}%</p>
+                <p className="text-3xl font-bold text-sage-600">{accuracy}%</p>
                 <p className="text-sm text-charcoal-400">Accuracy</p>
               </div>
               <div className="text-center">
-                <p className="text-3xl font-bold text-forest-600">{elapsed}s</p>
+                <p className="text-3xl font-bold text-sage-600">{elapsed}s</p>
                 <p className="text-sm text-charcoal-400">Time</p>
               </div>
             </div>
