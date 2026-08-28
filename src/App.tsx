@@ -15,6 +15,7 @@ import { TranslationProvider } from './hooks/useTranslation'
 import { useGenderTheme } from './hooks/useGenderTheme'
 import { useLocation } from 'react-router-dom'
 import PageTransition from './components/ui/PageTransition'
+import GenderThemeApplier from './components/ui/GenderThemeApplier'
 import type { ReactNode } from 'react'
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
@@ -53,6 +54,7 @@ function AppRoutes() {
 
   return (
     <>
+      <GenderThemeApplier />
       <CustomCursor />
       <Routes>
         <Route path="/login" element={user ? <Navigate to="/" replace /> : <PageTransition><Login /></PageTransition>} />
