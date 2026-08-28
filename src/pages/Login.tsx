@@ -59,7 +59,7 @@ export default function Login() {
         <PetalTree />
         <div className="relative z-10 flex flex-col justify-center px-16 text-white">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center shadow-[0_0_30px_rgba(255,200,120,0.15)]">
+            <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center shadow-[0_0_30px_rgba(251,207,232,0.2)]">
               <Flower2 size={30} />
             </div>
             <span className="text-3xl font-bold tracking-tight">AURA</span>
