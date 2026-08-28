@@ -68,7 +68,7 @@ export default function AISection() {
               Designed around each person.
             </BlurText>
             <BlurText tag="p" className="section-subheading mb-8" delay={0.3}>
-              AURA's AI-assisted personalization adapts game difficulty based on individual performance,
+              AURA-NER's AI-assisted personalization adapts game difficulty based on individual performance,
               ensuring activities remain engaging without becoming overwhelming.
             </BlurText>
             <p className="text-charcoal-400 text-sm italic">

@@ -54,7 +54,7 @@ export default function MemorySection() {
             Every memory has a story.
           </BlurText>
           <BlurText tag="p" className="section-subheading mx-auto" delay={0.3}>
-            AURA creates engaging memory activities around familiar experiences, helping keep minds active
+            AURA-NER creates engaging memory activities around familiar experiences, helping keep minds active
             through meaningful interaction with cherished moments.
           </BlurText>
         </div>

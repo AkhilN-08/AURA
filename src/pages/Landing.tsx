@@ -124,7 +124,7 @@ export default function Landing() {
             Rooted in the North East.
           </BlurText>
           <BlurText tag="p" className="section-subheading mx-auto mb-14" delay={0.3}>
-            AURA is designed with the North Eastern Region in mind — incorporating locally familiar foods,
+            AURA-NER is designed with the North Eastern Region in mind — incorporating locally familiar foods,
             landscapes, festivals, and household objects into cognitive activities.
           </BlurText>
           <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
@@ -152,7 +152,7 @@ export default function Landing() {
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-forest-400/80 to-forest-600/80 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-[0_0_16px_rgba(59,130,246,0.2)]">
                   <Flower2 size={22} className="text-white" />
                 </div>
-                <span className="text-xl font-bold text-white">AURA</span>
+                <span className="text-xl font-bold text-white">AURA-NER</span>
               </div>
               <p className="text-charcoal-300 text-sm leading-relaxed">
                 AI-powered cognitive gaming and memory assistance for elderly people and their families.
@@ -181,7 +181,7 @@ export default function Landing() {
             <div>
               <h4 className="font-semibold text-white mb-4">Disclaimer</h4>
               <p className="text-charcoal-300 text-sm leading-relaxed">
-                AURA is a support platform prototype. It is not a diagnostic tool, dementia severity detector,
+                AURA-NER is a support platform prototype. It is not a diagnostic tool, dementia severity detector,
                 or replacement for medical professionals.
               </p>
             </div>
@@ -192,7 +192,7 @@ export default function Landing() {
               Made with <Heart size={14} className="text-red-400" /> for memory that matters
             </p>
             <div className="flex items-center gap-4">
-              <span className="text-charcoal-400 text-sm">AURA NER © 2024</span>
+              <span className="text-charcoal-400 text-sm">AURA-NER NER © 2024</span>
               <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-charcoal-400 hover:text-white transition-colors">
                 <Github size={18} />
               </a>

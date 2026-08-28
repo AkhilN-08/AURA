@@ -62,7 +62,7 @@ export default function HeroContent() {
         <div ref={ctaRef} className="flex flex-col sm:flex-row gap-4 justify-center" style={{ opacity: reducedMotion ? 1 : 0 }}>
           <Link to="/games" className="btn-primary inline-flex items-center gap-2 justify-center">
             <SparklesIcon size={20} />
-            Explore AURA
+            Explore AURA-NER
           </Link>
           <a href="#how-it-works" className="btn-secondary inline-flex items-center gap-2 justify-center">
             How It Works

@@ -1,4 +1,4 @@
-# AURA NER
+# AURA-NER NER
 
 ## AI-Powered Cognitive Gaming and Memory Assistance Platform
 
@@ -14,7 +14,7 @@ Millions of elderly people in the North Eastern Region face dementia-related cog
 
 ## Solution
 
-AURA combines:
+AURA-NER combines:
 
 - **Cognitive Games** — Three playable games (Memory Match, Object Recall, Sequence Recall) that exercise different aspects of memory and attention
 - **AI-Assisted Personalization** — Adaptive difficulty that adjusts based on individual performance
@@ -122,7 +122,7 @@ npm run preview
 
 ## Medical Safety Disclaimer
 
-AURA is a support platform prototype. It is **not**:
+AURA-NER is a support platform prototype. It is **not**:
 
 - A diagnostic tool
 - A dementia severity detector

@@ -161,16 +161,16 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
             ))}
           </div>
 
-          {/* About AURA */}
+          {/* About AURA-NER */}
           <div ref={el => { itemsRef.current[3] = el }} className="space-y-3">
-            <p className="text-xs font-semibold text-charcoal-400 uppercase tracking-wider px-1">About AURA</p>
+            <p className="text-xs font-semibold text-charcoal-400 uppercase tracking-wider px-1">About AURA-NER</p>
             <div className="rounded-3xl bg-white/50 backdrop-blur-sm border border-white/40 p-5 space-y-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-forest-400/80 to-forest-600/80 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-[0_0_12px_rgba(59,130,246,0.15)]">
                   <Flower2 size={18} className="text-white" />
                 </div>
                 <div>
-                  <p className="font-semibold text-charcoal-800">AURA NER</p>
+                  <p className="font-semibold text-charcoal-800">AURA-NER NER</p>
                   <p className="text-xs text-charcoal-400">v1.0.0 · Prototype</p>
                 </div>
               </div>
@@ -211,7 +211,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
             <div className="flex items-start gap-2.5">
               <Shield size={16} className="text-amber-500 mt-0.5 flex-shrink-0" />
               <p className="text-xs text-charcoal-500 leading-relaxed">
-                <strong className="text-charcoal-600">Medical Disclaimer:</strong> AURA is a support platform prototype.
+                <strong className="text-charcoal-600">Medical Disclaimer:</strong> AURA-NER is a support platform prototype.
                 It is not a diagnostic tool, dementia severity detector, or replacement for medical professionals.
               </p>
             </div>
@@ -233,7 +233,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
             <p className="text-xs text-charcoal-300 flex items-center justify-center gap-1">
               Made with <Heart size={10} className="text-red-400" /> for memory that matters
             </p>
-            <p className="text-xs text-charcoal-300 mt-1">AURA NER © 2024</p>
+            <p className="text-xs text-charcoal-300 mt-1">AURA-NER NER © 2024</p>
           </div>
         </div>
       </div>

@@ -593,7 +593,7 @@ export default function Assessment() {
           </div>
           <h1 className="text-2xl font-bold text-charcoal-800 mb-2">Cognitive Assessment</h1>
           <p className="text-charcoal-400 text-sm max-w-md mx-auto">
-            This short assessment helps AURA understand your current cognitive profile so we can
+            This short assessment helps AURA-NER understand your current cognitive profile so we can
             personalize your experience. Take your time — there are no wrong answers.
           </p>
         </div>

@@ -228,7 +228,7 @@ export default function Caregiver() {
             <div className="mt-6 p-4 bg-cream-50 rounded-xl">
               <p className="text-xs text-charcoal-400 leading-relaxed">
                 <strong>Note:</strong> Insights are generated from your actual activity data.
-                AURA is not a diagnostic tool and should not be used as a substitute for professional medical assessment.
+                AURA-NER is not a diagnostic tool and should not be used as a substitute for professional medical assessment.
               </p>
             </div>
           </div>

@@ -15,7 +15,7 @@ const INITIAL_MESSAGES: Message[] = [
   {
     id: 'welcome',
     role: 'assistant',
-    text: "Good morning! I'm your AURA companion. I can help with reminders, daily routines, or just have a friendly chat. How can I help today?",
+    text: "Good morning! I'm your AURA-NER companion. I can help with reminders, daily routines, or just have a friendly chat. How can I help today?",
     timestamp: new Date().toISOString(),
   },
 ]
@@ -169,7 +169,7 @@ export default function AssistantPanel({ onClose }: AssistantPanelProps) {
             <span className="text-white text-lg">🌸</span>
           </div>
           <div>
-            <h3 className="font-semibold text-charcoal-800">AURA Assistant</h3>
+            <h3 className="font-semibold text-charcoal-800">AURA-NER Assistant</h3>
             <p className="text-xs text-forest-500">Always here to help</p>
           </div>
         </div>
