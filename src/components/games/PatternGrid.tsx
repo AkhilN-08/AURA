@@ -145,7 +145,7 @@ export default function PatternGrid({ onComplete }: PatternGridProps) {
               return (
                 <div
                   key={i}
-                  className={`aspect-square rounded-xl transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] border-2 ${
+                  className={`aspect-square rounded-xl transition-all duration-400 ease-[cubic-bezier(0.25,0.1,0.25,1)] border-2 ${
                     isCurrentlyShowing
                       ? 'bg-purple-400 border-purple-500 shadow-lg shadow-purple-200 scale-110'
                       : 'bg-cream-100 border-cream-200'
@@ -183,7 +183,7 @@ export default function PatternGrid({ onComplete }: PatternGridProps) {
                   key={i}
                   onClick={() => handleCellClick(i)}
                   disabled={phase === 'result'}
-                  className={`aspect-square rounded-xl border-2 transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] ease-[cubic-bezier(0.34,1.56,0.64,1)] ${cellClass}`}
+                  className={`aspect-square rounded-xl border-2 transition-all duration-400 ease-[cubic-bezier(0.25,0.1,0.25,1)] ease-[cubic-bezier(0.25,0.1,0.25,1)] ${cellClass}`}
                 />
               )
             })}

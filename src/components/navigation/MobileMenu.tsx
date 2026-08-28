@@ -26,16 +26,16 @@ export default function MobileMenu({ isOpen, onClose, links, onLogout, onOpenPro
       const tl = gsap.timeline()
 
       tl.fromTo(panelRef.current,
-        { opacity: 0, backdropFilter: 'blur(0px)' },
-        { opacity: 1, backdropFilter: 'blur(40px)', duration: 0.5, ease: 'power3.out' }
+        { opacity: 0, y: -20, backdropFilter: 'blur(0px)' },
+        { opacity: 1, y: 0, backdropFilter: 'blur(40px)', duration: 0.6, ease: 'power2.out' }
       )
 
       itemsRef.current.forEach((item, i) => {
         if (item) {
           tl.fromTo(item,
-            { opacity: 0, x: -30, filter: 'blur(6px)' },
-            { opacity: 1, x: 0, filter: 'blur(0px)', duration: 0.4, ease: 'power3.out' },
-            0.15 + i * 0.06
+            { opacity: 0, y: -15, filter: 'blur(4px)' },
+            { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.5, ease: 'power2.out' },
+            0.1 + i * 0.05
           )
         }
       })
@@ -85,7 +85,7 @@ export default function MobileMenu({ isOpen, onClose, links, onLogout, onOpenPro
               ref={el => { itemsRef.current[i + 1] = el }}
               to={link.href}
               onClick={onClose}
-              className="px-5 py-4 rounded-2xl text-lg font-medium text-charcoal-700 hover:bg-white/50 hover:text-forest-600 transition-all duration-300 active:scale-[0.97]"
+              className="px-5 py-4 rounded-2xl text-lg font-medium text-charcoal-700 hover:bg-white/50 hover:text-sage-600 transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)] active:scale-[0.98]"
             >
               {link.label}
             </Link>
@@ -102,7 +102,7 @@ export default function MobileMenu({ isOpen, onClose, links, onLogout, onOpenPro
             <button
               ref={el => { itemsRef.current[links.length + 2] = el }}
               onClick={() => { onClose(); onLogout() }}
-              className="flex items-center justify-center gap-2 px-5 py-4 mt-2 rounded-2xl text-red-500 hover:bg-red-50/60 transition-all duration-300"
+              className="flex items-center justify-center gap-2 px-5 py-4 mt-2 rounded-2xl text-red-500 hover:bg-red-50/60 transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)]"
             >
               <LogOut size={18} />
               <span className="font-medium">Sign Out</span>

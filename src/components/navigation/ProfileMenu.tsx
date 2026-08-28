@@ -30,20 +30,20 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
 
       tl.fromTo(overlayRef.current,
         { opacity: 0 },
-        { opacity: 1, duration: 0.3, ease: 'power2.out' }
+        { opacity: 1, duration: 0.4, ease: 'power2.out' }
       )
       tl.fromTo(panelRef.current,
         { x: '100%', backdropFilter: 'blur(0px)' },
-        { x: '0%', backdropFilter: 'blur(40px)', duration: 0.6, ease: 'back.out(1.7)' },
+        { x: '0%', backdropFilter: 'blur(40px)', duration: 0.6, ease: 'power3.out' },
         0
       )
 
       itemsRef.current.forEach((item, i) => {
         if (item) {
           tl.fromTo(item,
-            { opacity: 0, x: 30, filter: 'blur(4px)' },
-            { opacity: 1, x: 0, filter: 'blur(0px)', duration: 0.5, ease: 'back.out(1.7)' },
-            0.25 + i * 0.05
+            { opacity: 0, x: 20, filter: 'blur(3px)' },
+            { opacity: 1, x: 0, filter: 'blur(0px)', duration: 0.5, ease: 'power2.out' },
+            0.15 + i * 0.04
           )
         }
       })
@@ -58,8 +58,8 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
     if (!panelRef.current || !overlayRef.current) { onClose(); return }
 
     const tl = gsap.timeline({ onComplete: onClose })
-    tl.to(panelRef.current, { x: '100%', duration: 0.4, ease: 'power2.in' })
-    tl.to(overlayRef.current, { opacity: 0, duration: 0.2 }, 0.1)
+    tl.to(panelRef.current, { x: '100%', duration: 0.35, ease: 'power2.in' })
+    tl.to(overlayRef.current, { opacity: 0, duration: 0.25 }, 0.1)
   }
 
   const handleLogout = () => {
@@ -149,9 +149,9 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
               <button
                 key={i}
                 onClick={() => { handleClose(); setTimeout(() => navigate(item.path), 400) }}
-                className="w-full flex items-center gap-4 p-4 rounded-2xl bg-white/50 backdrop-blur-sm border border-white/40 hover:bg-white/80 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] text-left group"
+                className="w-full flex items-center gap-4 p-4 rounded-2xl bg-white/50 backdrop-blur-sm border border-white/40 hover:bg-white/80 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all duration-400 ease-[cubic-bezier(0.25,0.1,0.25,1)] text-left group"
               >
-                <div className={`w-11 h-11 rounded-xl ${item.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)]`}>
+                <div className={`w-11 h-11 rounded-xl ${item.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-400 ease-[cubic-bezier(0.25,0.1,0.25,1)]`}>
                   <item.icon size={20} />
                 </div>
                 <div className="flex-1 min-w-0">

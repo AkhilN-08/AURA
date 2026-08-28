@@ -25,7 +25,13 @@
 
   /* Smoother transitions for all interactive elements */
   button, a, input, select, textarea {
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  /* Butter-smooth scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(139,92,246,0.3) transparent;
   }
 
   /* Smooth scroll container for sections */
@@ -50,45 +56,43 @@
 @layer components {
   .btn-primary {
     @apply bg-forest-500 text-white px-8 py-4 rounded-2xl font-semibold text-lg
-           shadow-soft hover:shadow-glow hover:-translate-y-0.5
            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-400 focus-visible:ring-offset-2;
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 2px 15px -3px rgba(0,0,0,0.07), 0 10px 20px -2px rgba(0,0,0,0.04);
   }
-  .btn-primary:hover { @apply bg-forest-600; }
-  .btn-primary:active { @apply bg-forest-700; transform: scale(0.97); }
+  .btn-primary:hover { @apply bg-forest-600; transform: translateY(-2px); box-shadow: 0 8px 30px -4px rgba(0,0,0,0.12); }
+  .btn-primary:active { @apply bg-forest-700; transform: translateY(0) scale(0.97); transition-duration: 0.15s; }
 
   .btn-secondary {
     @apply border-2 border-forest-500 text-forest-600 px-8 py-4 rounded-2xl font-semibold text-lg
            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-400 focus-visible:ring-offset-2;
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  .btn-secondary:hover { @apply bg-forest-50; transform: translateY(-1px); }
-  .btn-secondary:active { @apply bg-forest-100; transform: scale(0.97); }
+  .btn-secondary:hover { @apply bg-forest-50; transform: translateY(-2px); }
+  .btn-secondary:active { @apply bg-forest-100; transform: scale(0.97); transition-duration: 0.15s; }
 
   .btn-ghost {
     @apply text-forest-600 px-6 py-3 rounded-xl font-medium
            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-400;
-    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
   }
   .btn-ghost:hover { @apply bg-forest-50; transform: translateY(-1px); }
-  .btn-ghost:active { @apply bg-forest-100; transform: scale(0.98); }
+  .btn-ghost:active { @apply bg-forest-100; transform: scale(0.98); transition-duration: 0.12s; }
 
   .card {
-    @apply bg-white rounded-3xl p-8 shadow-soft border border-cream-200;
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-                box-shadow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-                border-color 0.3s ease;
+    @apply bg-white rounded-3xl p-8 border border-cream-200;
+    box-shadow: 0 2px 15px -3px rgba(0,0,0,0.07), 0 10px 20px -2px rgba(0,0,0,0.04);
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+                border-color 0.4s ease;
   }
 
   .card-hover {
     @apply card;
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-                box-shadow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-                border-color 0.3s ease;
   }
   .card-hover:hover {
-    @apply shadow-lg;
-    transform: translateY(-4px) scale(1.01);
+    transform: translateY(-6px) scale(1.015);
+    box-shadow: 0 20px 50px -10px rgba(0,0,0,0.12);
   }
 
   .glass-card {
@@ -114,19 +118,19 @@
   }
 
   .animate-float {
-    animation: float 6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+    animation: float 6s ease-in-out infinite;
   }
 
   .animate-pulse-slow {
-    animation: pulse 4s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+    animation: pulse 4s ease-in-out infinite;
   }
 
   .animate-fade-in {
-    animation: fadeIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    animation: fadeIn 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
   }
 
   .animate-slide-up {
-    animation: slideUp 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    animation: slideUp 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
   }
 
   .stagger-1 { animation-delay: 0.1s; }
@@ -147,13 +151,13 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.97); }
-  to { opacity: 1; transform: scale(1); }
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(40px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Liquid glass shimmer animation */

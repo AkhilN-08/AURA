@@ -39,7 +39,7 @@ export default function AISection() {
           { opacity: 0, x: 80, scale: 0.92 },
           {
             opacity: 1, x: 0, scale: 1,
-            duration: 0.8, stagger: 0.15, ease: 'power3.out',
+            duration: 1, stagger: 0.15, ease: 'power2.out',
             scrollTrigger: { trigger: metricsRef.current, start: 'top 80%', toggleActions: 'play none none reverse' }
           }
         )

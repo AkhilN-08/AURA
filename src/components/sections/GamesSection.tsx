@@ -86,7 +86,7 @@ export default function GamesSection() {
         <div ref={cardsRef} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {GAMES.map((game, i) => (
             <div key={i} className="game-card group" style={{ opacity: reducedMotion ? 1 : 0 }}>
-              <div className="relative overflow-hidden rounded-3xl bg-white/60 backdrop-blur-xl border border-white/50 p-6 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_50px_rgba(59,130,246,0.1)] hover:-translate-y-2 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] h-full">
+              <div className="relative overflow-hidden rounded-3xl bg-white/60 backdrop-blur-xl border border-white/50 p-6 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_50px_rgba(59,130,246,0.1)] hover:-translate-y-2 transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] ease-[cubic-bezier(0.25,0.1,0.25,1)] h-full">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
                 <div className="relative z-10">
                   <div className="mx-auto mb-5">

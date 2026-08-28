@@ -33,7 +33,7 @@ export default function AssistantSection() {
         gsap.fromTo(features,
           { opacity: 0, x: 60, y: 20 },
           {
-            opacity: 1, x: 0, y: 0, duration: 0.8, stagger: 0.15, ease: 'power3.out',
+            opacity: 1, x: 0, y: 0, duration: 1, stagger: 0.15, ease: 'power2.out',
             scrollTrigger: { trigger: featuresRef.current, start: 'top 80%', toggleActions: 'play none none reverse' }
           }
         )
@@ -99,7 +99,7 @@ export default function AssistantSection() {
               { icon: Calendar, title: 'Daily Routine', desc: 'Morning greetings and activity suggestions based on the time of day.', iconColor: 'forest' as const },
               { icon: Mic, title: 'Voice-First', desc: 'Speak naturally. The assistant listens and responds with care.', iconColor: 'sage' as const },
             ].map((feature, i) => (
-              <div key={i} className="feature-item relative overflow-hidden rounded-3xl bg-white/60 backdrop-blur-xl border border-white/50 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] hover:-translate-y-1.5 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]" style={{ opacity: reducedMotion ? 1 : 0 }}>
+              <div key={i} className="feature-item relative overflow-hidden rounded-3xl bg-white/60 backdrop-blur-xl border border-white/50 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] hover:-translate-y-1.5 transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] ease-[cubic-bezier(0.25,0.1,0.25,1)]" style={{ opacity: reducedMotion ? 1 : 0 }}>
                 <div className="absolute inset-0 bg-gradient-to-r from-white/15 via-transparent to-transparent pointer-events-none" />
                 <div className="relative z-10 flex items-start gap-4">
                   <LiquidIcon size="md" color={feature.iconColor}>

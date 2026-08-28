@@ -168,7 +168,7 @@ export default function ColorSequence({ onComplete }: ColorSequenceProps) {
                   key={i}
                   onClick={() => handleColorClick(i)}
                   disabled={phase === 'showing' || phase === 'result'}
-                  className={`aspect-square rounded-2xl transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] ease-[cubic-bezier(0.34,1.56,0.64,1)] border-3 ${
+                  className={`aspect-square rounded-2xl transition-all duration-400 ease-[cubic-bezier(0.25,0.1,0.25,1)] ease-[cubic-bezier(0.25,0.1,0.25,1)] border-3 ${
                     showHighlight
                       ? `bg-gradient-to-br from-white/30 to-transparent ${color.border} shadow-lg ${color.shadow} scale-110 ring-4 ring-white/50`
                       : isActive
