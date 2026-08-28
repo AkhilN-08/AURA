@@ -6,10 +6,12 @@ import { Mic, Bell, Calendar, MessageCircle, ArrowRight } from 'lucide-react'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import BlurText from '../ui/BlurText'
 import LiquidIcon from '../ui/LiquidIcon'
+import { useTranslation } from '../../hooks/useTranslation'
 
 gsap.registerPlugin(ScrollTrigger)
 
 export default function AssistantSection() {
+  const { t } = useTranslation()
   const sectionRef = useRef<HTMLElement>(null)
   const demoRef = useRef<HTMLDivElement>(null)
   const featuresRef = useRef<HTMLDivElement>(null)

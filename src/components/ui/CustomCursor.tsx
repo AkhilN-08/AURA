@@ -62,10 +62,10 @@ export default function CustomCursor() {
     // Spawn blossom trail particles
     const spawnTrail = (x: number, y: number) => {
       const now = performance.now()
-      if (now - lastSpawnRef.current < 50) return
+      if (now - lastSpawnRef.current < 80) return
       lastSpawnRef.current = now
 
-      const count = Math.random() > 0.5 ? 2 : 1
+      const count = 1
       for (let i = 0; i < count; i++) {
         const pinkish = Math.random() > 0.5
         particlesRef.current.push({
@@ -76,9 +76,9 @@ export default function CustomCursor() {
           rotSpeed: (Math.random() - 0.5) * 0.05,
           vy: 0.15 + Math.random() * 0.35,
           vx: (Math.random() - 0.5) * 0.25,
-          opacity: 0.4 + Math.random() * 0.3,
+          opacity: 0.3 + Math.random() * 0.2,
           life: 0,
-          maxLife: 45 + Math.random() * 35,
+          maxLife: 35 + Math.random() * 25,
           hue: pinkish ? 330 + Math.random() * 20 : 210 + Math.random() * 30,
         })
       }

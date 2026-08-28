@@ -6,6 +6,7 @@ import { Brain, Eye, Search, Lightbulb, ArrowRight } from 'lucide-react'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import BlurText from '../ui/BlurText'
 import LiquidIcon from '../ui/LiquidIcon'
+import { useTranslation } from '../../hooks/useTranslation'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -17,6 +18,7 @@ const GAMES = [
 ]
 
 export default function GamesSection() {
+  const { t } = useTranslation()
   const sectionRef = useRef<HTMLElement>(null)
   const cardsRef = useRef<HTMLDivElement>(null)
   const ctaRef = useRef<HTMLDivElement>(null)

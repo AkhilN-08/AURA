@@ -5,6 +5,7 @@ import { Heart, Brain, Users } from 'lucide-react'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import BlurText from '../ui/BlurText'
 import LiquidIcon from '../ui/LiquidIcon'
+import { useTranslation } from '../../hooks/useTranslation'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -15,6 +16,7 @@ const CARDS = [
 ]
 
 export default function MemorySection() {
+  const { t } = useTranslation()
   const sectionRef = useRef<HTMLElement>(null)
   const cardsContainerRef = useRef<HTMLDivElement>(null)
   const reducedMotion = useReducedMotion()

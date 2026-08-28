@@ -6,10 +6,12 @@ import { BarChart3, Activity, Bell, ArrowRight } from 'lucide-react'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import BlurText from '../ui/BlurText'
 import LiquidIcon from '../ui/LiquidIcon'
+import { useTranslation } from '../../hooks/useTranslation'
 
 gsap.registerPlugin(ScrollTrigger)
 
 export default function CaregiverSection() {
+  const { t } = useTranslation()
   const sectionRef = useRef<HTMLElement>(null)
   const dashboardRef = useRef<HTMLDivElement>(null)
   const cardsRef = useRef<HTMLDivElement>(null)
