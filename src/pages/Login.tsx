@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Flower2, Mail, Lock, User, Eye, EyeOff, ArrowRight } from 'lucide-react'
 import { useAuth, type Gender } from '../hooks/useAuth'
+import { useTranslation } from '../hooks/useTranslation'
 import gsap from 'gsap'
 import GlowOrbs from '../components/ui/GlowOrbs'
 import PetalTree from '../components/ui/PetalTree'
@@ -16,6 +17,7 @@ export default function Login() {
   const [gender, setGender] = useState<Gender>(null)
   const [loading, setLoading] = useState(false)
   const { login, signup } = useAuth()
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const formRef = useRef<HTMLDivElement>(null)
 
@@ -94,10 +96,10 @@ export default function Login() {
           </div>
 
           <h2 className="text-3xl font-bold text-charcoal-800 mb-2 login-anim">
-            {mode === 'login' ? 'Welcome back' : 'Create your account'}
+            {mode === 'login' ? t('Welcome back') : t('Create your account')}
           </h2>
           <p className="text-charcoal-400 mb-8 login-anim">
-            {mode === 'login' ? 'Sign in to continue your cognitive journey.' : 'Join AURA-NER to start your memory wellness journey.'}
+            {mode === 'login' ? t('Sign in to continue your cognitive journey.') : t('Join AURA-NER to start your memory wellness journey.')}
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -175,13 +177,13 @@ export default function Login() {
                     ? 'bg-gradient-to-r from-pink-500 to-pink-600 shadow-[0_0_20px_rgba(236,72,153,0.25)] hover:shadow-[0_0_30px_rgba(236,72,153,0.4)]'
                     : 'bg-gradient-to-r from-sage-400 to-sage-600 shadow-[0_0_20px_rgba(236,72,153,0.25)] hover:shadow-[0_0_30px_rgba(236,72,153,0.4)]'
                 }`}>
-                {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <>{mode === 'login' ? 'Sign In' : 'Create Account'}<ArrowRight size={18} /></>}
+                {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <>{mode === 'login' ? t('Sign In') : t('Create Account')}<ArrowRight size={18} /></>}
               </button>
             </div>
           </form>
 
           <p className="text-center text-charcoal-400 text-sm mt-8 login-anim">
-            {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}{' '}
+            {mode === 'login' ? t("Don't have an account?") : t('Already have an account?')}{' '}
             <button onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setError('') }}
               className="text-sage-600 font-medium hover:text-sage-700 transition-colors">
               {mode === 'login' ? 'Sign up' : 'Sign in'}

@@ -6,6 +6,7 @@ import type { Reminder, DailyTask } from '../data/models'
 import { REMINDER_TYPES } from '../data/models'
 import Modal from '../components/ui/Modal'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from '../hooks/useTranslation'
 
 const getToday = () => new Date().toISOString().split('T')[0]
 
@@ -23,6 +24,7 @@ export default function Assistant() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const voice = useVoiceAgent()
+  const { t } = useTranslation()
 
   // Scroll to bottom of messages
   useEffect(() => {
@@ -349,10 +351,10 @@ export default function Assistant() {
             {/* Quick Actions */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {[
-                { label: 'Set Reminder', icon: '⏰', cmd: 'Remind me to ' },
-                { label: 'Make a Call', icon: '📞', cmd: 'Call ' },
-                { label: 'Play Game', icon: '🧠', cmd: "Let's play a memory game" },
-                { label: 'What Time?', icon: '🕐', cmd: 'What time is it?' },
+                { label: t('Set Reminder'), icon: '⏰', cmd: 'Remind me to ' },
+                { label: t('Make a Call'), icon: '📞', cmd: 'Call ' },
+                { label: t('Play Game'), icon: '🧠', cmd: "Let's play a memory game" },
+                { label: t('What Time?'), icon: '🕐', cmd: 'What time is it?' },
               ].map((action, i) => (
                 <button
                   key={i}

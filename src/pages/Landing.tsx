@@ -13,6 +13,7 @@ import GlowOrbs from '../components/ui/GlowOrbs'
 import BlurText from '../components/ui/BlurText'
 import { Flower2, Heart, Github } from 'lucide-react'
 import { useReducedMotion } from '../hooks/useReducedMotion'
+import { useTranslation } from '../hooks/useTranslation'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -24,6 +25,7 @@ function HeroFallback() {
 }
 
 export default function Landing() {
+  const { t } = useTranslation()
   const heroRef = useRef<HTMLElement>(null)
   const heroContentRef = useRef<HTMLDivElement>(null)
   const nerRef = useRef<HTMLElement>(null)
@@ -152,20 +154,20 @@ export default function Landing() {
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sage-400/80 to-sage-600/80 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-[0_0_16px_rgba(236,72,153,0.2)]">
                   <Flower2 size={22} className="text-white" />
                 </div>
-                <span className="text-xl font-bold text-white">AURA-NER</span>
+                <span className="text-xl font-bold text-white">{t('AURA-NER')}</span>
               </div>
               <p className="text-charcoal-300 text-sm leading-relaxed">
-                AI-powered cognitive gaming and memory assistance for elderly people and their families.
+                {t('AI-powered cognitive gaming and memory assistance for elderly people and their families.')}
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold text-white mb-4">Platform</h4>
+              <h4 className="font-semibold text-white mb-4">{t('Platform')}</h4>
               <div className="space-y-2">
-                <Link to="/" className="block text-charcoal-300 hover:text-white text-sm transition-colors">Home</Link>
-                <Link to="/games" className="block text-charcoal-300 hover:text-white text-sm transition-colors">Cognitive Games</Link>
-                <Link to="/assistant" className="block text-charcoal-300 hover:text-white text-sm transition-colors">Memory Assistant</Link>
-                <Link to="/caregiver" className="block text-charcoal-300 hover:text-white text-sm transition-colors">Caregiver Dashboard</Link>
+                <Link to="/" className="block text-charcoal-300 hover:text-white text-sm transition-colors">{t('Home')}</Link>
+                <Link to="/games" className="block text-charcoal-300 hover:text-white text-sm transition-colors">{t('Cognitive Games')}</Link>
+                <Link to="/assistant" className="block text-charcoal-300 hover:text-white text-sm transition-colors">{t('Memory Assistant')}</Link>
+                <Link to="/caregiver" className="block text-charcoal-300 hover:text-white text-sm transition-colors">{t('Caregiver Dashboard')}</Link>
               </div>
             </div>
 
@@ -189,12 +191,12 @@ export default function Landing() {
 
           <div className="border-t border-charcoal-700 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-charcoal-400 text-sm flex items-center gap-1">
-              Made with <Heart size={14} className="text-sage-400" /> for memory that matters
+              {t('Made with')} <Heart size={14} className="text-sage-400" /> {t('for memory that matters')}
             </p>
             <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
               <span className="text-charcoal-400 text-sm">AURA-NER © 2024</span>
               <span className="text-charcoal-500 text-xs">·</span>
-              <span className="text-sage-400 text-sm font-medium">Developed by Team OriginX</span>
+              <span className="text-sage-400 text-sm font-medium">{t('Developed by Team OriginX')}</span>
               <a href="https://github.com/AkhilN-08/AURA" target="_blank" rel="noopener noreferrer" className="text-charcoal-400 hover:text-white transition-colors">
                 <Github size={18} />
               </a>

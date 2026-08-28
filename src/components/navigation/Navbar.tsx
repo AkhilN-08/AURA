@@ -2,15 +2,9 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Flower2, LogOut } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
+import { useTranslation } from '../../hooks/useTranslation'
 import MobileMenu from './MobileMenu'
 import ProfileMenu from './ProfileMenu'
-
-const NAV_LINKS = [
-  { label: 'Home', href: '/' },
-  { label: 'Cognitive Games', href: '/games' },
-  { label: 'Memory Assistant', href: '/assistant' },
-  { label: 'Caregiver', href: '/caregiver' },
-]
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -19,6 +13,13 @@ export default function Navbar() {
   const location = useLocation()
   const navigate = useNavigate()
   const { user, logout } = useAuth()
+  const { t } = useTranslation()
+  const NAV_LINKS = [
+    { label: t('Home'), href: '/' },
+    { label: t('Cognitive Games'), href: '/games' },
+    { label: t('Memory Assistant'), href: '/assistant' },
+    { label: t('Caregiver'), href: '/caregiver' },
+  ]
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 50)

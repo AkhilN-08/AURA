@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Brain, Eye, Hash, ArrowLeft, Trophy, Sparkles, BarChart3, BookOpen, Grid3X3, Palette, BookMarked, RotateCcw } from 'lucide-react'
 import { useGameProgress } from '../hooks/useGameProgress'
 import { useAuth } from '../hooks/useAuth'
+import { useTranslation } from '../hooks/useTranslation'
 import { getDifficultyFromAssessment, getDifficultyConfig } from '../utils/adaptiveDifficulty'
 import type { GameSession, DifficultyLevel } from '../data/models'
 import MemoryMatch from '../components/games/MemoryMatch'
@@ -15,65 +16,63 @@ import ColorSequence from '../components/games/ColorSequence'
 
 type GameType = 'select' | 'memory-match' | 'object-recall' | 'sequence-recall' | 'word-association' | 'pattern-grid' | 'story-recall' | 'color-sequence'
 
-const GAMES: Record<string, {
+const GAMES_RAW: Record<string, {
   id: GameType
-  title: string
-  description: string
+  titleKey: string
+  descKey: string
   icon: typeof Brain
   color: string
 }> = {
   'memory-match': {
     id: 'memory-match',
-    title: 'Memory Match',
-    description: 'Flip cards and find matching pairs. A classic way to exercise memory.',
+    titleKey: 'Memory Match',
+    descKey: 'Flip cards and find matching pairs. A classic way to exercise memory.',
     icon: Brain,
     color: 'from-sage-400 to-sage-600',
   },
   'object-recall': {
     id: 'object-recall',
-    title: 'Object Recall',
-    description: 'Study objects briefly, then identify which ones you remember.',
+    titleKey: 'Object Recall',
+    descKey: 'Study objects briefly, then identify which ones you remember.',
     icon: Eye,
     color: 'from-sage-400 to-sage-600',
   },
   'sequence-recall': {
     id: 'sequence-recall',
-    title: 'Sequence Recall',
-    description: 'Watch a sequence of items, then reproduce it from memory.',
+    titleKey: 'Sequence Recall',
+    descKey: 'Watch a sequence of items, then reproduce it from memory.',
     icon: Hash,
     color: 'from-amber-400 to-amber-600',
   },
   'word-association': {
     id: 'word-association',
-    title: 'Word Association',
-    description: 'Memorize related word pairs, then match them from memory.',
+    titleKey: 'Word Association',
+    descKey: 'Memorize related word pairs, then match them from memory.',
     icon: BookOpen,
     color: 'from-sage-400 to-sage-600',
   },
   'pattern-grid': {
     id: 'pattern-grid',
-    title: 'Pattern Grid',
-    description: 'Watch cells light up in a grid, then recreate the pattern.',
+    titleKey: 'Pattern Grid',
+    descKey: 'Watch cells light up in a grid, then recreate the pattern.',
     icon: Grid3X3,
     color: 'from-purple-400 to-purple-600',
   },
   'story-recall': {
     id: 'story-recall',
-    title: 'Story Recall',
-    description: 'Read a short story, then answer questions about the details.',
+    titleKey: 'Story Recall',
+    descKey: 'Read a short story, then answer questions about the details.',
     icon: BookMarked,
     color: 'from-amber-500 to-orange-600',
   },
   'color-sequence': {
     id: 'color-sequence',
-    title: 'Color Sequence',
-    description: 'Watch colors light up in order, then reproduce the pattern.',
+    titleKey: 'Color Sequence',
+    descKey: 'Watch colors light up in order, then reproduce the pattern.',
     icon: Palette,
     color: 'from-pink-400 to-pink-600',
   },
 }
-
-const GAME_LIST = Object.values(GAMES)
 
 const LEVEL_LABELS: Record<string, string> = {
   'mild': 'Mild — Good cognitive baseline',
@@ -92,6 +91,13 @@ export default function Games() {
   const [activeGame, setActiveGame] = useState<GameType>('select')
   const { getAverageAccuracy, sessions } = useGameProgress()
   const { user, retakeAssessment } = useAuth()
+  const { t } = useTranslation()
+
+  const GAMES = Object.fromEntries(
+    Object.entries(GAMES_RAW).map(([key, val]) => [key, { ...val, title: t(val.titleKey), description: t(val.descKey) }])
+  )
+  const GAME_LIST = Object.values(GAMES)
+
   const assessment = user?.assessmentResult
 
   // Starting difficulty based on assessment
