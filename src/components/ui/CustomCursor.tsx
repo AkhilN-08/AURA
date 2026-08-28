@@ -19,10 +19,9 @@ export default function CustomCursor() {
     const glow = glowRef.current
     if (!dot || !ring || !glow) return
 
-    // Physics state — separate position, velocity, target for spring damping
+    // Physics state
     const state = {
-      dot: { x: 0, y: 0 },
-      ring: { x: 0, y: 0, vx: 0, vy: 0 },
+      cursor: { x: 0, y: 0, vx: 0, vy: 0 },
       glow: { x: 0, y: 0, vx: 0, vy: 0 },
       target: { x: 0, y: 0 },
     }
@@ -48,40 +47,32 @@ export default function CustomCursor() {
       el.addEventListener('mouseleave', onLeaveInteractive)
     })
 
-    // Buttery smooth spring physics ticker
-    const SPRING_STIFFNESS = 0.08   // how fast ring catches up
-    const SPRING_DAMPING = 0.82     // velocity damping (higher = less bouncy)
-    const DOT_LERP = 0.25           // dot follows mouse directly
-    const GLOW_LAG = 0.04           // glow trails even slower than ring
+    const TICKER_SPEED = 0.12    // dot+ring follow mouse
+    const GLOW_LAG = 0.035       // glow trails behind
 
     const ticker = gsap.ticker.add(() => {
-      // Dot — quick direct follow
-      state.dot.x += (state.target.x - state.dot.x) * DOT_LERP
-      state.dot.y += (state.target.y - state.dot.y) * DOT_LERP
+      // Dot + Ring — smooth spring follow, same position
+      const dx = state.target.x - state.cursor.x
+      const dy = state.target.y - state.cursor.y
+      state.cursor.vx += dx * TICKER_SPEED
+      state.cursor.vy += dy * TICKER_SPEED
+      state.cursor.vx *= 0.85
+      state.cursor.vy *= 0.85
+      state.cursor.x += state.cursor.vx
+      state.cursor.y += state.cursor.vy
 
-      // Ring — spring physics for smooth acceleration/deceleration
-      const ringDx = state.target.x - state.ring.x
-      const ringDy = state.target.y - state.ring.y
-      state.ring.vx += ringDx * SPRING_STIFFNESS
-      state.ring.vy += ringDy * SPRING_STIFFNESS
-      state.ring.vx *= SPRING_DAMPING
-      state.ring.vy *= SPRING_DAMPING
-      state.ring.x += state.ring.vx
-      state.ring.y += state.ring.vy
-
-      // Glow — extra lag behind ring for parallax depth
-      const glowDx = state.ring.x - state.glow.x
-      const glowDy = state.ring.y - state.glow.y
-      state.glow.vx += glowDx * GLOW_LAG
-      state.glow.vy += glowDy * GLOW_LAG
-      state.glow.vx *= 0.9
-      state.glow.vy *= 0.9
+      // Glow — trails behind cursor
+      const gx = state.cursor.x - state.glow.x
+      const gy = state.cursor.y - state.glow.y
+      state.glow.vx += gx * GLOW_LAG
+      state.glow.vy += gy * GLOW_LAG
+      state.glow.vx *= 0.88
+      state.glow.vy *= 0.88
       state.glow.x += state.glow.vx
       state.glow.y += state.glow.vy
 
-      // Apply positions — no CSS transitions, pure GSAP
-      gsap.set(dot, { x: state.dot.x, y: state.dot.y })
-      gsap.set(ring, { x: state.ring.x, y: state.ring.y })
+      gsap.set(dot, { x: state.cursor.x, y: state.cursor.y })
+      gsap.set(ring, { x: state.cursor.x, y: state.cursor.y })
       gsap.set(glow, { x: state.glow.x, y: state.glow.y })
     })
 
