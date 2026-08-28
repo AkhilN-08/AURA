@@ -7,6 +7,10 @@ export function formatGameName(type: GameSession['gameType']): string {
     case 'memory-match': return 'Memory Match'
     case 'object-recall': return 'Object Recall'
     case 'sequence-recall': return 'Sequence Recall'
+    case 'word-association': return 'Word Association'
+    case 'pattern-grid': return 'Pattern Grid'
+    case 'story-recall': return 'Story Recall'
+    case 'color-sequence': return 'Color Sequence'
   }
 }
 

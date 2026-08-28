@@ -27,6 +27,12 @@ export function getDifficultyConfig(level: DifficultyLevel) {
         sequenceLength: 3,
         displayTime: 5000,
         distractors: 0,
+        wordPairs: 3,
+        gridCells: 9,
+        gridHighlight: 3,
+        storySentences: 3,
+        storyQuestions: 2,
+        colorLength: 3,
         label: 'Easy',
       }
     case 'moderate':
@@ -36,6 +42,12 @@ export function getDifficultyConfig(level: DifficultyLevel) {
         sequenceLength: 5,
         displayTime: 4000,
         distractors: 2,
+        wordPairs: 5,
+        gridCells: 16,
+        gridHighlight: 5,
+        storySentences: 5,
+        storyQuestions: 3,
+        colorLength: 5,
         label: 'Moderate',
       }
     case 'hard':
@@ -45,6 +57,12 @@ export function getDifficultyConfig(level: DifficultyLevel) {
         sequenceLength: 7,
         displayTime: 3000,
         distractors: 3,
+        wordPairs: 7,
+        gridCells: 25,
+        gridHighlight: 7,
+        storySentences: 7,
+        storyQuestions: 4,
+        colorLength: 7,
         label: 'Hard',
       }
   }

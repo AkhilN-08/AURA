@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { Brain, Eye, Hash, ArrowLeft, Trophy, Sparkles, BarChart3 } from 'lucide-react'
+import { Brain, Eye, Hash, ArrowLeft, Trophy, Sparkles, BarChart3, BookOpen, Grid3X3, Palette, BookMarked } from 'lucide-react'
 import { useGameProgress } from '../hooks/useGameProgress'
 import { useAuth } from '../hooks/useAuth'
 import { getDifficultyFromAssessment, getDifficultyConfig } from '../utils/adaptiveDifficulty'
@@ -7,8 +7,12 @@ import type { GameSession, DifficultyLevel } from '../data/models'
 import MemoryMatch from '../components/games/MemoryMatch'
 import ObjectRecall from '../components/games/ObjectRecall'
 import SequenceRecall from '../components/games/SequenceRecall'
+import WordAssociation from '../components/games/WordAssociation'
+import PatternGrid from '../components/games/PatternGrid'
+import StoryRecall from '../components/games/StoryRecall'
+import ColorSequence from '../components/games/ColorSequence'
 
-type GameType = 'select' | 'memory-match' | 'object-recall' | 'sequence-recall'
+type GameType = 'select' | 'memory-match' | 'object-recall' | 'sequence-recall' | 'word-association' | 'pattern-grid' | 'story-recall' | 'color-sequence'
 
 const GAMES: Record<string, {
   id: GameType
@@ -37,6 +41,34 @@ const GAMES: Record<string, {
     description: 'Watch a sequence of items, then reproduce it from memory.',
     icon: Hash,
     color: 'from-amber-400 to-amber-600',
+  },
+  'word-association': {
+    id: 'word-association',
+    title: 'Word Association',
+    description: 'Memorize related word pairs, then match them from memory.',
+    icon: BookOpen,
+    color: 'from-blue-400 to-blue-600',
+  },
+  'pattern-grid': {
+    id: 'pattern-grid',
+    title: 'Pattern Grid',
+    description: 'Watch cells light up in a grid, then recreate the pattern.',
+    icon: Grid3X3,
+    color: 'from-purple-400 to-purple-600',
+  },
+  'story-recall': {
+    id: 'story-recall',
+    title: 'Story Recall',
+    description: 'Read a short story, then answer questions about the details.',
+    icon: BookMarked,
+    color: 'from-amber-500 to-orange-600',
+  },
+  'color-sequence': {
+    id: 'color-sequence',
+    title: 'Color Sequence',
+    description: 'Watch colors light up in order, then reproduce the pattern.',
+    icon: Palette,
+    color: 'from-pink-400 to-pink-600',
   },
 }
 
@@ -231,6 +263,10 @@ export default function Games() {
               {activeGame === 'memory-match' && <MemoryMatch onComplete={handleComplete} />}
               {activeGame === 'object-recall' && <ObjectRecall onComplete={handleComplete} />}
               {activeGame === 'sequence-recall' && <SequenceRecall onComplete={handleComplete} />}
+              {activeGame === 'word-association' && <WordAssociation onComplete={handleComplete} />}
+              {activeGame === 'pattern-grid' && <PatternGrid onComplete={handleComplete} />}
+              {activeGame === 'story-recall' && <StoryRecall onComplete={handleComplete} />}
+              {activeGame === 'color-sequence' && <ColorSequence onComplete={handleComplete} />}
             </div>
           </>
         )}

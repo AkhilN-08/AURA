@@ -1,5 +1,5 @@
 export interface GameSession {
-  gameType: 'memory-match' | 'object-recall' | 'sequence-recall'
+  gameType: 'memory-match' | 'object-recall' | 'sequence-recall' | 'word-association' | 'pattern-grid' | 'story-recall' | 'color-sequence'
   score: number
   accuracy: number
   duration: number
@@ -30,9 +30,13 @@ export interface CaregiverData {
 export type DifficultyLevel = 'easy' | 'moderate' | 'hard'
 
 export const GAME_TYPES = {
-  'memory-match': { label: 'Memory Match', icon: ' brain' },
+  'memory-match': { label: 'Memory Match', icon: '🧠' },
   'object-recall': { label: 'Object Recall', icon: '👁️' },
   'sequence-recall': { label: 'Sequence Recall', icon: '🔢' },
+  'word-association': { label: 'Word Association', icon: '📖' },
+  'pattern-grid': { label: 'Pattern Grid', icon: '🔲' },
+  'story-recall': { label: 'Story Recall', icon: '📚' },
+  'color-sequence': { label: 'Color Sequence', icon: '🎨' },
 } as const
 
 export const REMINDER_TYPES = {
