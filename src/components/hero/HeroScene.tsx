@@ -100,11 +100,9 @@ export default function HeroScene() {
         ctx.fillStyle = pg; ctx.beginPath(); ctx.ellipse(0, -sz * 0.38, sz * 0.26, sz * 0.42, 0, 0, Math.PI * 2); ctx.fill()
         ctx.restore()
       }
-      const cg = ctx.createRadialGradient(0, 0, 0, 0, 0, sz * 0.13)
-      cg.addColorStop(0, 'rgba(253,224,71,0.85)'); cg.addColorStop(0.5, 'rgba(251,191,36,0.5)'); cg.addColorStop(1, 'rgba(245,158,11,0.1)')
-      ctx.fillStyle = cg; ctx.beginPath(); ctx.arc(0, 0, sz * 0.1, 0, Math.PI * 2); ctx.fill()
-      ctx.strokeStyle = 'rgba(253,224,71,0.4)'; ctx.lineWidth = 0.4
-      for (let i = 0; i < 5; i++) { const a = (i * Math.PI * 2) / 5 + b.phase; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.cos(a) * sz * 0.15, Math.sin(a) * sz * 0.15); ctx.stroke(); ctx.fillStyle = 'rgba(251,191,36,0.6)'; ctx.beginPath(); ctx.arc(Math.cos(a) * sz * 0.15, Math.sin(a) * sz * 0.15, 0.8, 0, Math.PI * 2); ctx.fill() }
+      const cg = ctx.createRadialGradient(0, 0, 0, 0, 0, sz * 0.08)
+      cg.addColorStop(0, 'rgba(253,224,71,0.55)'); cg.addColorStop(0.5, 'rgba(251,191,36,0.25)'); cg.addColorStop(1, 'rgba(245,158,11,0.02)')
+      ctx.fillStyle = cg; ctx.beginPath(); ctx.arc(0, 0, sz * 0.05, 0, Math.PI * 2); ctx.fill()
       ctx.restore()
     }
     const drawFallingPetal = (p: FallingPetal) => {
