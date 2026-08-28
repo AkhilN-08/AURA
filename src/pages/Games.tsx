@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
-import { Brain, Eye, Hash, ArrowLeft, Trophy, Sparkles, BarChart3, BookOpen, Grid3X3, Palette, BookMarked } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { Brain, Eye, Hash, ArrowLeft, Trophy, Sparkles, BarChart3, BookOpen, Grid3X3, Palette, BookMarked, RotateCcw } from 'lucide-react'
 import { useGameProgress } from '../hooks/useGameProgress'
 import { useAuth } from '../hooks/useAuth'
 import { getDifficultyFromAssessment, getDifficultyConfig } from '../utils/adaptiveDifficulty'
@@ -87,9 +88,10 @@ const LEVEL_COLORS: Record<string, string> = {
 }
 
 export default function Games() {
+  const navigate = useNavigate()
   const [activeGame, setActiveGame] = useState<GameType>('select')
   const { getAverageAccuracy, sessions } = useGameProgress()
-  const { user } = useAuth()
+  const { user, retakeAssessment } = useAuth()
   const assessment = user?.assessmentResult
 
   // Starting difficulty based on assessment
@@ -170,13 +172,19 @@ export default function Games() {
                     <p className="text-lg font-bold text-forest-600">{assessment.wordScore}%</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${LEVEL_COLORS[assessment.level]}`}>
                     {LEVEL_LABELS[assessment.level]}
                   </span>
                   <span className="text-xs text-charcoal-400">
                     · Starting difficulty: <span className="font-medium capitalize">{initialDifficulty}</span>
                   </span>
+                  <button
+                    onClick={() => { retakeAssessment(); navigate('/assessment') }}
+                    className="ml-auto text-xs text-blue-500 hover:text-blue-700 flex items-center gap-1 transition-colors"
+                  >
+                    <RotateCcw size={12} /> Retake Assessment
+                  </button>
                 </div>
               </div>
             )}

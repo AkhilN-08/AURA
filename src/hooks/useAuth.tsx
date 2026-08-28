@@ -26,6 +26,7 @@ interface AuthContextType {
   signup: (name: string, email: string, password: string) => { success: boolean; error?: string }
   logout: () => void
   completeAssessment: (result: AssessmentResult) => void
+  retakeAssessment: () => void
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
@@ -92,8 +93,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     )
   }
 
+  const retakeAssessment = () => {
+    if (!currentUser) return
+    const updatedUser = {
+      ...currentUser,
+      assessmentCompleted: false,
+      assessmentResult: undefined,
+    }
+    setCurrentUser(updatedUser)
+    setUsers(prev =>
+      prev.map(u =>
+        u.email === currentUser.email
+          ? { ...u, assessmentCompleted: false, assessmentResult: undefined }
+          : u
+      )
+    )
+  }
+
   return (
-    <AuthContext.Provider value={{ user: currentUser, login, signup, logout, completeAssessment }}>
+    <AuthContext.Provider value={{ user: currentUser, login, signup, logout, completeAssessment, retakeAssessment }}>
       {children}
     </AuthContext.Provider>
   )
