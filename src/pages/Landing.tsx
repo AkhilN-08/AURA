@@ -70,7 +70,7 @@ export default function Landing() {
   }, [reducedMotion])
 
   return (
-    <div className="overflow-hidden">
+    <div className="overflow-hidden will-change-scroll">
       <ScrollProgress />
 
       {/* Hero */}
@@ -192,7 +192,7 @@ export default function Landing() {
               Made with <Heart size={14} className="text-red-400" /> for memory that matters
             </p>
             <div className="flex items-center gap-4">
-              <span className="text-charcoal-400 text-sm">AURA-NER NER © 2024</span>
+              <span className="text-charcoal-400 text-sm">AURA-NER © 2024</span>
               <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-charcoal-400 hover:text-white transition-colors">
                 <Github size={18} />
               </a>
