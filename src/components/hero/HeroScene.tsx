@@ -56,8 +56,8 @@ export default function HeroScene() {
         }
         for (let k = 0; k < 3 + Math.floor(rand() * 5); k++) blossoms.push({ x: px + (rand() - 0.5) * 30, y: py + (rand() - 0.5) * 25, size: 6.5 + rand() * 9, opacity: 0.5 + rand() * 0.5, phase: rand() * Math.PI * 2, petalCount: rand() > 0.3 ? 5 : 6 })
       })
-      for (let i = 0; i < 30; i++) { const a = rand() * Math.PI * 2, d = rand() * w * 0.2; blossoms.push({ x: baseX + w * 0.04 + Math.cos(a) * d, y: h * 0.2 + Math.sin(a) * d * 0.6, size: 5.5 + rand() * 7, opacity: 0.3 + rand() * 0.4, phase: rand() * Math.PI * 2, petalCount: 5 }) }
-      for (let i = 0; i < 120; i++) stars.push({ x: rand() * w, y: rand() * h * 0.7, size: 0.3 + rand() * 1.8, brightness: 0.2 + rand() * 0.6, twinkleSpeed: 0.3 + rand() * 2, twinkleOffset: rand() * Math.PI * 2 })
+      for (let i = 0; i < 15; i++) { const a = rand() * Math.PI * 2, d = rand() * w * 0.2; blossoms.push({ x: baseX + w * 0.04 + Math.cos(a) * d, y: h * 0.2 + Math.sin(a) * d * 0.6, size: 5.5 + rand() * 7, opacity: 0.3 + rand() * 0.4, phase: rand() * Math.PI * 2, petalCount: 5 }) }
+      for (let i = 0; i < 60; i++) stars.push({ x: rand() * w, y: rand() * h * 0.7, size: 0.3 + rand() * 1.8, brightness: 0.2 + rand() * 0.6, twinkleSpeed: 0.3 + rand() * 2, twinkleOffset: rand() * Math.PI * 2 })
     }
     const spawnPetal = () => {
       if (!blossoms.length) return
@@ -121,7 +121,7 @@ export default function HeroScene() {
       const sway = Math.sin(time * 0.006) * 4 + Math.sin(time * 0.0025) * 2
       branches.sort((a, b) => b.depth - a.depth).forEach(b => drawBranch(b, sway))
       blossoms.forEach(b => drawBlossom(b, sway))
-      if (time % 9 === 0 && fallingPetals.length < 90) { spawnPetal(); if (Math.random() > 0.45) spawnPetal() }
+      if (time % 12 === 0 && fallingPetals.length < 50) { spawnPetal();  }
       fallingPetals = fallingPetals.filter(p => {
         p.fadeTimer++; const lr = p.fadeTimer / p.maxLife
         if (p.fadeTimer < 25) p.opacity = (p.fadeTimer / 25) * 0.55; else if (lr > 0.75) p.opacity = Math.max(0, 0.55 * (1 - (lr - 0.75) / 0.25)); else p.opacity = 0.55

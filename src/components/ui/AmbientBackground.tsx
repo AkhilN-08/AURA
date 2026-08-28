@@ -62,7 +62,7 @@ export default function AmbientBackground() {
         vx: (Math.random() - 0.3) * 0.4,
         vy: type === 'dust' ? 0.15 + Math.random() * 0.25 : 0.25 + Math.random() * 0.5,
         rotSpeed: (Math.random() - 0.5) * 0.025,
-        opacity: type === 'dust' ? 0.15 + Math.random() * 0.2 : 0.15 + Math.random() * 0.25,
+        opacity: type === 'dust' ? 0.25 + Math.random() * 0.25 : 0.3 + Math.random() * 0.3,
         color,
         wobblePhase: Math.random() * Math.PI * 2,
         wobbleAmp: type === 'dust' ? 0.3 + Math.random() * 0.4 : 0.5 + Math.random() * 1.0,
@@ -128,9 +128,10 @@ export default function AmbientBackground() {
       time++
       ctx.clearRect(0, 0, w, h)
 
-      // Spawn every 24 frames — subtle
-      if (time % 24 === 0 && petals.length < 35) {
+      // Spawn every 24 frames ï¿½ subtle
+      if (time % 18 === 0 && petals.length < 45) {
         spawnPetal()
+        if (Math.random() > 0.6) spawnPetal()
       }
 
       petals = petals.filter(p => {
@@ -161,7 +162,7 @@ export default function AmbientBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-[1]"
+      className="fixed inset-0 pointer-events-none z-[2]"
       aria-hidden="true"
     />
   )

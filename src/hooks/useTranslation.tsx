@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react'
+import { createContext, useContext, useState, useCallback, useMemo, type ReactNode } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 
 type Language = 'en' | 'hi'
@@ -223,8 +223,10 @@ export function TranslationProvider({ children }: { children: ReactNode }) {
     return HI[key] || key
   }, [language])
 
+  const value = useMemo(() => ({ language, setLanguage, t }), [language, setLanguage, t])
+
   return (
-    <TranslationContext.Provider value={{ language, setLanguage, t }}>
+    <TranslationContext.Provider value={value}>
       {children}
     </TranslationContext.Provider>
   )

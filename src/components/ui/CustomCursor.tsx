@@ -62,7 +62,7 @@ export default function CustomCursor() {
     // Spawn blossom trail particles
     const spawnTrail = (x: number, y: number) => {
       const now = performance.now()
-      if (now - lastSpawnRef.current < 80) return
+      if (now - lastSpawnRef.current < 120) return
       lastSpawnRef.current = now
 
       const count = 1

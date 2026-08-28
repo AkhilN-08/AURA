@@ -81,7 +81,7 @@ export default function Landing() {
         <div className="absolute inset-0 z-0 pointer-events-none">
           <Suspense fallback={null}>
             <Antigravity
-              count={200}
+              count={80}
               magnetRadius={8}
               ringRadius={9}
               waveSpeed={0.35}
