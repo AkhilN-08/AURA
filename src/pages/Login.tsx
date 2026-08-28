@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Flower2, Mail, Lock, User, Eye, EyeOff, ArrowRight } from 'lucide-react'
-import { useAuth } from '../hooks/useAuth'
+import { useAuth, type Gender } from '../hooks/useAuth'
 import gsap from 'gsap'
 import GlowOrbs from '../components/ui/GlowOrbs'
 import PetalTree from '../components/ui/PetalTree'
@@ -13,6 +13,7 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
+  const [gender, setGender] = useState<Gender>(null)
   const [loading, setLoading] = useState(false)
   const { login, signup } = useAuth()
   const navigate = useNavigate()
@@ -36,7 +37,7 @@ export default function Login() {
       let result: { success: boolean; error?: string }
       if (mode === 'signup') {
         if (!name.trim()) { setError('Please enter your name.'); setLoading(false); return }
-        result = signup(name, email, password)
+        result = signup(name, email, password, gender || undefined)
       } else {
         result = login(email, password)
       }
@@ -101,14 +102,39 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {mode === 'signup' && (
-              <div className="login-anim">
-                <label className="text-sm font-medium text-charcoal-700 mb-1.5 block">Full Name</label>
-                <div className="relative">
-                  <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-charcoal-300" />
-                  <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Your name"
-                    className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white/60 backdrop-blur-xl border border-white/50 text-charcoal-800 placeholder-charcoal-300 focus:outline-none focus:ring-2 focus:ring-sage-400 focus:border-transparent transition-all shadow-[0_2px_12px_rgba(0,0,0,0.04)]" required />
+              <>
+                <div className="login-anim">
+                  <label className="text-sm font-medium text-charcoal-700 mb-1.5 block">Full Name</label>
+                  <div className="relative">
+                    <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-charcoal-300" />
+                    <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Your name"
+                      className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white/60 backdrop-blur-xl border border-white/50 text-charcoal-800 placeholder-charcoal-300 focus:outline-none focus:ring-2 focus:ring-sage-400 focus:border-transparent transition-all shadow-[0_2px_12px_rgba(0,0,0,0.04)]" required />
+                  </div>
                 </div>
-              </div>
+                <div className="login-anim">
+                  <label className="text-sm font-medium text-charcoal-700 mb-2 block">I am</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button type="button" onClick={() => setGender('male')}
+                      className={`flex items-center justify-center gap-2.5 py-3.5 rounded-2xl border-2 transition-all duration-200 font-medium ${
+                        gender === 'male'
+                          ? 'bg-blue-50 border-blue-400 text-blue-700 shadow-md shadow-blue-100'
+                          : 'bg-white/40 border-white/50 text-charcoal-500 hover:border-blue-200 hover:bg-blue-50/30'
+                      }`}>
+                      <span className="text-xl">👨</span>
+                      <span>Male</span>
+                    </button>
+                    <button type="button" onClick={() => setGender('female')}
+                      className={`flex items-center justify-center gap-2.5 py-3.5 rounded-2xl border-2 transition-all duration-200 font-medium ${
+                        gender === 'female'
+                          ? 'bg-pink-50 border-pink-400 text-pink-700 shadow-md shadow-pink-100'
+                          : 'bg-white/40 border-white/50 text-charcoal-500 hover:border-pink-200 hover:bg-pink-50/30'
+                      }`}>
+                      <span className="text-xl">👩</span>
+                      <span>Female</span>
+                    </button>
+                  </div>
+                </div>
+              </>
             )}
 
             <div className="login-anim">
@@ -142,7 +168,13 @@ export default function Login() {
 
             <div className="login-anim">
               <button type="submit" disabled={loading}
-                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-sage-400 to-sage-600 text-white px-8 py-4 rounded-2xl font-semibold text-lg shadow-[0_0_20px_rgba(236,72,153,0.25)] hover:shadow-[0_0_30px_rgba(236,72,153,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 disabled:opacity-60">
+                className={`w-full flex items-center justify-center gap-2 text-white px-8 py-4 rounded-2xl font-semibold text-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 disabled:opacity-60 ${
+                  mode === 'signup' && gender === 'male'
+                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 shadow-[0_0_20px_rgba(59,130,246,0.25)] hover:shadow-[0_0_30px_rgba(59,130,246,0.4)]'
+                    : mode === 'signup' && gender === 'female'
+                    ? 'bg-gradient-to-r from-pink-500 to-pink-600 shadow-[0_0_20px_rgba(236,72,153,0.25)] hover:shadow-[0_0_30px_rgba(236,72,153,0.4)]'
+                    : 'bg-gradient-to-r from-sage-400 to-sage-600 shadow-[0_0_20px_rgba(236,72,153,0.25)] hover:shadow-[0_0_30px_rgba(236,72,153,0.4)]'
+                }`}>
                 {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <>{mode === 'login' ? 'Sign In' : 'Create Account'}<ArrowRight size={18} /></>}
               </button>
             </div>

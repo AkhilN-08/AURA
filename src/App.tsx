@@ -12,6 +12,7 @@ import CustomCursor from './components/ui/CustomCursor'
 import AmbientBackground from './components/ui/AmbientBackground'
 import AccessibilityToggle from './components/ui/AccessibilityToggle'
 import { TranslationProvider } from './hooks/useTranslation'
+import { useGenderTheme } from './hooks/useGenderTheme'
 import { useLocation } from 'react-router-dom'
 import type { ReactNode } from 'react'
 
@@ -45,6 +46,7 @@ function AuthenticatedLayout({ children }: { children: ReactNode }) {
 
 function AppRoutes() {
   const { user } = useAuth()
+  useGenderTheme()
 
   return (
     <>
