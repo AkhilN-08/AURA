@@ -45,13 +45,13 @@ export default function CustomCursor() {
     })
 
     const ticker = gsap.ticker.add(() => {
-      // Dot + Ring — lerp toward mouse (no overshoot, no jiggle)
-      pos.x += (mouse.x - pos.x) * 0.18
-      pos.y += (mouse.y - pos.y) * 0.18
+      // Dot + Ring — smooth lerp, no overshoot
+      pos.x += (mouse.x - pos.x) * 0.12
+      pos.y += (mouse.y - pos.y) * 0.12
 
-      // Glow — slower lerp trailing behind
-      glowPos.x += (pos.x - glowPos.x) * 0.06
-      glowPos.y += (pos.y - glowPos.y) * 0.06
+      // Glow — gentle trail
+      glowPos.x += (pos.x - glowPos.x) * 0.05
+      glowPos.y += (pos.y - glowPos.y) * 0.05
 
       gsap.set(dot, { x: pos.x, y: pos.y })
       gsap.set(ring, { x: pos.x, y: pos.y })

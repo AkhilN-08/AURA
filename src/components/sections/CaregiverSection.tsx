@@ -23,8 +23,8 @@ export default function CaregiverSection() {
       gsap.fromTo(dashboardRef.current,
         { opacity: 0, y: 80, scale: 0.94 },
         {
-          opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'power2.out',
-          scrollTrigger: { trigger: dashboardRef.current, start: 'top 80%', toggleActions: 'play none none none' }
+          opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'power1.out',
+          scrollTrigger: { trigger: dashboardRef.current, start: 'top 80%', toggleActions: 'play none none reverse' }
         }
       )
 
@@ -34,8 +34,8 @@ export default function CaregiverSection() {
           gsap.fromTo(stat,
             { opacity: 0, y: 25, scale: 0.8 },
             {
-              opacity: 1, y: 0, scale: 1, duration: 0.6, ease: 'power2.out',
-              scrollTrigger: { trigger: dashboardRef.current, start: 'top 75%', toggleActions: 'play none none none' }
+              opacity: 1, y: 0, scale: 1, duration: 0.6, ease: 'power1.out',
+              scrollTrigger: { trigger: dashboardRef.current, start: 'top 75%', toggleActions: 'play none none reverse' }
             }
           )
         })
@@ -46,8 +46,8 @@ export default function CaregiverSection() {
         gsap.fromTo(featureCards,
           { opacity: 0, y: 70, scale: 0.9 },
           {
-            opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.1, ease: 'power2.out',
-            scrollTrigger: { trigger: cardsRef.current, start: 'top 80%', toggleActions: 'play none none none' }
+            opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.1, ease: 'power1.out',
+            scrollTrigger: { trigger: cardsRef.current, start: 'top 80%', toggleActions: 'play none none reverse' }
           }
         )
       }
@@ -55,7 +55,7 @@ export default function CaregiverSection() {
       if (ctaRef.current) {
         gsap.fromTo(ctaRef.current,
           { opacity: 0, scale: 0.85 },
-          { opacity: 1, scale: 1, duration: 0.6, ease: 'power2.out', scrollTrigger: { trigger: ctaRef.current, start: 'top 85%', toggleActions: 'play none none none' } }
+          { opacity: 1, scale: 1, duration: 0.6, ease: 'power1.out', scrollTrigger: { trigger: ctaRef.current, start: 'top 85%', toggleActions: 'play none none reverse' } }
         )
       }
     }, sectionRef)

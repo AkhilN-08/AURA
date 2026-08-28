@@ -29,12 +29,12 @@ export default function MemorySection() {
           { opacity: 0, y: 100, scale: 0.88, rotateX: 20 },
           {
             opacity: 1, y: 0, scale: 1, rotateX: 0,
-            duration: 0.8, stagger: 0.15, ease: 'power2.out',
+            duration: 0.8, stagger: 0.15, ease: 'power1.out',
             scrollTrigger: {
               trigger: cardsContainerRef.current,
               start: 'top 80%',
               end: 'top 30%',
-              toggleActions: 'play none none none',
+              toggleActions: 'play none none reverse',
             }
           }
         )

@@ -28,8 +28,8 @@ export default function AISection() {
       gsap.fromTo(leftRef.current,
         { opacity: 0, x: -80, filter: 'blur(8px)' },
         {
-          opacity: 1, x: 0, filter: 'blur(0px)', duration: 0.8, ease: 'power2.out',
-          scrollTrigger: { trigger: sectionRef.current, start: 'top 75%', toggleActions: 'play none none none' }
+          opacity: 1, x: 0, filter: 'blur(0px)', duration: 0.8, ease: 'power1.out',
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 75%', toggleActions: 'play none none reverse' }
         }
       )
 
@@ -39,8 +39,8 @@ export default function AISection() {
           { opacity: 0, x: 80, scale: 0.92 },
           {
             opacity: 1, x: 0, scale: 1,
-            duration: 0.6, stagger: 0.12, ease: 'power2.out',
-            scrollTrigger: { trigger: metricsRef.current, start: 'top 80%', toggleActions: 'play none none none' }
+            duration: 0.6, stagger: 0.12, ease: 'power1.out',
+            scrollTrigger: { trigger: metricsRef.current, start: 'top 80%', toggleActions: 'play none none reverse' }
           }
         )
 
@@ -48,7 +48,7 @@ export default function AISection() {
           const bar = metric.querySelector('.progress-bar') as HTMLElement
           if (bar) {
             gsap.fromTo(bar, { width: '0%' }, {
-              width: LEVELS[i].width, duration: 1, delay: 0.3 + i * 0.15, ease: 'power2.out',
+              width: LEVELS[i].width, duration: 1, delay: 0.3 + i * 0.15, ease: 'power1.out',
               scrollTrigger: { trigger: metricsRef.current, start: 'top 75%', toggleActions: 'play none none reverse' }
             })
           }

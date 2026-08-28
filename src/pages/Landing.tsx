@@ -43,7 +43,7 @@ export default function Landing() {
             trigger: heroRef.current,
             start: 'top top',
             end: 'bottom top',
-            scrub: 0.15,
+            scrub: 0.3,
           },
         })
       }
@@ -55,11 +55,11 @@ export default function Landing() {
           { opacity: 0, y: 40, scale: 0.6, rotate: -10 },
           {
             opacity: 1, y: 0, scale: 1, rotate: 0,
-            duration: 0.5, stagger: 0.08, ease: 'power2.out',
+            duration: 0.5, stagger: 0.08, ease: 'power1.out',
             scrollTrigger: {
               trigger: nerRef.current,
               start: 'top 80%',
-              toggleActions: 'play none none none',
+              toggleActions: 'play none none reverse',
             }
           }
         )
