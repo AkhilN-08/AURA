@@ -301,3 +301,85 @@ html.elder-mode .text-charcoal-400 { color: #616161 !important; }
 html.elder-mode .text-charcoal-300 { color: #757575 !important; }
 html.elder-mode .section-heading { font-size: 2.5rem !important; }
 html.elder-mode .section-subheading { font-size: 1.2rem !important; }
+
+/* ── Dark Mode ──────────────────────────────────────────────── */
+html.dark {
+  background-color: #0f0f1a !important;
+}
+html.dark body {
+  color: #e2e8f0 !important;
+}
+html.dark ::selection {
+  background-color: rgba(236, 72, 153, 0.3);
+  color: #fff;
+}
+html.dark ::-webkit-scrollbar-track {
+  background: #1a1a2e;
+}
+html.dark ::-webkit-scrollbar-thumb {
+  background: #6b21a8;
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #7c3aed;
+}
+
+/* Dark mode card overrides */
+html.dark .card,
+html.dark .card-hover {
+  background: #1e1e32 !important;
+  border-color: #2d2d44 !important;
+  color: #e2e8f0 !important;
+}
+html.dark .glass-card {
+  background: rgba(30,30,50,0.7) !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+html.dark .section-heading {
+  color: #f1f5f9 !important;
+}
+html.dark .section-subheading {
+  color: #94a3b8 !important;
+}
+
+/* Dark mode text colors */
+html.dark .text-charcoal-800 { color: #f1f5f9 !important; }
+html.dark .text-charcoal-700 { color: #e2e8f0 !important; }
+html.dark .text-charcoal-600 { color: #cbd5e1 !important; }
+html.dark .text-charcoal-500 { color: #94a3b8 !important; }
+html.dark .text-charcoal-400 { color: #64748b !important; }
+html.dark .text-charcoal-300 { color: #475569 !important; }
+
+/* Dark mode backgrounds */
+html.dark .bg-white { background-color: #1e1e32 !important; }
+html.dark .bg-white\/50 { background: rgba(30,30,50,0.5) !important; }
+html.dark .bg-white\/60 { background: rgba(30,30,50,0.6) !important; }
+html.dark .bg-white\/70 { background: rgba(30,30,50,0.7) !important; }
+html.dark .bg-white\/80 { background: rgba(30,30,50,0.8) !important; }
+
+/* Dark mode border colors */
+html.dark .border-white\/40 { border-color: rgba(255,255,255,0.08) !important; }
+html.dark .border-white\/50 { border-color: rgba(255,255,255,0.1) !important; }
+html.dark .border-cream-200 { border-color: #2d2d44 !important; }
+html.dark .border-cream-50 { border-color: #2d2d44 !important; }
+
+/* Dark mode specific sections */
+html.dark footer { background: #0a0a14 !important; }
+html.dark footer > div:first-child { background: transparent !important; }
+
+/* Dark mode inputs */
+html.dark input, html.dark textarea, html.dark select {
+  background: rgba(30,30,50,0.6) !important;
+  color: #e2e8f0 !important;
+  border-color: #2d2d44 !important;
+}
+html.dark input::placeholder, html.dark textarea::placeholder {
+  color: #475569 !important;
+}
+
+/* Dark mode gaming/activity cards */
+html.dark [class*="bg-cream"] {
+  background-color: #1e1e32 !important;
+}
+html.dark [class*="bg-white"] {
+  background-color: #1e1e32 !important;
+}

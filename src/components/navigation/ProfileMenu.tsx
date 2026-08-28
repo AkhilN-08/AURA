@@ -6,6 +6,8 @@ import { useAuth } from '../../hooks/useAuth'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { useTranslation } from '../../hooks/useTranslation'
 import { useGenderTheme } from '../../hooks/useGenderTheme'
+import { useDarkMode } from '../../hooks/useDarkMode'
+import { Moon, Sun } from 'lucide-react'
 
 interface ProfileMenuProps {
   isOpen: boolean
@@ -17,6 +19,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
   const { sessions, getAverageAccuracy } = useGameProgress()
   const { language, setLanguage, t } = useTranslation()
   const { gender, setGender } = useGenderTheme()
+  const { isDark, toggle: toggleDark } = useDarkMode()
   const navigate = useNavigate()
   const panelRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -79,7 +82,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
       {/* Overlay */}
       <div
         ref={overlayRef}
-        className="absolute inset-0 bg-charcoal-900/20 backdrop-blur-sm"
+        className="absolute inset-0 bg-charcoal-900/20 dark:bg-black/40 backdrop-blur-sm"
         onClick={handleClose}
         style={{ opacity: 0 }}
       />
@@ -87,7 +90,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
       {/* Panel */}
       <div
         ref={panelRef}
-        className="absolute top-0 right-0 bottom-0 w-[min(420px,100vw)] bg-white/70 backdrop-blur-3xl border-l border-white/50 shadow-[-10px_0_40px_rgba(0,0,0,0.08)] overflow-y-auto"
+        className="absolute top-0 right-0 bottom-0 w-[min(420px,100vw)] bg-white/70 dark:bg-[#12121f]/90 backdrop-blur-3xl border-l border-white/50 dark:border-white/10 shadow-[-10px_0_40px_rgba(0,0,0,0.08)] overflow-y-auto"
         style={{ transform: 'translateX(100%)' }}
       >
         <div className="p-6 space-y-6">
@@ -250,6 +253,35 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                 👩 Female
               </button>
             </div>
+          </div>
+
+          {/* Dark Mode Toggle */}
+          <div ref={el => { itemsRef.current[10] = el }} className="rounded-3xl bg-white/50 backdrop-blur-sm border border-white/40 p-5">
+            <p className="text-xs font-semibold text-charcoal-400 uppercase tracking-wider mb-3">Display</p>
+            <button
+              onClick={toggleDark}
+              className="w-full flex items-center gap-4 p-4 rounded-2xl bg-white/50 backdrop-blur-sm border border-white/40 hover:bg-white/80 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)] text-left group"
+            >
+              <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
+                isDark
+                  ? 'bg-indigo-900/60 text-indigo-300 shadow-[0_0_12px_rgba(99,102,241,0.2)]'
+                  : 'bg-amber-50 text-amber-500'
+              }`}>
+                {isDark ? <Moon size={20} /> : <Sun size={20} />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-charcoal-800 text-sm">{isDark ? 'Dark Mode' : 'Light Mode'}</p>
+                <p className="text-xs text-charcoal-400 mt-0.5">
+                  {isDark ? 'Easier on the eyes in low light' : 'Switch to a darker theme for comfort'}
+                </p>
+              </div>
+              {/* Toggle switch */}
+              <div className={`w-12 h-7 rounded-full flex items-center transition-all duration-300 ${
+                isDark ? 'bg-indigo-500 justify-end' : 'bg-charcoal-200 justify-start'
+              }`}>
+                <div className="w-5 h-5 bg-white rounded-full mx-1 shadow-sm transition-transform duration-300" />
+              </div>
+            </button>
           </div>
 
           {/* Tech Stack */}

@@ -85,20 +85,20 @@ export default function Login() {
       </div>
 
       {/* Right panel — form */}
-      <div className="flex-1 flex items-center justify-center px-6 py-12 relative">
+      <div className="flex-1 flex items-center justify-center px-6 py-12 relative dark:bg-[#0f0f1a]">
         <GlowOrbs />
         <div ref={formRef} className="w-full max-w-md relative z-10">
           <div className="flex items-center gap-2.5 mb-10 lg:hidden login-anim">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sage-400/80 to-sage-600/80 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-[0_0_16px_rgba(236,72,153,0.2)]">
               <Flower2 className="text-white" size={22} />
             </div>
-            <span className="text-xl font-bold text-charcoal-800">AURA-NER</span>
+            <span className="text-xl font-bold text-charcoal-800 dark:text-white">AURA-NER</span>
           </div>
 
-          <h2 className="text-3xl font-bold text-charcoal-800 mb-2 login-anim">
+          <h2 className="text-3xl font-bold text-charcoal-800 dark:text-white mb-2 login-anim">
             {mode === 'login' ? t('Welcome back') : t('Create your account')}
           </h2>
-          <p className="text-charcoal-400 mb-8 login-anim">
+          <p className="text-charcoal-400 dark:text-charcoal-300 mb-8 login-anim">
             {mode === 'login' ? t('Sign in to continue your cognitive journey.') : t('Join AURA-NER to start your memory wellness journey.')}
           </p>
 
@@ -106,21 +106,21 @@ export default function Login() {
             {mode === 'signup' && (
               <>
                 <div className="login-anim">
-                  <label className="text-sm font-medium text-charcoal-700 mb-1.5 block">Full Name</label>
+                  <label className="text-sm font-medium text-charcoal-700 dark:text-charcoal-200 mb-1.5 block">Full Name</label>
                   <div className="relative">
-                    <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-charcoal-300" />
+                    <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-charcoal-300 dark:text-charcoal-500" />
                     <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Your name"
-                      className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white/60 backdrop-blur-xl border border-white/50 text-charcoal-800 placeholder-charcoal-300 focus:outline-none focus:ring-2 focus:ring-sage-400 focus:border-transparent transition-all shadow-[0_2px_12px_rgba(0,0,0,0.04)]" required />
+                      className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white/60 dark:bg-white/10 backdrop-blur-xl border border-white/50 dark:border-white/10 text-charcoal-800 dark:text-white placeholder-charcoal-300 dark:placeholder-charcoal-600 focus:outline-none focus:ring-2 focus:ring-sage-400 focus:border-transparent transition-all shadow-[0_2px_12px_rgba(0,0,0,0.04)]" required />
                   </div>
                 </div>
                 <div className="login-anim">
-                  <label className="text-sm font-medium text-charcoal-700 mb-2 block">I am</label>
+                  <label className="text-sm font-medium text-charcoal-700 dark:text-charcoal-200 mb-2 block">I am</label>
                   <div className="grid grid-cols-2 gap-3">
                     <button type="button" onClick={() => setGender('male')}
                       className={`flex items-center justify-center gap-2.5 py-3.5 rounded-2xl border-2 transition-all duration-200 font-medium ${
                         gender === 'male'
                           ? 'bg-blue-50 border-blue-400 text-blue-700 shadow-md shadow-blue-100'
-                          : 'bg-white/40 border-white/50 text-charcoal-500 hover:border-blue-200 hover:bg-blue-50/30'
+                          : 'bg-white/40 dark:bg-white/5 dark:border-white/10 text-charcoal-500 dark:text-charcoal-300 hover:border-blue-200 dark:hover:border-blue-500/30 hover:bg-blue-50/30 dark:hover:bg-blue-500/10'
                       }`}>
                       <span className="text-xl">👨</span>
                       <span>Male</span>
@@ -129,7 +129,7 @@ export default function Login() {
                       className={`flex items-center justify-center gap-2.5 py-3.5 rounded-2xl border-2 transition-all duration-200 font-medium ${
                         gender === 'female'
                           ? 'bg-pink-50 border-pink-400 text-pink-700 shadow-md shadow-pink-100'
-                          : 'bg-white/40 border-white/50 text-charcoal-500 hover:border-pink-200 hover:bg-pink-50/30'
+                          : 'bg-white/40 dark:bg-white/5 dark:border-white/10 text-charcoal-500 dark:text-charcoal-300 hover:border-pink-200 dark:hover:border-pink-500/30 hover:bg-pink-50/30 dark:hover:bg-pink-500/10'
                       }`}>
                       <span className="text-xl">👩</span>
                       <span>Female</span>
@@ -142,20 +142,20 @@ export default function Login() {
             <div className="login-anim">
               <label className="text-sm font-medium text-charcoal-700 mb-1.5 block">Email</label>
               <div className="relative">
-                <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-charcoal-300" />
+                <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-charcoal-300 dark:text-charcoal-500" />
                 <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"
-                  className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white/60 backdrop-blur-xl border border-white/50 text-charcoal-800 placeholder-charcoal-300 focus:outline-none focus:ring-2 focus:ring-sage-400 focus:border-transparent transition-all shadow-[0_2px_12px_rgba(0,0,0,0.04)]" required />
+                  className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white/60 dark:bg-white/10 backdrop-blur-xl border border-white/50 dark:border-white/10 text-charcoal-800 dark:text-white placeholder-charcoal-300 dark:placeholder-charcoal-600 focus:outline-none focus:ring-2 focus:ring-sage-400 focus:border-transparent transition-all shadow-[0_2px_12px_rgba(0,0,0,0.04)]" required />
               </div>
             </div>
 
             <div className="login-anim">
               <label className="text-sm font-medium text-charcoal-700 mb-1.5 block">Password</label>
               <div className="relative">
-                <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-charcoal-300" />
+                <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-charcoal-300 dark:text-charcoal-500" />
                 <input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} placeholder="At least 6 characters"
-                  className="w-full pl-12 pr-12 py-3.5 rounded-2xl bg-white/60 backdrop-blur-xl border border-white/50 text-charcoal-800 placeholder-charcoal-300 focus:outline-none focus:ring-2 focus:ring-sage-400 focus:border-transparent transition-all shadow-[0_2px_12px_rgba(0,0,0,0.04)]" required minLength={6} />
+                  className="w-full pl-12 pr-12 py-3.5 rounded-2xl bg-white/60 dark:bg-white/10 backdrop-blur-xl border border-white/50 dark:border-white/10 text-charcoal-800 dark:text-white placeholder-charcoal-300 dark:placeholder-charcoal-600 focus:outline-none focus:ring-2 focus:ring-sage-400 focus:border-transparent transition-all shadow-[0_2px_12px_rgba(0,0,0,0.04)]" required minLength={6} />
                 <button type="button" onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-charcoal-300 hover:text-charcoal-500 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-charcoal-300 dark:text-charcoal-500 hover:text-charcoal-500 dark:hover:text-charcoal-300 transition-colors"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}>
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -163,7 +163,7 @@ export default function Login() {
             </div>
 
             {error && (
-              <div className="error-msg bg-red-50/80 backdrop-blur-sm border border-red-200/60 text-red-600 text-sm rounded-2xl px-4 py-3">
+              <div className="error-msg bg-red-50/80 dark:bg-red-900/30 backdrop-blur-sm border border-red-200/60 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm rounded-2xl px-4 py-3">
                 {error}
               </div>
             )}
@@ -182,7 +182,7 @@ export default function Login() {
             </div>
           </form>
 
-          <p className="text-center text-charcoal-400 text-sm mt-8 login-anim">
+          <p className="text-center text-charcoal-400 dark:text-charcoal-500 text-sm mt-8 login-anim">
             {mode === 'login' ? t("Don't have an account?") : t('Already have an account?')}{' '}
             <button onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setError('') }}
               className="text-sage-600 font-medium hover:text-sage-700 transition-colors">

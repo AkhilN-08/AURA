@@ -76,7 +76,7 @@ export default function Landing() {
       <ScrollProgress />
 
       {/* Hero */}
-      <section ref={heroRef} className="relative min-h-screen">
+      <section ref={heroRef} className="relative min-h-screen dark:bg-[#0f0f1a]">
         {/* Antigravity particle ring — non-interactive background */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           <Suspense fallback={null}>
@@ -119,7 +119,7 @@ export default function Landing() {
       <CaregiverSection />
 
       {/* NER Cultural Relevance */}
-      <section ref={nerRef} className="py-28 md:py-40 px-4 relative overflow-hidden">
+      <section ref={nerRef} className="py-28 md:py-40 px-4 relative overflow-hidden dark:bg-[#0f0f1a]/50">
         <GlowOrbs />
         <div className="max-w-4xl mx-auto text-center relative">
           <BlurText tag="h2" className="section-heading mb-6">
@@ -133,7 +133,7 @@ export default function Landing() {
             {['🎋', '🪷', '🏔️', '🍵', '🥁', '🏮'].map((emoji, i) => (
               <div
                 key={i}
-                className="ner-emoji bg-white/60 backdrop-blur-xl rounded-2xl p-5 border border-white/50 shadow-[0_4px_20px_rgba(0,0,0,0.04)] flex items-center justify-center text-4xl hover:scale-110 hover:rotate-6 hover:shadow-[0_8px_30px_rgba(59,130,246,0.12)] transition-all duration-500 cursor-default"
+                className="ner-emoji bg-white/60 dark:bg-white/5 backdrop-blur-xl rounded-2xl p-5 border border-white/50 dark:border-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.04)] flex items-center justify-center text-4xl hover:scale-110 hover:rotate-6 hover:shadow-[0_8px_30px_rgba(59,130,246,0.12)] transition-all duration-500 cursor-default"
                 style={{ opacity: reducedMotion ? 1 : 0 }}
               >
                 {emoji}
@@ -145,7 +145,7 @@ export default function Landing() {
 
       {/* Footer */}
       <footer className="py-16 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-charcoal-800" />
+        <div className="absolute inset-0 bg-charcoal-800 dark:bg-[#0a0a14]" />
         <GlowOrbs />
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="grid md:grid-cols-4 gap-12 mb-12">
@@ -164,10 +164,10 @@ export default function Landing() {
             <div>
               <h4 className="font-semibold text-white mb-4">{t('Platform')}</h4>
               <div className="space-y-2">
-                <Link to="/" className="block text-charcoal-300 hover:text-white text-sm transition-colors">{t('Home')}</Link>
-                <Link to="/games" className="block text-charcoal-300 hover:text-white text-sm transition-colors">{t('Cognitive Games')}</Link>
-                <Link to="/assistant" className="block text-charcoal-300 hover:text-white text-sm transition-colors">{t('Memory Assistant')}</Link>
-                <Link to="/caregiver" className="block text-charcoal-300 hover:text-white text-sm transition-colors">{t('Caregiver Dashboard')}</Link>
+                <Link to="/" className="block text-charcoal-300 dark:text-charcoal-400 hover:text-white text-sm transition-colors">{t('Home')}</Link>
+                <Link to="/games" className="block text-charcoal-300 dark:text-charcoal-400 hover:text-white text-sm transition-colors">{t('Cognitive Games')}</Link>
+                <Link to="/assistant" className="block text-charcoal-300 dark:text-charcoal-400 hover:text-white text-sm transition-colors">{t('Memory Assistant')}</Link>
+                <Link to="/caregiver" className="block text-charcoal-300 dark:text-charcoal-400 hover:text-white text-sm transition-colors">{t('Caregiver Dashboard')}</Link>
               </div>
             </div>
 
