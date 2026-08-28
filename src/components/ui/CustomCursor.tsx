@@ -19,16 +19,13 @@ export default function CustomCursor() {
     const glow = glowRef.current
     if (!dot || !ring || !glow) return
 
-    // Physics state
-    const state = {
-      cursor: { x: 0, y: 0, vx: 0, vy: 0 },
-      glow: { x: 0, y: 0, vx: 0, vy: 0 },
-      target: { x: 0, y: 0 },
-    }
+    const pos = { x: 0, y: 0 }
+    const glowPos = { x: 0, y: 0 }
+    const mouse = { x: 0, y: 0 }
 
     const onMove = (e: MouseEvent) => {
-      state.target.x = e.clientX
-      state.target.y = e.clientY
+      mouse.x = e.clientX
+      mouse.y = e.clientY
     }
 
     const onEnterInteractive = () => setIsHovering(true)
@@ -47,33 +44,18 @@ export default function CustomCursor() {
       el.addEventListener('mouseleave', onLeaveInteractive)
     })
 
-    const TICKER_SPEED = 0.12    // dot+ring follow mouse
-    const GLOW_LAG = 0.035       // glow trails behind
-
     const ticker = gsap.ticker.add(() => {
-      // Dot + Ring — smooth spring follow, same position
-      const dx = state.target.x - state.cursor.x
-      const dy = state.target.y - state.cursor.y
-      state.cursor.vx += dx * TICKER_SPEED
-      state.cursor.vy += dy * TICKER_SPEED
-      state.cursor.vx *= 0.85
-      state.cursor.vy *= 0.85
-      state.cursor.x += state.cursor.vx
-      state.cursor.y += state.cursor.vy
+      // Dot + Ring — lerp toward mouse (no overshoot, no jiggle)
+      pos.x += (mouse.x - pos.x) * 0.18
+      pos.y += (mouse.y - pos.y) * 0.18
 
-      // Glow — trails behind cursor
-      const gx = state.cursor.x - state.glow.x
-      const gy = state.cursor.y - state.glow.y
-      state.glow.vx += gx * GLOW_LAG
-      state.glow.vy += gy * GLOW_LAG
-      state.glow.vx *= 0.88
-      state.glow.vy *= 0.88
-      state.glow.x += state.glow.vx
-      state.glow.y += state.glow.vy
+      // Glow — slower lerp trailing behind
+      glowPos.x += (pos.x - glowPos.x) * 0.06
+      glowPos.y += (pos.y - glowPos.y) * 0.06
 
-      gsap.set(dot, { x: state.cursor.x, y: state.cursor.y })
-      gsap.set(ring, { x: state.cursor.x, y: state.cursor.y })
-      gsap.set(glow, { x: state.glow.x, y: state.glow.y })
+      gsap.set(dot, { x: pos.x, y: pos.y })
+      gsap.set(ring, { x: pos.x, y: pos.y })
+      gsap.set(glow, { x: glowPos.x, y: glowPos.y })
     })
 
     // Re-check interactives periodically
