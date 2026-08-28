@@ -1,9 +1,23 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 
+export interface AssessmentResult {
+  memoryScore: number
+  sequenceScore: number
+  focusScore: number
+  wordScore: number
+  reactionTime: number
+  overallScore: number
+  level: 'mild' | 'moderate' | 'significant'
+  recommendedGames: string[]
+  completedAt: string
+}
+
 interface User {
   email: string
   name: string
+  assessmentCompleted?: boolean
+  assessmentResult?: AssessmentResult
 }
 
 interface AuthContextType {
@@ -11,12 +25,17 @@ interface AuthContextType {
   login: (email: string, password: string) => { success: boolean; error?: string }
   signup: (name: string, email: string, password: string) => { success: boolean; error?: string }
   logout: () => void
+  completeAssessment: (result: AssessmentResult) => void
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
 
-interface StoredUser extends User {
+interface StoredUser {
+  email: string
+  name: string
   passwordHash: string
+  assessmentCompleted?: boolean
+  assessmentResult?: AssessmentResult
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -42,7 +61,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const user = users.find(u => u.email === email.toLowerCase())
     if (!user) return { success: false, error: 'No account found with this email.' }
     if (user.passwordHash !== btoa(password)) return { success: false, error: 'Incorrect password.' }
-    setCurrentUser({ name: user.name, email: user.email })
+    setCurrentUser({
+      name: user.name,
+      email: user.email,
+      assessmentCompleted: user.assessmentCompleted,
+      assessmentResult: user.assessmentResult,
+    })
     return { success: true }
   }
 
@@ -50,8 +74,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setCurrentUser(null)
   }
 
+  const completeAssessment = (result: AssessmentResult) => {
+    if (!currentUser) return
+    const updatedUser = {
+      ...currentUser,
+      assessmentCompleted: true,
+      assessmentResult: result,
+    }
+    setCurrentUser(updatedUser)
+    // Also update in users list
+    setUsers(prev =>
+      prev.map(u =>
+        u.email === currentUser.email
+          ? { ...u, assessmentCompleted: true, assessmentResult: result }
+          : u
+      )
+    )
+  }
+
   return (
-    <AuthContext.Provider value={{ user: currentUser, login, signup, logout }}>
+    <AuthContext.Provider value={{ user: currentUser, login, signup, logout, completeAssessment }}>
       {children}
     </AuthContext.Provider>
   )

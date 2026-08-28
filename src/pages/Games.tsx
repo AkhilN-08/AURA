@@ -1,45 +1,94 @@
-import { useState } from 'react'
-import { Brain, Eye, Hash, ArrowLeft, Trophy } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { Brain, Eye, Hash, ArrowLeft, Trophy, Sparkles, BarChart3 } from 'lucide-react'
 import { useGameProgress } from '../hooks/useGameProgress'
-import type { GameSession } from '../data/models'
+import { useAuth } from '../hooks/useAuth'
+import { getDifficultyFromAssessment, getDifficultyConfig } from '../utils/adaptiveDifficulty'
+import type { GameSession, DifficultyLevel } from '../data/models'
 import MemoryMatch from '../components/games/MemoryMatch'
 import ObjectRecall from '../components/games/ObjectRecall'
 import SequenceRecall from '../components/games/SequenceRecall'
 
 type GameType = 'select' | 'memory-match' | 'object-recall' | 'sequence-recall'
 
-const GAMES = [
-  {
-    id: 'memory-match' as const,
+const GAMES: Record<string, {
+  id: GameType
+  title: string
+  description: string
+  icon: typeof Brain
+  color: string
+}> = {
+  'memory-match': {
+    id: 'memory-match',
     title: 'Memory Match',
     description: 'Flip cards and find matching pairs. A classic way to exercise memory.',
     icon: Brain,
     color: 'from-forest-400 to-forest-600',
   },
-  {
-    id: 'object-recall' as const,
+  'object-recall': {
+    id: 'object-recall',
     title: 'Object Recall',
     description: 'Study objects briefly, then identify which ones you remember.',
     icon: Eye,
     color: 'from-sage-400 to-sage-600',
   },
-  {
-    id: 'sequence-recall' as const,
+  'sequence-recall': {
+    id: 'sequence-recall',
     title: 'Sequence Recall',
     description: 'Watch a sequence of items, then reproduce it from memory.',
     icon: Hash,
     color: 'from-amber-400 to-amber-600',
   },
-]
+}
+
+const GAME_LIST = Object.values(GAMES)
+
+const LEVEL_LABELS: Record<string, string> = {
+  'mild': 'Mild — Good cognitive baseline',
+  'moderate': 'Moderate — Some areas need gentle practice',
+  'significant': 'Significant — Starting with supportive activities',
+}
+
+const LEVEL_COLORS: Record<string, string> = {
+  'mild': 'text-forest-600 bg-forest-50',
+  'moderate': 'text-amber-600 bg-amber-50',
+  'significant': 'text-sage-600 bg-sage-50',
+}
 
 export default function Games() {
   const [activeGame, setActiveGame] = useState<GameType>('select')
   const { getAverageAccuracy, sessions } = useGameProgress()
+  const { user } = useAuth()
+  const assessment = user?.assessmentResult
+
+  // Starting difficulty based on assessment
+  const initialDifficulty: DifficultyLevel = useMemo(() => {
+    if (!assessment) return 'easy'
+    return getDifficultyFromAssessment(assessment)
+  }, [assessment])
+
+  // Overall difficulty based on session history
+  const currentDifficulty: DifficultyLevel = useMemo(() => {
+    if (sessions.length < 3) return initialDifficulty
+    const avg = getAverageAccuracy()
+    if (avg > 85) return 'hard'
+    if (avg >= 60) return 'moderate'
+    return 'easy'
+  }, [sessions, initialDifficulty, getAverageAccuracy])
 
   const handleComplete = (session: GameSession) => {
-    // Session is saved via hook
     console.log('Game session completed:', session)
   }
+
+  // Sort games: recommended ones first based on assessment
+  const sortedGames = useMemo(() => {
+    if (!assessment) return GAME_LIST
+    const recommended = assessment.recommendedGames
+    return [...GAME_LIST].sort((a, b) => {
+      const aIdx = recommended.indexOf(a.id)
+      const bIdx = recommended.indexOf(b.id)
+      return (aIdx === -1 ? 99 : aIdx) - (bIdx === -1 ? 99 : bIdx)
+    })
+  }, [assessment])
 
   return (
     <div className="min-h-screen pt-24 pb-16 px-4">
@@ -54,6 +103,51 @@ export default function Games() {
                 Choose an activity to engage your mind. Each game gently adapts to your pace.
               </p>
             </div>
+
+            {/* Assessment profile card */}
+            {assessment && (
+              <div className="card p-5 mb-6 bg-white/70">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-forest-400 to-forest-600 flex items-center justify-center">
+                    <BarChart3 size={20} className="text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-charcoal-800 text-sm">Your Cognitive Profile</h3>
+                    <p className="text-xs text-charcoal-400">Based on your initial assessment</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+                  <div className="bg-forest-50/50 rounded-xl p-3 text-center">
+                    <p className="text-xs text-charcoal-400 mb-1">Overall</p>
+                    <p className="text-lg font-bold text-forest-600">{assessment.overallScore}%</p>
+                  </div>
+                  <div className="bg-forest-50/50 rounded-xl p-3 text-center">
+                    <p className="text-xs text-charcoal-400 mb-1">Memory</p>
+                    <p className="text-lg font-bold text-forest-600">{assessment.memoryScore}%</p>
+                  </div>
+                  <div className="bg-amber-50/50 rounded-xl p-3 text-center">
+                    <p className="text-xs text-charcoal-400 mb-1">Sequence</p>
+                    <p className="text-lg font-bold text-amber-600">{assessment.sequenceScore}%</p>
+                  </div>
+                  <div className="bg-sage-50/50 rounded-xl p-3 text-center">
+                    <p className="text-xs text-charcoal-400 mb-1">Focus</p>
+                    <p className="text-lg font-bold text-sage-600">{assessment.focusScore}%</p>
+                  </div>
+                  <div className="bg-forest-50/50 rounded-xl p-3 text-center">
+                    <p className="text-xs text-charcoal-400 mb-1">Words</p>
+                    <p className="text-lg font-bold text-forest-600">{assessment.wordScore}%</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${LEVEL_COLORS[assessment.level]}`}>
+                    {LEVEL_LABELS[assessment.level]}
+                  </span>
+                  <span className="text-xs text-charcoal-400">
+                    · Starting difficulty: <span className="font-medium capitalize">{initialDifficulty}</span>
+                  </span>
+                </div>
+              </div>
+            )}
 
             {/* Overall stats */}
             {sessions.length > 0 && (
@@ -72,8 +166,8 @@ export default function Games() {
                     <p className="text-sm text-charcoal-400">Games Played</p>
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-forest-600">{getAverageAccuracy('memory-match')}%</p>
-                    <p className="text-sm text-charcoal-400">Memory Match</p>
+                    <p className="text-2xl font-bold text-forest-600 capitalize">{currentDifficulty}</p>
+                    <p className="text-sm text-charcoal-400">Current Level</p>
                   </div>
                 </div>
               </div>
@@ -81,26 +175,34 @@ export default function Games() {
 
             {/* Game cards */}
             <div className="grid gap-6">
-              {GAMES.map((game) => (
-                <button
-                  key={game.id}
-                  onClick={() => setActiveGame(game.id)}
-                  className="card-hover flex items-center gap-6 text-left group"
-                >
-                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${game.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}>
-                    <game.icon className="text-white" size={28} />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-semibold text-charcoal-800 group-hover:text-forest-600 transition-colors">
-                      {game.title}
-                    </h3>
-                    <p className="text-charcoal-400">{game.description}</p>
-                  </div>
-                  <div className="text-charcoal-300 group-hover:text-forest-500 transition-colors">
-                    →
-                  </div>
-                </button>
-              ))}
+              {sortedGames.map((game, i) => {
+                const isRecommended = assessment?.recommendedGames[0] === game.id
+                return (
+                  <button
+                    key={game.id}
+                    onClick={() => setActiveGame(game.id)}
+                    className="card-hover flex items-center gap-6 text-left group relative"
+                  >
+                    {isRecommended && (
+                      <div className="absolute -top-2 -right-2 bg-amber-400 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md">
+                        <Sparkles size={10} /> Recommended
+                      </div>
+                    )}
+                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${game.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}>
+                      <game.icon className="text-white" size={28} />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-semibold text-charcoal-800 group-hover:text-forest-600 transition-colors">
+                        {game.title}
+                      </h3>
+                      <p className="text-charcoal-400">{game.description}</p>
+                    </div>
+                    <div className="text-charcoal-300 group-hover:text-forest-500 transition-colors">
+                      →
+                    </div>
+                  </button>
+                )
+              })}
             </div>
           </>
         ) : (
@@ -116,10 +218,10 @@ export default function Games() {
               </button>
               <div>
                 <h2 className="text-2xl font-bold text-charcoal-800">
-                  {GAMES.find(g => g.id === activeGame)?.title}
+                  {GAMES[activeGame]?.title}
                 </h2>
                 <p className="text-charcoal-400 text-sm">
-                  AI-assisted difficulty adapts to your performance
+                  Difficulty: <span className="font-medium capitalize">{currentDifficulty}</span> · AI-adaptive
                 </p>
               </div>
             </div>

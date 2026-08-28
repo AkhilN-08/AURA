@@ -63,7 +63,7 @@ export default function AmbientBackground() {
         vx: (Math.random() - 0.3) * 0.5,
         vy: type === 'dust' ? 0.2 + Math.random() * 0.3 : 0.35 + Math.random() * 0.7,
         rotSpeed: (Math.random() - 0.5) * 0.03,
-        opacity: type === 'dust' ? 0.35 + Math.random() * 0.3 : 0.3 + Math.random() * 0.4,
+        opacity: type === 'dust' ? 0.2 + Math.random() * 0.2 : 0.15 + Math.random() * 0.25,
         color,
         wobblePhase: Math.random() * Math.PI * 2,
         wobbleAmp: type === 'dust' ? 0.4 + Math.random() * 0.5 : 0.6 + Math.random() * 1.2,
@@ -135,11 +135,9 @@ export default function AmbientBackground() {
       time++
       ctx.clearRect(0, 0, w, h)
 
-      // Spawn every 8 frames — dense stream
-      if (time % 8 === 0 && leaves.length < 100) {
+      // Spawn every 24 frames — subtle, non-distracting
+      if (time % 24 === 0 && leaves.length < 35) {
         spawnLeaf()
-        // Sometimes double-spawn for clusters
-        if (Math.random() > 0.6) spawnLeaf()
       }
 
       leaves = leaves.filter(l => {

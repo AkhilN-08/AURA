@@ -1,9 +1,21 @@
 import type { DifficultyLevel } from '../data/models'
+import type { AssessmentResult } from '../hooks/useAuth'
 
 export function calculateDifficulty(accuracy: number): DifficultyLevel {
   if (accuracy > 85) return 'hard'
   if (accuracy >= 60) return 'moderate'
   return 'easy'
+}
+
+export function getDifficultyFromAssessment(result: AssessmentResult): DifficultyLevel {
+  switch (result.level) {
+    case 'mild':
+      return 'moderate'
+    case 'moderate':
+      return 'easy'
+    case 'significant':
+      return 'easy'
+  }
 }
 
 export function getDifficultyConfig(level: DifficultyLevel) {
