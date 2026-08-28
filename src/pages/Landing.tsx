@@ -70,7 +70,7 @@ export default function Landing() {
   }, [reducedMotion])
 
   return (
-    <div className="overflow-hidden will-change-scroll">
+    <div className="overflow-x-hidden">
       <ScrollProgress />
 
       {/* Hero */}

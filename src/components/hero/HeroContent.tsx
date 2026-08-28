@@ -42,22 +42,38 @@ export default function HeroContent() {
       <div className="max-w-3xl mx-auto">
         <h1
           ref={headingRef}
-          className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6"
+          className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-8"
           style={{ opacity: reducedMotion ? 1 : 0 }}
         >
-          <span className="relative inline-block">
-            {/* Liquid glass container */}
-            <span className="relative z-10 bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl px-6 py-3 md:px-8 md:py-4 inline-block shadow-[0_8px_32px_rgba(59,130,246,0.15),inset_0_1px_0_rgba(255,255,255,0.2)] overflow-hidden">
-              <span className="text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]">Every Memory</span>
-              {/* Shimmer highlight */}
-              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-[liquidShimmer_3s_ease-in-out_infinite] pointer-events-none" />
+          <span className="relative inline-block mb-3">
+            {/* Liquid glass container — Every Memory */}
+            <span className="relative z-10 rounded-3xl px-8 py-4 md:px-10 md:py-5 inline-block overflow-hidden
+              bg-gradient-to-br from-white/12 via-white/6 to-white/10
+              backdrop-blur-xl
+              border border-white/25
+              shadow-[0_8px_40px_rgba(59,130,246,0.2),0_2px_12px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.25),inset_0_-1px_0_rgba(255,255,255,0.05)]
+              transition-all duration-500 hover:shadow-[0_12px_50px_rgba(59,130,246,0.3),0_4px_16px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.3)]">
+              {/* Glass glare top-left */}
+              <span className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/15 to-transparent rounded-t-3xl pointer-events-none" />
+              {/* Liquid shimmer sweep */}
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent -translate-x-full animate-[liquidShimmer_4s_ease-in-out_infinite] pointer-events-none" />
+              <span className="relative text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.35)]">Every Memory</span>
             </span>
           </span>
           <br />
-          <span className="relative inline-block mt-2">
-            {/* Liquid glass container for Matters */}
-            <span className="relative z-10 bg-gradient-to-r from-pink-500/20 via-purple-500/15 to-blue-500/20 backdrop-blur-md border border-pink-300/30 rounded-3xl px-6 py-3 md:px-8 md:py-4 inline-block shadow-[0_8px_32px_rgba(236,72,153,0.15),inset_0_1px_0_rgba(255,255,255,0.25)]">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-200 via-white to-blue-200 drop-shadow-[0_0_20px_rgba(236,72,153,0.3)]">Matters.</span>
+          <span className="relative inline-block">
+            {/* Liquid glass container — Matters */}
+            <span className="relative z-10 rounded-3xl px-8 py-4 md:px-10 md:py-5 inline-block overflow-hidden
+              bg-gradient-to-br from-pink-500/25 via-purple-500/15 to-blue-500/20
+              backdrop-blur-xl
+              border border-pink-300/35
+              shadow-[0_8px_40px_rgba(236,72,153,0.2),0_2px_12px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.3),inset_0_-1px_0_rgba(255,255,255,0.05)]
+              transition-all duration-500 hover:shadow-[0_12px_50px_rgba(236,72,153,0.3),0_4px_16px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.35)]">
+              {/* Glass glare top-left */}
+              <span className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/20 to-transparent rounded-t-3xl pointer-events-none" />
+              {/* Liquid shimmer sweep */}
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/12 to-transparent -translate-x-full animate-[liquidShimmer_4s_ease-in-out_0.5s_infinite] pointer-events-none" />
+              <span className="relative bg-clip-text text-transparent bg-gradient-to-r from-pink-100 via-white to-blue-100 drop-shadow-[0_0_25px_rgba(236,72,153,0.35)]">Matters.</span>
             </span>
           </span>
         </h1>
