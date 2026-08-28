@@ -139,7 +139,7 @@ export default function PetalTree() {
               blossoms.push({
                 x: nx + (rand() - 0.5) * 20,
                 y: ny + (rand() - 0.5) * 15,
-                size: 4 + rand() * 5,
+                size: 5.5 + rand() * 6,
                 opacity: 0.5 + rand() * 0.5,
                 phase: rand() * Math.PI * 2,
               })
@@ -162,7 +162,7 @@ export default function PetalTree() {
             blossoms.push({
               x: tx + (rand() - 0.5) * 15,
               y: ty + (rand() - 0.5) * 10,
-              size: 3 + rand() * 4,
+              size: 4.5 + rand() * 5,
               opacity: 0.4 + rand() * 0.4,
               phase: rand() * Math.PI * 2,
             })
@@ -176,7 +176,7 @@ export default function PetalTree() {
         blossoms.push({
           x: lastBranch.x2 + (rand() - 0.5) * 30,
           y: lastBranch.y2 + (rand() - 0.5) * 20,
-          size: 5 + rand() * 5,
+          size: 6.5 + rand() * 6,
           opacity: 0.5 + rand() * 0.5,
           phase: rand() * Math.PI * 2,
         })
@@ -358,7 +358,7 @@ export default function PetalTree() {
       blossoms.forEach(b => drawBlossom(b, sway))
 
       // Spawn petals
-      if (time % 12 === 0 && fallingPetals.length < 60) {
+      if (time % 11 === 0 && fallingPetals.length < 65) {
         spawnPetal()
       }
 
