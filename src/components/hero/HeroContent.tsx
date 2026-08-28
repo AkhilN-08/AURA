@@ -42,18 +42,18 @@ export default function HeroContent() {
       <div className="max-w-3xl mx-auto">
         <h1
           ref={headingRef}
-          className="text-5xl md:text-7xl lg:text-8xl font-bold text-charcoal-800 leading-tight mb-6"
+          className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6 text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.15)]"
           style={{ opacity: reducedMotion ? 1 : 0 }}
         >
           Every Memory{' '}
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-forest-500 to-forest-400">
+          <span            className="bg-clip-text text-transparent bg-gradient-to-r from-pink-300 to-blue-200">
             Matters.
           </span>
         </h1>
 
         <p
           ref={subtextRef}
-          className="text-lg md:text-xl lg:text-2xl text-charcoal-400 max-w-2xl mx-auto mb-10 leading-relaxed"
+          className="text-lg md:text-xl lg:text-2xl text-white/70 max-w-2xl mx-auto mb-10 leading-relaxed"
           style={{ opacity: reducedMotion ? 1 : 0 }}
         >
           An AI-powered cognitive and memory companion designed to keep minds engaged and families connected.
@@ -75,7 +75,7 @@ export default function HeroContent() {
         className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce"
         style={{ opacity: reducedMotion ? 1 : 0 }}
       >
-        <ArrowDown className="text-charcoal-300" size={28} />
+        <ArrowDown className="text-white/50" size={28} />
       </div>
     </div>
   )
