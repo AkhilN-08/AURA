@@ -166,6 +166,66 @@ section {
   backface-visibility: hidden;
 }
 
+/* Liquid text effect — blue/white */
+.liquid-text {
+  background: linear-gradient(
+    135deg,
+    #93C5FD 0%,
+    #FFFFFF 20%,
+    #60A5FA 40%,
+    #DBEAFE 55%,
+    #FFFFFF 70%,
+    #93C5FD 85%,
+    #FFFFFF 100%
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: liquidFlow 5s ease-in-out infinite;
+  filter: drop-shadow(0 0 30px rgba(96, 165, 250, 0.4)) drop-shadow(0 0 60px rgba(59, 130, 246, 0.2));
+  position: relative;
+}
+
+/* Liquid text effect — pink/white */
+.liquid-text-pink {
+  background: linear-gradient(
+    135deg,
+    #F9A8D4 0%,
+    #FFFFFF 20%,
+    #F472B6 40%,
+    #FBCFE8 55%,
+    #FFFFFF 70%,
+    #F9A8D4 85%,
+    #FFFFFF 100%
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: liquidFlowPink 5s ease-in-out 0.5s infinite;
+  filter: drop-shadow(0 0 30px rgba(236, 72, 153, 0.4)) drop-shadow(0 0 60px rgba(244, 114, 182, 0.2));
+  position: relative;
+}
+
+/* Liquid flow animation — blue */
+@keyframes liquidFlow {
+  0% { background-position: 0% 0%; }
+  25% { background-position: 100% 50%; }
+  50% { background-position: 50% 100%; }
+  75% { background-position: 0% 50%; }
+  100% { background-position: 0% 0%; }
+}
+
+/* Liquid flow animation — pink */
+@keyframes liquidFlowPink {
+  0% { background-position: 100% 100%; }
+  25% { background-position: 0% 50%; }
+  50% { background-position: 50% 0%; }
+  75% { background-position: 100% 50%; }
+  100% { background-position: 100% 100%; }
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,
