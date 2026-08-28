@@ -40,7 +40,7 @@ export default function HeroContent() {
   }, [reducedMotion])
 
   return (
-    <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 text-center">
+    <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 text-center pt-16">
       <div className="max-w-3xl mx-auto">
         <h1
           ref={headingRef}

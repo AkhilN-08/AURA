@@ -57,14 +57,14 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Nav — glass pills */}
-          <div className="hidden md:flex items-center gap-1 bg-white/30 backdrop-blur-xl rounded-2xl px-2 py-1.5 border border-white/40">
+          <div className="hidden md:flex items-center gap-0.5 bg-white/25 backdrop-blur-xl rounded-xl px-1.5 py-1 border border-white/30">
             {NAV_LINKS.map(link => (
               <Link
                 key={link.href}
                 to={link.href}
-                className={`relative px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-400 ${
+                className={`relative px-2.5 py-1 rounded-md text-[11px] font-medium transition-all duration-300 ${
                   location.pathname === link.href
-                    ? 'bg-sage-500/90 text-white shadow-[0_0_12px_rgba(59,130,246,0.3)]'
+                    ? 'bg-sage-500/90 text-white shadow-sm'
                     : 'text-charcoal-500 hover:text-charcoal-800 hover:bg-white/50'
                 }`}
               >
@@ -76,37 +76,25 @@ export default function Navbar() {
           {/* User + CTA + Hamburger */}
           <div className="flex items-center gap-3">
             {user && (
-              <div className="hidden md:flex items-center gap-3">
-                {/* Profile trigger button */}
+              <div className="hidden md:flex items-center gap-1.5">
+                {/* Profile trigger button — compact */}
                 <button
                   onClick={() => setProfileOpen(true)}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/40 backdrop-blur-sm border border-white/50 hover:bg-white/70 hover:shadow-[0_4px_16px_rgba(0,0,0,0.04)] transition-all duration-300 group"
+                  className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white/30 backdrop-blur-sm border border-white/40 hover:bg-white/60 transition-all duration-200 group"
                   aria-label="Open profile menu"
                 >
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-xs font-bold text-white">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center shadow-sm">
+                    <span className="text-[10px] font-bold text-white">
                       {user.name.charAt(0).toUpperCase()}
                     </span>
                   </div>
-                  <span className="text-sm font-medium text-charcoal-700 max-w-[100px] truncate">
+                  <span className="text-[11px] font-medium text-charcoal-700 max-w-[80px] truncate hidden lg:inline">
                     {user.name}
                   </span>
                 </button>
-                <button
-                  onClick={handleLogout}
-                  className="p-2 rounded-xl text-charcoal-400 hover:text-red-500 hover:bg-red-50/60 transition-all duration-300"
-                  aria-label="Sign out"
-                >
-                  <LogOut size={18} />
-                </button>
               </div>
             )}
-            <Link
-              to="/games"
-              className="hidden md:inline-flex items-center gap-2 bg-gradient-to-r from-forest-500 to-sage-600 text-white px-5 py-2 rounded-xl text-xs font-semibold shadow-[0_0_20px_rgba(59,130,246,0.25)] hover:shadow-[0_0_30px_rgba(59,130,246,0.4)] hover:scale-105 transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)]"
-            >
-              Get Started
-            </Link>
+
 
             {/* Morphing hamburger */}
             <button
