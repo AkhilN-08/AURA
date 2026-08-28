@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from 'react'
-import { Bell, Plus, Trash2, Check, Clock, Mic, MicOff, Send, Volume2, VolumeX, RotateCcw, Navigation } from 'lucide-react'
+import { Bell, Plus, Trash2, Check, Clock, Mic, MicOff, Send, Volume2, VolumeX, RotateCcw, Navigation, ListChecks } from 'lucide-react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { useVoiceAgent } from '../hooks/useVoiceAgent'
-import type { Reminder } from '../data/models'
+import type { Reminder, DailyTask } from '../data/models'
 import { REMINDER_TYPES } from '../data/models'
 import Modal from '../components/ui/Modal'
 import { useNavigate } from 'react-router-dom'
+
+const getToday = () => new Date().toISOString().split('T')[0]
 
 export default function Assistant() {
   const navigate = useNavigate()
@@ -14,6 +16,8 @@ export default function Assistant() {
   const [newTitle, setNewTitle] = useState('')
   const [newTime, setNewTime] = useState('')
   const [newType, setNewType] = useState<Reminder['type']>('routine')
+  const [tasks, setTasks] = useLocalStorage<DailyTask[]>('aura-daily-tasks', [])
+  const [newTaskTitle, setNewTaskTitle] = useState('')
   const [textInput, setTextInput] = useState('')
   const [voiceEnabled, setVoiceEnabled] = useState(true)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -43,6 +47,17 @@ export default function Assistant() {
         setReminders(prev => [...prev, reminder])
       }
 
+      if (type === 'task' && payload.title) {
+        const task: DailyTask = {
+          id: Date.now().toString(),
+          title: payload.title,
+          completed: false,
+          createdAt: new Date().toISOString(),
+          date: getToday(),
+        }
+        setTasks(prev => [...prev, task])
+      }
+
       if (type === 'call' && payload.phone) {
         window.open(`tel:${payload.phone}`, '_self')
       }
@@ -67,7 +82,7 @@ export default function Assistant() {
         }, Math.min(diff, 2147483647))
       }
     }
-  }, [voice.messages, navigate, setReminders, voice])
+  }, [voice.messages, navigate, setReminders, setTasks, voice])
 
   // Request notification permission
   useEffect(() => {
@@ -105,6 +120,33 @@ export default function Assistant() {
 
   const deleteReminder = (id: string) => {
     setReminders(prev => prev.filter(r => r.id !== id))
+  }
+
+  // Daily tasks - auto-reset when date changes
+  const today = getToday()
+  const todayTasks = tasks.filter(t => t.date === today)
+  const pendingTasks = todayTasks.filter(t => !t.completed)
+  const completedTasks = todayTasks.filter(t => t.completed)
+
+  const addTask = () => {
+    if (!newTaskTitle.trim()) return
+    const task: DailyTask = {
+      id: Date.now().toString(),
+      title: newTaskTitle.trim(),
+      completed: false,
+      createdAt: new Date().toISOString(),
+      date: today,
+    }
+    setTasks(prev => [...prev, task])
+    setNewTaskTitle('')
+  }
+
+  const toggleTask = (id: string) => {
+    setTasks(prev => prev.map(t => t.id === id ? { ...t, completed: !t.completed } : t))
+  }
+
+  const deleteTask = (id: string) => {
+    setTasks(prev => prev.filter(t => t.id !== id))
   }
 
   const pending = reminders.filter(r => !r.completed)
@@ -330,8 +372,89 @@ export default function Assistant() {
             </div>
           </div>
 
-          {/* Right: Reminders Panel (2 cols) */}
+          {/* Right: Tasks + Reminders Panel (2 cols) */}
           <div className="lg:col-span-2 space-y-4">
+            {/* Today's Tasks */}
+            <div className="card">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-sm font-semibold text-charcoal-800 flex items-center gap-2">
+                  <ListChecks size={16} className="text-blue-500" />
+                  Today's Tasks
+                  {pendingTasks.length > 0 && (
+                    <span className="text-[10px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded-full">{pendingTasks.length}</span>
+                  )}
+                </h2>
+                {todayTasks.length > 0 && (
+                  <span className="text-[10px] text-charcoal-300">{completedTasks.length}/{todayTasks.length} done</span>
+                )}
+              </div>
+
+              {/* Task input */}
+              <div className="flex items-center gap-2 mb-3">
+                <input
+                  type="text"
+                  value={newTaskTitle}
+                  onChange={e => setNewTaskTitle(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && addTask()}
+                  placeholder="Add a task for today..."
+                  className="flex-1 px-3 py-2 rounded-lg bg-cream-50 border border-cream-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 placeholder:text-charcoal-300"
+                />
+                <button
+                  onClick={addTask}
+                  disabled={!newTaskTitle.trim()}
+                  className="w-8 h-8 rounded-lg bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <Plus size={14} />
+                </button>
+              </div>
+
+              {/* Task list */}
+              {todayTasks.length > 0 && (
+                <div className="space-y-1.5">
+                  {pendingTasks.map(task => (
+                    <div key={task.id} className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-cream-50/50 transition-colors group">
+                      <button
+                        onClick={() => toggleTask(task.id)}
+                        className="w-5 h-5 rounded-md border-2 border-cream-300 hover:border-blue-400 flex items-center justify-center transition-colors flex-shrink-0"
+                      />
+                      <span className="text-sm text-charcoal-700 flex-1 truncate">{task.title}</span>
+                      <button
+                        onClick={() => deleteTask(task.id)}
+                        className="p-1 rounded hover:bg-red-50 text-charcoal-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                      >
+                        <Trash2 size={10} />
+                      </button>
+                    </div>
+                  ))}
+                  {completedTasks.length > 0 && (
+                    <div className="pt-1.5 border-t border-cream-100 mt-1.5">
+                      {completedTasks.map(task => (
+                        <div key={task.id} className="flex items-center gap-2.5 px-2 py-1.5">
+                          <button
+                            onClick={() => toggleTask(task.id)}
+                            className="w-5 h-5 rounded-md bg-blue-50 border-2 border-blue-300 flex items-center justify-center flex-shrink-0"
+                          >
+                            <Check size={10} className="text-blue-500" />
+                          </button>
+                          <span className="text-sm text-charcoal-400 line-through flex-1 truncate">{task.title}</span>
+                          <button
+                            onClick={() => deleteTask(task.id)}
+                            className="p-1 rounded hover:bg-red-50 text-charcoal-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                          >
+                            <Trash2 size={10} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {todayTasks.length === 0 && (
+                <p className="text-xs text-charcoal-300 text-center py-2">No tasks yet. Add one above!</p>
+              )}
+            </div>
+
             {/* Reminder Header */}
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-charcoal-800 flex items-center gap-2">
@@ -424,6 +547,8 @@ export default function Assistant() {
               <h3 className="text-sm font-semibold text-charcoal-700 mb-2">💡 Voice Tips</h3>
               <ul className="space-y-1.5 text-xs text-charcoal-500">
                 <li>• Say <strong>"Remind me to take medicine at 8 AM"</strong></li>
+                <li>• Say <strong>"Add task buy groceries"</strong></li>
+                <li>• Say <strong>"I need to water the plants"</strong></li>
                 <li>• Say <strong>"Call mom"</strong> to open phone dialer</li>
                 <li>• Say <strong>"Set an alarm for 7:00"</strong></li>
                 <li>• Say <strong>"What time is it?"</strong></li>

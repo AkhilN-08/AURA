@@ -16,6 +16,14 @@ export interface Reminder {
   createdAt: string
 }
 
+export interface DailyTask {
+  id: string
+  title: string
+  completed: boolean
+  createdAt: string
+  date: string // YYYY-MM-DD for daily reset
+}
+
 export interface UserProfile {
   name: string
   age: number

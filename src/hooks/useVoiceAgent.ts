@@ -9,7 +9,7 @@ export interface VoiceMessage {
 }
 
 export interface VoiceAction {
-  type: 'reminder' | 'call' | 'alarm' | 'navigate' | 'game' | 'none'
+  type: 'reminder' | 'call' | 'alarm' | 'navigate' | 'game' | 'task' | 'none'
   payload: Record<string, string>
 }
 
@@ -110,6 +110,22 @@ function parseCommand(text: string): CommandIntent {
       return {
         intent: 'alarm',
         entities: { time: timeMatch ? normalizeTime(timeMatch[1]) : match[1].trim() },
+      }
+    }
+  }
+
+  // --- Add Task ---
+  const taskPatterns = [
+    /(?:add|create|new|set)\s+(?:a\s+)?task(?:\s+(?:to|for))?\s+(.+)/i,
+    /(?:i\s+)?(?:need\s+to|have\s+to|must|should)\s+(.+)/i,
+    /(?:today\s+)?(?:i\s+)?(?:need|want|have)\s+(?:to\s+)?(.+)/i,
+  ]
+  for (const pattern of taskPatterns) {
+    const match = lower.match(pattern)
+    if (match) {
+      return {
+        intent: 'task',
+        entities: { title: match[1].trim() },
       }
     }
   }
@@ -239,6 +255,12 @@ function generateResponse(
         action: { type: 'alarm', payload: entities },
       }
 
+    case 'task':
+      return {
+        text: `Added to your today's tasks: ${entities.title}. You can check it off when you're done!`,
+        action: { type: 'task', payload: entities },
+      }
+
     case 'game':
       return {
         text: "Great choice! Let's play a memory game to keep your mind sharp. I'm taking you to the games section now.",
@@ -274,7 +296,7 @@ function generateResponse(
 
     case 'help':
       return {
-        text: `I can help you with several things! You can say: "Remind me to take medicine at 8 AM", "Call mom", "Set an alarm for 7", "Let's play a memory game", "What time is it?", or "Open games". Just speak naturally and I'll understand!`,
+        text: `I can help you with several things! You can say: "Remind me to take medicine at 8 AM", "Call mom", "Set an alarm for 7", "Add task buy groceries", "I need to water the plants", "Let's play a memory game", "What time is it?", or "Open games". Just speak naturally and I'll understand!`,
       }
 
     case 'navigate':
