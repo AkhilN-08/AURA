@@ -38,12 +38,12 @@ export default function Landing() {
         gsap.to(heroContentRef.current, {
           y: -120,
           opacity: 0,
-          ease: 'power1.inOut',
+          ease: 'power2.inOut',
           scrollTrigger: {
             trigger: heroRef.current,
             start: 'top top',
             end: 'bottom top',
-            scrub: 0.3,
+            scrub: 0.5,
           },
         })
       }
@@ -55,7 +55,7 @@ export default function Landing() {
           { opacity: 0, y: 40, scale: 0.6, rotate: -10 },
           {
             opacity: 1, y: 0, scale: 1, rotate: 0,
-            duration: 0.5, stagger: 0.08, ease: 'power1.out',
+            duration: 0.8, stagger: 0.1, ease: 'power3.out',
             scrollTrigger: {
               trigger: nerRef.current,
               start: 'top 80%',

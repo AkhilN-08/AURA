@@ -175,7 +175,7 @@ export default function WordAssociation({ onComplete }: WordAssociationProps) {
                     key={word}
                     onClick={() => handleLeftClick(word)}
                     disabled={isMatched || phase === 'result'}
-                    className={`w-full py-3 px-4 rounded-xl text-base font-semibold transition-all duration-200 border-2
+                    className={`w-full py-3 px-4 rounded-xl text-base font-semibold transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] ease-[cubic-bezier(0.34,1.56,0.64,1)] border-2
                       ${isMatched ? 'bg-green-50 border-green-300 text-green-700 cursor-default' :
                         isSelected ? 'bg-blue-50 border-blue-400 text-blue-700 shadow-md scale-105' :
                         isWrong ? 'bg-red-50 border-red-300 text-red-600 animate-shake' :
@@ -197,7 +197,7 @@ export default function WordAssociation({ onComplete }: WordAssociationProps) {
                     key={word}
                     onClick={() => handleRightClick(word)}
                     disabled={isMatched || phase === 'result'}
-                    className={`w-full py-3 px-4 rounded-xl text-base font-semibold transition-all duration-200 border-2
+                    className={`w-full py-3 px-4 rounded-xl text-base font-semibold transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] ease-[cubic-bezier(0.34,1.56,0.64,1)] border-2
                       ${isMatched ? 'bg-green-50 border-green-300 text-green-700 cursor-default' :
                         isWrong ? 'bg-red-50 border-red-300 text-red-600 animate-shake' :
                         'bg-white border-cream-200 text-charcoal-700 hover:border-blue-300 hover:bg-blue-50/50 cursor-pointer'}`}

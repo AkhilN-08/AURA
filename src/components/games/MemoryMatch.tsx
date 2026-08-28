@@ -164,7 +164,7 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
             onClick={() => handleCardClick(card.id)}
             disabled={card.isFlipped || card.isMatched || lockBoard}
             className={`aspect-square rounded-2xl text-3xl md:text-4xl font-bold
-                       transition-all duration-300 ease-out
+                       transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)]
                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-400
                        ${card.isMatched
                          ? 'bg-sage-100 border-2 border-sage-300 scale-105'

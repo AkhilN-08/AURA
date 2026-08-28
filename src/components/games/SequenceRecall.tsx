@@ -146,7 +146,7 @@ export default function SequenceRecall({ onComplete }: SequenceRecallProps) {
             {sequence.map((item, i) => (
               <div
                 key={i}
-                className={`w-20 h-20 rounded-2xl flex items-center justify-center text-4xl transition-all duration-300
+                className={`w-20 h-20 rounded-2xl flex items-center justify-center text-4xl transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)]
                   ${i <= currentIndex ? 'bg-sage-50 border-2 border-sage-300 shadow-lg scale-110' : 'bg-cream-100 border-2 border-cream-200'}`}
               >
                 {i <= currentIndex ? item : '?'}
@@ -198,7 +198,7 @@ export default function SequenceRecall({ onComplete }: SequenceRecallProps) {
               <button
                 key={`${item}-${i}`}
                 onClick={() => handleSelectItem(item)}
-                className="aspect-square rounded-2xl text-3xl flex items-center justify-center bg-white border-2 border-cream-200 hover:border-sage-300 hover:bg-sage-50 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-400"
+                className="aspect-square rounded-2xl text-3xl flex items-center justify-center bg-white border-2 border-cream-200 hover:border-sage-300 hover:bg-sage-50 transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] ease-[cubic-bezier(0.34,1.56,0.64,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-400"
               >
                 {item}
               </button>

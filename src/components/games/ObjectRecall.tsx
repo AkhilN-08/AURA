@@ -163,7 +163,7 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
                 <button
                   key={obj.id}
                   onClick={() => handleSelect(obj.id)}
-                  className={`card text-center py-6 transition-all duration-200
+                  className={`card text-center py-6 transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] ease-[cubic-bezier(0.34,1.56,0.64,1)]
                     ${isSelected ? 'ring-2 ring-forest-500 bg-sage-50 scale-105' : 'hover:bg-cream-50'}
                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-400`}
                 >

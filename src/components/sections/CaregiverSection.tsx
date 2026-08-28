@@ -121,7 +121,7 @@ export default function CaregiverSection() {
             { icon: Activity, title: 'Game Performance', desc: 'How each game session went — scores, accuracy, and progress.', iconColor: 'sage' as const },
             { icon: Bell, title: 'Reminder Status', desc: 'See which reminders were acknowledged and completed.', iconColor: 'amber' as const },
           ].map((item, i) => (
-            <div key={i} className="caregiver-card group relative overflow-hidden rounded-3xl bg-white/60 backdrop-blur-xl border border-white/50 p-8 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_40px_rgba(59,130,246,0.1)] hover:-translate-y-2 transition-all duration-500" style={{ opacity: reducedMotion ? 1 : 0 }}>
+            <div key={i} className="caregiver-card group relative overflow-hidden rounded-3xl bg-white/60 backdrop-blur-xl border border-white/50 p-8 text-center shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_50px_rgba(59,130,246,0.1)] hover:-translate-y-2 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]" style={{ opacity: reducedMotion ? 1 : 0 }}>
               <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
               <div className="relative z-10">
                 <div className="mx-auto mb-5">

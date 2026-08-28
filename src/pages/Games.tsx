@@ -228,11 +228,11 @@ export default function Games() {
                         <Sparkles size={10} /> Recommended
                       </div>
                     )}
-                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${game.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}>
+                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${game.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]`}>
                       <game.icon className="text-white" size={28} />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-charcoal-800 group-hover:text-sage-600 transition-colors">
+                      <h3 className="text-xl font-semibold text-charcoal-800 group-hover:text-sage-600 transition-colors duration-300">
                         {game.title}
                       </h3>
                       <p className="text-charcoal-400">{game.description}</p>

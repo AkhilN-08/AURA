@@ -252,7 +252,7 @@ export default function StoryRecall({ onComplete }: StoryRecallProps) {
                     key={i}
                     onClick={() => handleAnswer(i)}
                     disabled={showFeedback}
-                    className={`w-full text-left px-5 py-3.5 rounded-xl border-2 transition-all duration-200 font-medium ${optionClass}`}
+                    className={`w-full text-left px-5 py-3.5 rounded-xl border-2 transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] ease-[cubic-bezier(0.34,1.56,0.64,1)] font-medium ${optionClass}`}
                   >
                     <div className="flex items-center gap-3">
                       <span className="w-7 h-7 rounded-full border-2 border-current flex items-center justify-center text-sm flex-shrink-0">

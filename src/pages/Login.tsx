@@ -24,7 +24,7 @@ export default function Login() {
     const els = formRef.current.querySelectorAll('.login-anim')
     gsap.fromTo(els,
       { opacity: 0, y: 30, filter: 'blur(6px)' },
-      { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.7, stagger: 0.08, ease: 'power3.out', delay: 0.2 }
+      { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.9, stagger: 0.1, ease: 'power3.out', delay: 0.15 }
     )
   }, [])
 
@@ -42,11 +42,11 @@ export default function Login() {
         result = login(email, password)
       }
       if (result.success) {
-        gsap.to(formRef.current, { opacity: 0, y: -20, duration: 0.3, onComplete: () => navigate('/') })
+        gsap.to(formRef.current, { opacity: 0, y: -30, scale: 0.97, duration: 0.4, ease: 'power2.in', onComplete: () => navigate('/') })
       } else {
         setError(result.error || 'Something went wrong.')
         gsap.fromTo(formRef.current?.querySelector('.error-msg') as HTMLElement,
-          { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.3 }
+          { opacity: 0, x: -15, scale: 0.97 }, { opacity: 1, x: 0, scale: 1, duration: 0.4, ease: 'power3.out' }
         )
       }
       setLoading(false)
