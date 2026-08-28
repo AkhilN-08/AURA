@@ -20,10 +20,10 @@ export default function AccessibilityToggle() {
   }, [mode])
 
   return (
-    <div className="fixed bottom-6 right-6 z-[9998] lg:block">
+    <div className="fixed top-20 right-6 z-[9998] lg:block">
       {/* Expanded panel */}
       {isExpanded && (
-        <div className="mb-3 bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-sage-100 p-4 w-56 animate-fade-in">
+        <div className="mt-3 bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-sage-100 p-4 w-56 animate-fade-in">
           <p className="text-xs font-semibold text-charcoal-600 mb-3 uppercase tracking-wide">View Mode</p>
           <div className="space-y-2">
             <button
