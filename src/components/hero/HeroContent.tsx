@@ -5,12 +5,7 @@ import { ArrowDown, Sparkles as SparklesIcon } from 'lucide-react'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import { useTranslation } from '../../hooks/useTranslation'
 
-interface Props {
-  /** 0-1, controls when content fades in */
-  visibilityProgress?: number
-}
-
-export default function HeroContent({ visibilityProgress = 1 }: Props) {
+export default function HeroContent() {
   const { t } = useTranslation()
   const headingRef = useRef<HTMLHeadingElement>(null)
   const subtextRef = useRef<HTMLParagraphElement>(null)
@@ -42,14 +37,13 @@ export default function HeroContent({ visibilityProgress = 1 }: Props) {
     )
   }, [reducedMotion])
 
-  const contentOpacity = reducedMotion ? 1 : Math.max(0, Math.min(1, (visibilityProgress - 0.7) / 0.3))
-
   return (
     <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 text-center pt-16">
-      <div className="max-w-3xl mx-auto" style={{ opacity: contentOpacity }}>
+      <div className="max-w-3xl mx-auto">
         <h1
           ref={headingRef}
           className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6"
+          style={{ opacity: reducedMotion ? 1 : 0 }}
         >
           <span className="liquid-text block text-6xl md:text-8xl lg:text-9xl">AURA-NER</span>
         </h1>
@@ -57,11 +51,12 @@ export default function HeroContent({ visibilityProgress = 1 }: Props) {
         <p
           ref={subtextRef}
           className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto mb-4 leading-relaxed"
+          style={{ opacity: reducedMotion ? 1 : 0 }}
         >
           {t('AI-powered cognitive gaming and memory assistance for elderly people in the North Eastern Region.')}
         </p>
 
-        <p className="text-sm md:text-base text-white/50 max-w-xl mx-auto mb-10 leading-relaxed">
+        <p className="text-sm md:text-base text-white/50 max-w-xl mx-auto mb-10 leading-relaxed" style={{ opacity: reducedMotion ? 1 : 0 }}>
           AURA-NER combines AI-driven personalization with culturally familiar activities to keep minds active — through games, voice assistance, and gentle caregiver insights.
         </p>
 
@@ -79,6 +74,7 @@ export default function HeroContent({ visibilityProgress = 1 }: Props) {
       <div
         ref={scrollRef}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce"
+        style={{ opacity: reducedMotion ? 1 : 0 }}
       >
         <ArrowDown className="text-white/50" size={28} />
       </div>

@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useRef, useState } from 'react'
+import { Suspense, lazy, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -25,30 +25,13 @@ export default function Landing() {
   const { t } = useTranslation()
   const heroRef = useRef<HTMLElement>(null)
   const heroContentRef = useRef<HTMLDivElement>(null)
-  const [growthProgress, setGrowthProgress] = useState(1)
-  const [contentVisibility, setContentVisibility] = useState(1)
   const reducedMotion = useReducedMotion()
 
   useEffect(() => {
     if (reducedMotion) return
 
     const ctx = gsap.context(() => {
-      // Hero — scroll-driven tree growth
-      if (heroRef.current) {
-        ScrollTrigger.create({
-          trigger: heroRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.5,
-          onUpdate: (self) => {
-            const p = self.progress
-            setGrowthProgress(Math.min(1, p * 2.5)) // tree fully grown at 40% scroll
-            setContentVisibility(p)
-          },
-        })
-      }
-
-      // Hero content fade out on scroll
+      // Hero content parallax — fade out as you scroll past
       if (heroContentRef.current) {
         gsap.to(heroContentRef.current, {
           y: -60,
@@ -56,7 +39,7 @@ export default function Landing() {
           ease: 'none',
           scrollTrigger: {
             trigger: heroRef.current,
-            start: 'center center',
+            start: 'top top',
             end: 'bottom top',
             scrub: 0.5,
           },
@@ -74,25 +57,22 @@ export default function Landing() {
       {/* Fixed tree canvas — persists behind entire page */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <Suspense fallback={<HeroFallback />}>
-          <HeroScene growthProgress={reducedMotion ? 1 : growthProgress} />
+          <HeroScene growthProgress={1} />
         </Suspense>
       </div>
 
-      {/* Hero — Tall section for scroll room */}
-      <section ref={heroRef} className="relative dark:bg-transparent" style={{ height: '180vh' }}>
-        {/* Sticky content over the fixed tree */}
+      {/* Hero — normal viewport height */}
+      <section ref={heroRef} className="relative min-h-screen dark:bg-transparent">
         <div className="sticky top-0 h-screen overflow-hidden">
           <GlowOrbs />
-
-          {/* Hero content — fades in as tree grows */}
           <div ref={heroContentRef} className="relative z-10">
-            <HeroContent visibilityProgress={reducedMotion ? 1 : contentVisibility} />
+            <HeroContent />
           </div>
         </div>
       </section>
 
       {/* About section — semi-transparent bg over tree */}
-      <section className="py-20 md:py-28 px-4 relative bg-[#FFF8FA]/80 dark:bg-[#0f0f1a]/80 backdrop-blur-sm">
+      <section className="py-20 md:py-28 px-4 relative bg-[#FFF8FA]/85 dark:bg-[#0f0f1a]/85 backdrop-blur-sm">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-5xl font-bold text-charcoal-800 dark:text-white mb-6">
             AURA-NER
@@ -113,22 +93,22 @@ export default function Landing() {
       </section>
 
       {/* Stats */}
-      <div className="relative bg-[#FFF8FA]/80 dark:bg-[#0f0f1a]/80 backdrop-blur-sm">
+      <div className="relative bg-[#FFF8FA]/85 dark:bg-[#0f0f1a]/85 backdrop-blur-sm">
         <StatsBar />
       </div>
 
       {/* Product Showcase */}
-      <div className="relative bg-[#FFF8FA]/80 dark:bg-[#0f0f1a]/80 backdrop-blur-sm">
+      <div className="relative bg-[#FFF8FA]/85 dark:bg-[#0f0f1a]/85 backdrop-blur-sm">
         <ProductShowcase />
       </div>
 
       {/* Adapt Section */}
-      <div className="relative bg-[#FFF8FA]/80 dark:bg-[#0f0f1a]/80 backdrop-blur-sm">
+      <div className="relative bg-[#FFF8FA]/85 dark:bg-[#0f0f1a]/85 backdrop-blur-sm">
         <AdaptSection />
       </div>
 
       {/* NER Cultural Strip */}
-      <div className="relative bg-[#FFF8FA]/80 dark:bg-[#0f0f1a]/80 backdrop-blur-sm">
+      <div className="relative bg-[#FFF8FA]/85 dark:bg-[#0f0f1a]/85 backdrop-blur-sm">
         <NerStrip />
       </div>
 
