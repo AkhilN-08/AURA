@@ -116,7 +116,7 @@ export default function HeroContent() {
           className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6"
           style={{ opacity: reducedMotion ? 1 : 0 }}
         >
-          <span className="liquid-text block text-6xl md:text-8xl lg:text-9xl">AURA-NER</span>
+          <span className="liquid-text block text-4xl md:text-6xl lg:text-7xl">AURA-NER</span>
         </h1>
 
         <p

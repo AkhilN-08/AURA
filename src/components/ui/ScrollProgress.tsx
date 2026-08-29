@@ -15,7 +15,7 @@ export default function ScrollProgress() {
         scaleX: 1,
         ease: 'none',
         scrollTrigger: {
-          trigger: document.body,
+          trigger: document.documentElement,
           start: 'top top',
           end: 'bottom bottom',
           scrub: 0.1,
@@ -27,11 +27,15 @@ export default function ScrollProgress() {
   }, [])
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-transparent pointer-events-none">
+    <div className="fixed top-0 left-0 right-0 z-[9999] h-[3px] pointer-events-none">
       <div
         ref={barRef}
-        className="h-full bg-gradient-to-r from-forest-400 via-forest-500 to-amber-400 origin-left"
-        style={{ transform: 'scaleX(0)' }}
+        className="h-full origin-left"
+        style={{
+          transform: 'scaleX(0)',
+          background: 'linear-gradient(90deg, #84cc16, #22c55e, #f59e0b)',
+          boxShadow: '0 0 8px rgba(132,204,22,0.5)',
+        }}
       />
     </div>
   )
