@@ -19,6 +19,7 @@ export default function Navbar() {
     { label: t('Cognitive Games'), href: '/games' },
     { label: t('Memory Assistant'), href: '/assistant' },
     { label: t('Caregiver'), href: '/caregiver' },
+    { label: t('About'), href: '/about' },
   ]
 
   useEffect(() => {

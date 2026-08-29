@@ -6,6 +6,7 @@ import FamilyPage from './pages/FamilyPage'
 import Games from './pages/Games'
 import Assistant from './pages/Assistant'
 import Caregiver from './pages/Caregiver'
+import About from './pages/About'
 import Login from './pages/Login'
 import Assessment from './pages/Assessment'
 import Navbar from './components/navigation/Navbar'
@@ -100,6 +101,11 @@ function AppRoutes() {
         <Route path="/caregiver" element={
           <AssessmentGate>
             <AuthenticatedLayout><Caregiver /></AuthenticatedLayout>
+          </AssessmentGate>
+        } />
+        <Route path="/about" element={
+          <AssessmentGate>
+            <AuthenticatedLayout><About /></AuthenticatedLayout>
           </AssessmentGate>
         } />
         <Route path="/family" element={
