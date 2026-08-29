@@ -68,20 +68,20 @@ export default function Landing() {
   }, [reducedMotion])
 
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-hidden relative">
       <ScrollProgress />
 
-      {/* Hero — Tall section for scroll room */}
-      <section ref={heroRef} className="relative dark:bg-[#0f0f1a]" style={{ height: '180vh' }}>
-        {/* Sticky canvas + content */}
-        <div className="sticky top-0 h-screen overflow-hidden">
-          {/* Growing tree canvas */}
-          <div className="absolute inset-0 z-0">
-            <Suspense fallback={<HeroFallback />}>
-              <HeroScene growthProgress={reducedMotion ? 1 : growthProgress} />
-            </Suspense>
-          </div>
+      {/* Fixed tree canvas — persists behind entire page */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <Suspense fallback={<HeroFallback />}>
+          <HeroScene growthProgress={reducedMotion ? 1 : growthProgress} />
+        </Suspense>
+      </div>
 
+      {/* Hero — Tall section for scroll room */}
+      <section ref={heroRef} className="relative dark:bg-transparent" style={{ height: '180vh' }}>
+        {/* Sticky content over the fixed tree */}
+        <div className="sticky top-0 h-screen overflow-hidden">
           <GlowOrbs />
 
           {/* Hero content — fades in as tree grows */}
@@ -91,8 +91,8 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* About section — appears after hero */}
-      <section className="py-20 md:py-28 px-4 relative">
+      {/* About section — semi-transparent bg over tree */}
+      <section className="py-20 md:py-28 px-4 relative bg-[#FFF8FA]/80 dark:bg-[#0f0f1a]/80 backdrop-blur-sm">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-5xl font-bold text-charcoal-800 dark:text-white mb-6">
             AURA-NER
@@ -113,20 +113,28 @@ export default function Landing() {
       </section>
 
       {/* Stats */}
-      <StatsBar />
+      <div className="relative bg-[#FFF8FA]/80 dark:bg-[#0f0f1a]/80 backdrop-blur-sm">
+        <StatsBar />
+      </div>
 
       {/* Product Showcase */}
-      <ProductShowcase />
+      <div className="relative bg-[#FFF8FA]/80 dark:bg-[#0f0f1a]/80 backdrop-blur-sm">
+        <ProductShowcase />
+      </div>
 
       {/* Adapt Section */}
-      <AdaptSection />
+      <div className="relative bg-[#FFF8FA]/80 dark:bg-[#0f0f1a]/80 backdrop-blur-sm">
+        <AdaptSection />
+      </div>
 
       {/* NER Cultural Strip */}
-      <NerStrip />
+      <div className="relative bg-[#FFF8FA]/80 dark:bg-[#0f0f1a]/80 backdrop-blur-sm">
+        <NerStrip />
+      </div>
 
       {/* Footer */}
       <footer className="py-16 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-charcoal-800 dark:bg-[#0a0a14]" />
+        <div className="absolute inset-0 bg-charcoal-800/95 dark:bg-[#0a0a14]/95 backdrop-blur-sm" />
         <GlowOrbs />
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="grid md:grid-cols-4 gap-12 mb-12">
