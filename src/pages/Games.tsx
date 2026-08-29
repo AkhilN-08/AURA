@@ -195,6 +195,22 @@ export default function Games() {
               </div>
             )}
 
+            {/* AI Adaptation Indicator */}
+            <div className="card p-4 mb-6 bg-gradient-to-r from-sage-50/80 to-amber-50/80 border border-sage-200/50">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center">
+                  <Sparkles size={18} className="text-white" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-charcoal-800">AI is adapting for you</p>
+                  <p className="text-xs text-charcoal-400">Difficulty: {currentDifficulty} | Based on your {sessions.length} sessions</p>
+                </div>
+                <div className={'px-3 py-1 rounded-full text-xs font-bold ' + (currentDifficulty === 'hard' ? 'bg-green-100 text-green-700' : currentDifficulty === 'moderate' ? 'bg-amber-100 text-amber-700' : 'bg-sage-100 text-sage-700')}>
+                  {currentDifficulty === 'hard' ? 'Advanced' : currentDifficulty === 'moderate' ? 'Progressing' : 'Building'}
+                </div>
+              </div>
+            </div>
+
             {/* Overall stats */}
             {sessions.length > 0 && (
               <div className="card bg-sage-50 border-sage-200 mb-12">

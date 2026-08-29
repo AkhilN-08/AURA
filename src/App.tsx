@@ -14,6 +14,7 @@ import CustomCursor from './components/ui/CustomCursor'
 import AmbientBackground from './components/ui/AmbientBackground'
 import { TranslationProvider } from './hooks/useTranslation'
 import { useGenderTheme } from './hooks/useGenderTheme'
+import { useDemoData } from './hooks/useDemoData'
 import { useLocation } from 'react-router-dom'
 import PageTransition from './components/ui/PageTransition'
 import GenderThemeApplier from './components/ui/GenderThemeApplier'
@@ -51,6 +52,7 @@ function AuthenticatedLayout({ children, hideNav }: { children: ReactNode; hideN
 function AppRoutes() {
   const { user } = useAuth()
   useGenderTheme()
+  useDemoData()
 
   return (
     <>

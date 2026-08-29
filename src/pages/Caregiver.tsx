@@ -1,10 +1,12 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Legend } from 'recharts'
 import { Activity, TrendingUp, Clock, Gamepad2, Lightbulb, Users, BarChart3, Bell } from 'lucide-react'
+import { useState } from 'react'
 import { useGameProgress } from '../hooks/useGameProgress'
 import { useAuth } from '../hooks/useAuth'
 import { generateInsights, formatGameName, calculateWeeklyStats, calculateGrowth, generateTrendData, generateWeeklyChartData } from '../utils/analytics'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import type { Reminder } from '../data/models'
+import type { FamilyMessage } from '../data/demoData'
 
 const tooltipStyle = {
   borderRadius: '12px',
@@ -16,6 +18,9 @@ export default function Caregiver() {
   const { sessions, getRecentSessions, getAverageAccuracy, getBestAccuracy, getTotalPlayTime } = useGameProgress()
   const { user } = useAuth()
   const [reminders] = useLocalStorage<Reminder[]>('aura-reminders', [])
+  const [messages, setMessages] = useLocalStorage<FamilyMessage[]>('aura-family-messages', [])
+  const [newMsg, setNewMsg] = useState('')
+  const [senderName, setSenderName] = useState('')
 
   const recentSessions = getRecentSessions(8)
   const weeklyStats = calculateWeeklyStats(sessions)
@@ -220,6 +225,37 @@ export default function Caregiver() {
                   <p className="text-sm text-charcoal-500">
                     {pendingReminders.length} pending · {reminders.filter(r => r.completed).length} completed
                   </p>
+                </div>
+              )}
+            </div>
+
+            {/* Send Message to Patient */}
+            <div className="mt-6 p-4 bg-white/60 rounded-xl border border-white/50">
+              <h4 className="font-semibold text-charcoal-800 mb-3">Send a Message</h4>
+              <input type="text" value={senderName} onChange={e => setSenderName(e.target.value)}
+                placeholder="Your name (e.g., Priya)"
+                className="w-full px-3 py-2 rounded-lg border border-cream-200 text-sm mb-2 focus:outline-none focus:ring-2 focus:ring-rose-300" />
+              <input type="text" value={newMsg} onChange={e => setNewMsg(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter' && newMsg.trim() && senderName.trim()) {
+                  setMessages(prev => [...prev, { id: Date.now().toString(), from: senderName.trim(), text: newMsg.trim(), timestamp: new Date().toISOString(), read: false, type: 'text' as const }])
+                  setNewMsg('')
+                }}}
+                placeholder="Type a message for your loved one..."
+                className="w-full px-3 py-2 rounded-lg border border-cream-200 text-sm mb-2 focus:outline-none focus:ring-2 focus:ring-rose-300" />
+              <button onClick={() => {
+                if (newMsg.trim() && senderName.trim()) {
+                  setMessages(prev => [...prev, { id: Date.now().toString(), from: senderName.trim(), text: newMsg.trim(), timestamp: new Date().toISOString(), read: false, type: 'text' as const }])
+                  setNewMsg('')
+                }
+              }} className="w-full py-2 rounded-lg bg-gradient-to-r from-rose-400 to-pink-500 text-white text-sm font-medium disabled:opacity-50" disabled={!newMsg.trim() || !senderName.trim()}>
+                Send Message
+              </button>
+              {messages.length > 0 && (
+                <div className="mt-3 space-y-1">
+                  <p className="text-xs font-medium text-charcoal-500">Recent messages:</p>
+                  {messages.slice(-3).reverse().map(m => (
+                    <p key={m.id} className="text-xs text-charcoal-400">{m.from}: {m.text}</p>
+                  ))}
                 </div>
               )}
             </div>
