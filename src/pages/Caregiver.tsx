@@ -1,5 +1,5 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Legend } from 'recharts'
-import { Activity, TrendingUp, Clock, Gamepad2, Lightbulb, Users, BarChart3, Bell } from 'lucide-react'
+import { Activity, TrendingUp, Clock, Gamepad2, Lightbulb, Users, BarChart3, Bell, Brain, Mic, Heart, Shield, Sparkles, ArrowRight } from 'lucide-react'
 import { useState } from 'react'
 import { useGameProgress } from '../hooks/useGameProgress'
 import { useAuth } from '../hooks/useAuth'
@@ -266,6 +266,125 @@ export default function Caregiver() {
                 <strong>Note:</strong> Insights are generated from your actual activity data.
                 AURA-NER is not a diagnostic tool and should not be used as a substitute for professional medical assessment.
               </p>
+            </div>
+          </div>
+        </div>
+
+        {/* About AURA-NER */}
+        <div className="mt-12">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center shadow-lg">
+              <Sparkles size={22} className="text-white" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-charcoal-800">About AURA-NER</h2>
+              <p className="text-charcoal-400 text-sm">AI-Based Cognitive Gaming and Memory Assistance for the North Eastern Region</p>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            {/* What is AURA-NER */}
+            <div className="card p-6">
+              <h3 className="text-lg font-semibold text-charcoal-800 mb-3 flex items-center gap-2">
+                <Heart size={18} className="text-rose-400" /> What is AURA-NER?
+              </h3>
+              <p className="text-charcoal-500 text-sm leading-relaxed">
+                AURA-NER is an AI-powered cognitive gaming and memory assistance platform designed specifically for elderly people in the North Eastern Region of India. It combines gentle cognitive exercises with voice-powered assistance to keep minds active and families connected.
+              </p>
+            </div>
+
+            {/* Who is it for */}
+            <div className="card p-6">
+              <h3 className="text-lg font-semibold text-charcoal-800 mb-3 flex items-center gap-2">
+                <Users size={18} className="text-sky-500" /> Who is it for?
+              </h3>
+              <p className="text-charcoal-500 text-sm leading-relaxed">
+                Built for elderly individuals experiencing memory challenges or early-stage dementia, and their caregivers. The app adapts to each user's cognitive level through an initial assessment and continuously personalizes the experience.
+              </p>
+            </div>
+          </div>
+
+          {/* Feature breakdown */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="card p-5 text-center">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center mx-auto mb-3 shadow-md">
+                <Brain size={22} className="text-white" />
+              </div>
+              <h4 className="font-semibold text-charcoal-800 mb-1">7 Cognitive Games</h4>
+              <p className="text-xs text-charcoal-400 leading-relaxed">
+                Memory Match, Object Recall, Sequence Recall, Word Association, Pattern Grid, Story Recall, and Color Sequence. Each game adapts difficulty based on performance.
+              </p>
+            </div>
+
+            <div className="card p-5 text-center">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center mx-auto mb-3 shadow-md">
+                <Mic size={22} className="text-white" />
+              </div>
+              <h4 className="font-semibold text-charcoal-800 mb-1">Voice Assistant</h4>
+              <p className="text-xs text-charcoal-400 leading-relaxed">
+                Natural voice interaction for setting reminders, checking the date, making calls, and daily routines. Just speak naturally — the assistant understands context.
+              </p>
+            </div>
+
+            <div className="card p-5 text-center">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center mx-auto mb-3 shadow-md">
+                <BarChart3 size={22} className="text-white" />
+              </div>
+              <h4 className="font-semibold text-charcoal-800 mb-1">AI-Powered Insights</h4>
+              <p className="text-xs text-charcoal-400 leading-relaxed">
+                Tracks cognitive trends over time. Generates personalized insights about progress, strengths, and areas that need gentle practice.
+              </p>
+            </div>
+
+            <div className="card p-5 text-center">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center mx-auto mb-3 shadow-md">
+                <Heart size={22} className="text-white" />
+              </div>
+              <h4 className="font-semibold text-charcoal-800 mb-1">Family Connection</h4>
+              <p className="text-xs text-charcoal-400 leading-relaxed">
+                Caregivers can send messages and photos that appear on the patient's home screen. A bridge between family members, even when apart.
+              </p>
+            </div>
+          </div>
+
+          {/* How it works */}
+          <div className="card p-6 mt-6">
+            <h3 className="text-lg font-semibold text-charcoal-800 mb-4">How It Works</h3>
+            <div className="grid sm:grid-cols-3 gap-6">
+              <div className="flex gap-3">
+                <div className="w-8 h-8 rounded-full bg-sage-100 text-sage-600 flex items-center justify-center flex-shrink-0 font-bold text-sm">1</div>
+                <div>
+                  <p className="font-medium text-charcoal-800 text-sm">Cognitive Assessment</p>
+                  <p className="text-xs text-charcoal-400 mt-1">A gentle 5-step assessment evaluates memory, focus, sequence recall, word recall, and reaction time — all through simple taps, no typing required.</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <div className="w-8 h-8 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center flex-shrink-0 font-bold text-sm">2</div>
+                <div>
+                  <p className="font-medium text-charcoal-800 text-sm">Personalized Experience</p>
+                  <p className="text-xs text-charcoal-400 mt-1">Based on assessment results, the AI sets an appropriate difficulty level and recommends specific games. Difficulty adjusts automatically as the user plays.</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <div className="w-8 h-8 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center flex-shrink-0 font-bold text-sm">3</div>
+                <div>
+                  <p className="font-medium text-charcoal-800 text-sm">Daily Engagement</p>
+                  <p className="text-xs text-charcoal-400 mt-1">The home screen greets users by name, suggests a daily game, shows reminders, and displays messages from family. Warm encouragement replaces cold metrics.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Safety & Privacy */}
+          <div className="card p-5 mt-6 bg-sage-50/50 border-sage-200/50">
+            <div className="flex items-start gap-3">
+              <Shield size={20} className="text-sage-500 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="font-medium text-charcoal-800 text-sm">Safety & Privacy</p>
+                <p className="text-xs text-charcoal-400 mt-1 leading-relaxed">
+                  All data is stored locally on the device. AURA-NER is not a diagnostic tool and should not replace professional medical assessment. It is designed as a supplementary wellness companion to support cognitive health.
+                </p>
+              </div>
             </div>
           </div>
         </div>
