@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './hooks/useAuth'
 import Landing from './pages/Landing'
 import PatientHome from './pages/PatientHome'
+import FamilyPage from './pages/FamilyPage'
 import Games from './pages/Games'
 import Assistant from './pages/Assistant'
 import Caregiver from './pages/Caregiver'
@@ -95,6 +96,11 @@ function AppRoutes() {
         <Route path="/caregiver" element={
           <AssessmentGate>
             <AuthenticatedLayout><Caregiver /></AuthenticatedLayout>
+          </AssessmentGate>
+        } />
+        <Route path="/family" element={
+          <AssessmentGate>
+            <AuthenticatedLayout><FamilyPage /></AuthenticatedLayout>
           </AssessmentGate>
         } />
         <Route path="*" element={<Navigate to="/" replace />} />
