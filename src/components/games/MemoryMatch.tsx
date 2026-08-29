@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { Trophy } from 'lucide-react'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { calculateDifficulty, getDifficultyConfig } from '../../utils/adaptiveDifficulty'
+import { playMatchChime, playWinChime } from '../../utils/audio'
 import type { GameSession } from '../../data/models'
 
 interface Card {
@@ -68,6 +69,7 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
   useEffect(() => {
     if (matches > 0 && matches === config.pairs) {
       setGameOver(true)
+      playWinChime()
       const session: GameSession = {
         gameType: 'memory-match',
         score: 100,
@@ -105,6 +107,7 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
             c.emoji === cards[newFlipped[0]].emoji ? { ...c, isMatched: true } : c
           ))
           setMatches(m => m + 1)
+          playMatchChime()
           setEncouragement(MATCH_MESSAGES[Math.floor(Math.random() * MATCH_MESSAGES.length)])
           setTimeout(() => setEncouragement(''), 1200)
           setFlippedIds([])

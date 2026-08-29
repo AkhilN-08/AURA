@@ -202,7 +202,7 @@ function StepSequence({ onComplete }: { onComplete: (score: number) => void }) {
   const [phase, setPhase] = useState<'show' | 'input' | 'done'>('show')
   const [seqIdx] = useState(() => Math.floor(Math.random() * SEQUENCES.length))
   const [sequence] = useState(() => SEQUENCES[seqIdx])
-  const [input, setInput] = useState<string>('')
+  const [tapped, setTapped] = useState<number[]>([])
   const [highlight, setHighlight] = useState(-1)
   const timerRef = useRef<ReturnType<typeof setTimeout>>()
 
@@ -223,13 +223,19 @@ function StepSequence({ onComplete }: { onComplete: (score: number) => void }) {
     return () => clearTimeout(timerRef.current)
   }, [phase, sequence])
 
-  const submit = () => {
-    const userNums = input.replace(/\s/g, '').split('').map(Number).filter(n => !isNaN(n))
-    const correct = userNums.filter((n, i) => n === sequence[i]).length
-    const score = Math.round((correct / sequence.length) * 100)
-    setPhase('done')
-    setTimeout(() => onComplete(score), 800)
+  const tapNumber = (n: number) => {
+    if (phase !== 'input') return
+    const next = [...tapped, n]
+    setTapped(next)
+    if (next.length === sequence.length) {
+      const correct = next.filter((v, i) => v === sequence[i]).length
+      const score = Math.round((correct / sequence.length) * 100)
+      setPhase('done')
+      setTimeout(() => onComplete(score), 800)
+    }
   }
+
+  const undoTap = () => setTapped(t => t.slice(0, -1))
 
   return (
     <div className="text-center">
@@ -239,7 +245,7 @@ function StepSequence({ onComplete }: { onComplete: (score: number) => void }) {
       </div>
       <p className="text-charcoal-400 text-sm mb-8">
         {phase === 'show' && 'Memorize this sequence...'}
-        {phase === 'input' && `Type the ${sequence.length} numbers you saw (e.g. 3719)`}
+        {phase === 'input' && `Tap the ${sequence.length} numbers you saw, in order`}
         {phase === 'done' && 'Well done!'}
       </p>
 
@@ -264,21 +270,31 @@ function StepSequence({ onComplete }: { onComplete: (score: number) => void }) {
 
       {phase === 'input' && (
         <>
-          <input
-            type="text"
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            placeholder="Enter numbers..."
-            className="w-full max-w-xs mx-auto block text-center text-2xl font-mono py-4 rounded-2xl bg-white/60 backdrop-blur-xl border border-white/50 text-charcoal-800 focus:outline-none focus:ring-2 focus:ring-amber-400 mb-6"
-            autoFocus
-            onKeyDown={e => e.key === 'Enter' && input.length > 0 && submit()}
-          />
-          <button
-            onClick={submit}
-            disabled={input.length === 0}
-            className="btn-primary inline-flex items-center gap-2 disabled:opacity-40"
-          >
-            Confirm <ArrowRight size={16} />
+          {/* Tapped sequence display */}
+          <div className="flex justify-center gap-2 mb-6">
+            {sequence.map((_, i) => (
+              <div key={i} className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold transition-all duration-200
+                ${i < tapped.length
+                  ? 'bg-amber-400 text-white scale-105'
+                  : 'bg-charcoal-50 text-charcoal-300 border-2 border-dashed border-charcoal-200'
+                }`}>
+                {i < tapped.length ? tapped[i] : ''}
+              </div>
+            ))}
+          </div>
+
+          {/* Number pad */}
+          <div className="grid grid-cols-3 gap-3 max-w-[240px] mx-auto mb-4">
+            {[1,2,3,4,5,6,7,8,9].map(n => (
+              <button key={n} onClick={() => tapNumber(n)}
+                className="h-14 rounded-2xl bg-amber-50 border border-amber-200 text-2xl font-bold text-charcoal-800 hover:bg-amber-100 active:scale-95 transition-all duration-150">
+                {n}
+              </button>
+            ))}
+          </div>
+          <button onClick={undoTap} disabled={tapped.length === 0}
+            className="text-sm text-charcoal-400 hover:text-charcoal-600 disabled:opacity-40 transition-colors">
+            Undo
           </button>
         </>
       )}
@@ -370,8 +386,15 @@ function StepWordRecall({ onComplete }: { onComplete: (score: number) => void })
   const [phase, setPhase] = useState<'show' | 'input' | 'done'>('show')
   const [setIdx] = useState(() => Math.floor(Math.random() * WORD_SETS.length))
   const [words] = useState(() => WORD_SETS[setIdx])
-  const [input, setInput] = useState('')
+  const [selected, setSelected] = useState<Set<string>>(new Set())
   const timerRef = useRef<ReturnType<typeof setTimeout>>()
+
+  // Build options: original words + distractors
+  const allWords = useState(() => {
+    const distractors = ['mountain', 'river', 'garden', 'temple', 'music', 'flower', 'lantern', 'spice', 'tea', 'bamboo', 'rice', 'drum']
+    const extra = distractors.filter(w => !words.includes(w)).slice(0, Math.max(3, words.length))
+    return shuffle([...words, ...extra])
+  })[0]
 
   useEffect(() => {
     if (phase === 'show') {
@@ -380,9 +403,17 @@ function StepWordRecall({ onComplete }: { onComplete: (score: number) => void })
     return () => clearTimeout(timerRef.current)
   }, [phase])
 
+  const toggleWord = (word: string) => {
+    setSelected(prev => {
+      const next = new Set(prev)
+      if (next.has(word)) next.delete(word)
+      else next.add(word)
+      return next
+    })
+  }
+
   const submit = () => {
-    const userWords = input.toLowerCase().split(/[,\s]+/).filter(Boolean)
-    const correct = userWords.filter(w => words.includes(w)).length
+    const correct = [...selected].filter(w => words.includes(w)).length
     const score = Math.round((correct / words.length) * 100)
     setPhase('done')
     setTimeout(() => onComplete(score), 800)
@@ -396,7 +427,7 @@ function StepWordRecall({ onComplete }: { onComplete: (score: number) => void })
       </div>
       <p className="text-charcoal-400 text-sm mb-8">
         {phase === 'show' && 'Remember these words...'}
-        {phase === 'input' && 'Type the words you remember (comma or space separated)'}
+        {phase === 'input' && 'Tap the words you remember'}
         {phase === 'done' && 'Well done!'}
       </p>
 
@@ -412,18 +443,21 @@ function StepWordRecall({ onComplete }: { onComplete: (score: number) => void })
 
       {phase === 'input' && (
         <>
-          <input
-            type="text"
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            placeholder="Enter words..."
-            className="w-full max-w-md mx-auto block text-center text-lg py-4 rounded-2xl bg-white/60 backdrop-blur-xl border border-white/50 text-charcoal-800 focus:outline-none focus:ring-2 focus:ring-sage-400 mb-6"
-            autoFocus
-            onKeyDown={e => e.key === 'Enter' && input.length > 0 && submit()}
-          />
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
+            {allWords.map((word, i) => (
+              <button key={i} onClick={() => toggleWord(word)}
+                className={`px-5 py-3 rounded-2xl text-lg font-medium transition-all duration-200
+                  ${selected.has(word)
+                    ? 'bg-sage-500 text-white border-2 border-sage-600 scale-105 shadow-lg'
+                    : 'bg-white/60 border border-white/50 text-charcoal-700 hover:bg-white/80 hover:scale-105'
+                  }`}>
+                {word}
+              </button>
+            ))}
+          </div>
           <button
             onClick={submit}
-            disabled={input.length === 0}
+            disabled={selected.size === 0}
             className="btn-primary inline-flex items-center gap-2 disabled:opacity-40"
           >
             Confirm <ArrowRight size={16} />

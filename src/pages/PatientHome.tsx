@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Gamepad2, Mic, Users, Pill, Clock, ChevronRight, Volume2, Heart } from 'lucide-react'
+import { Gamepad2, Mic, Users, Pill, Clock, ChevronRight, Volume2, Heart, Sparkles, Brain, Eye, Hash, BookOpen, Grid3X3, Palette, BookMarked } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 import { useTranslation } from '../hooks/useTranslation'
 import { useGameProgress } from '../hooks/useGameProgress'
@@ -87,6 +87,18 @@ export default function PatientHome() {
   const avgAccuracy = getAverageAccuracy()
   const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
 
+  // Today's recommended game based on day of week
+  const GAME_RECS = [
+    { id: 'memory-match', name: 'Memory Match', icon: Brain, color: 'from-sage-400 to-sage-600', tip: 'Find matching pairs of cards' },
+    { id: 'object-recall', name: 'Object Recall', icon: Eye, color: 'from-sky-400 to-blue-600', tip: 'Remember the objects you saw' },
+    { id: 'sequence-recall', name: 'Sequence Recall', icon: Hash, color: 'from-amber-400 to-amber-600', tip: 'Reproduce the number sequence' },
+    { id: 'word-association', name: 'Word Association', icon: BookOpen, color: 'from-sage-400 to-sage-600', tip: 'Match related words from memory' },
+    { id: 'pattern-grid', name: 'Pattern Grid', icon: Grid3X3, color: 'from-purple-400 to-purple-600', tip: 'Recreate the pattern you saw' },
+    { id: 'story-recall', name: 'Story Recall', icon: BookMarked, color: 'from-amber-500 to-orange-600', tip: 'Answer questions about a story' },
+    { id: 'color-sequence', name: 'Color Sequence', icon: Palette, color: 'from-pink-400 to-pink-600', tip: 'Watch and repeat the color pattern' },
+  ]
+  const todayRec = GAME_RECS[new Date().getDay() % GAME_RECS.length]
+
   return (
     <div className="min-h-screen px-4 pt-20 pb-8 max-w-2xl mx-auto">
       <div className="home-anim text-center mb-8 pt-4">
@@ -137,6 +149,26 @@ export default function PatientHome() {
             <p className="text-charcoal-400 dark:text-charcoal-500 text-sm">See photos and messages from your loved ones.</p>
           </div>
           <ChevronRight size={24} className="text-rose-400 group-hover:translate-x-1 transition-transform" />
+        </Link>
+      </div>
+
+      {/* Today's Game */}
+      <div className="home-anim mb-6">
+        <Link to={`/games`} className="group block p-5 rounded-3xl bg-gradient-to-br from-white/70 to-white/40 dark:from-white/10 dark:to-white/5 backdrop-blur-xl border border-white/50 dark:border-white/10 hover:shadow-[0_8px_30px_rgba(132,204,22,0.15)] hover:-translate-y-0.5 transition-all duration-500">
+          <div className="flex items-center gap-2 mb-3">
+            <Sparkles size={14} className="text-amber-500" />
+            <span className="text-xs font-semibold text-amber-600 uppercase tracking-wider">Today's Game</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${todayRec.color} flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+              <todayRec.icon size={26} className="text-white" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-bold text-charcoal-800 dark:text-white">{todayRec.name}</h3>
+              <p className="text-sm text-charcoal-400 dark:text-charcoal-500">{todayRec.tip}</p>
+            </div>
+            <ChevronRight size={22} className="text-sage-400 group-hover:translate-x-1 transition-transform" />
+          </div>
         </Link>
       </div>
 

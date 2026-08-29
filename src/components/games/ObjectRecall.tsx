@@ -3,6 +3,7 @@ import { RotateCcw, Trophy, Clock, Eye } from 'lucide-react'
 import { GAME_OBJECTS } from '../../data/games'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { calculateDifficulty, getDifficultyConfig } from '../../utils/adaptiveDifficulty'
+import { playMatchChime, playWinChime } from '../../utils/audio'
 import type { GameSession } from '../../data/models'
 
 function shuffle<T>(array: T[]): T[] {
@@ -80,6 +81,7 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
 
     setCorrectIds([...correct, ...missed.map(m => m.id)])
     setPhase('result')
+    playMatchChime()
 
     const accuracy = Math.round((correct.length / targetObjects.length) * 100)
     const newTotalScore = totalScore + accuracy
@@ -88,6 +90,7 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
     setTotalScore(newTotalScore)
 
     if (newRounds >= 3) {
+      playWinChime()
       const session: GameSession = {
         gameType: 'object-recall',
         score: Math.round(newTotalScore / newRounds),

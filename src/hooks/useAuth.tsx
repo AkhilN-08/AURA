@@ -26,7 +26,10 @@ interface User {
 interface AuthContextType {
   user: User | null
   login: (email: string, password: string) => { success: boolean; error?: string }
-  signup: (name: string, email: string, password: string, gender?: Gender) => { success: boolean; error?: string }
+  signup: (name: string, email: string, password: string, gender?: Gender, pin?: string) => { success: boolean; error?: string }
+  pinLogin: (pin: string) => { success: boolean; error?: string }
+  setPin: (pin: string) => { success: boolean; error?: string }
+  hasPin: boolean
   logout: () => void
   setGender: (gender: Gender) => void
   completeAssessment: (result: AssessmentResult) => void
@@ -40,6 +43,7 @@ interface StoredUser {
   name: string
   gender?: Gender
   passwordHash: string
+  pin?: string
   assessmentCompleted?: boolean
   assessmentResult?: AssessmentResult
 }
@@ -48,16 +52,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [users, setUsers] = useLocalStorage<StoredUser[]>('aura-users', [])
   const [currentUser, setCurrentUser] = useLocalStorage<User | null>('aura-current-user', null)
 
-  const signup = (name: string, email: string, password: string, gender?: Gender) => {
+  const signup = (name: string, email: string, password: string, gender?: Gender, pin?: string) => {
     const exists = users.find(u => u.email === email.toLowerCase())
     if (exists) return { success: false, error: 'An account with this email already exists.' }
-    if (password.length < 6) return { success: false, error: 'Password must be at least 6 characters.' }
 
     const newUser: StoredUser = {
       name: name.trim(),
       email: email.toLowerCase(),
       gender,
       passwordHash: btoa(password),
+      pin,
     }
     setUsers(prev => [...prev, newUser])
     setCurrentUser({ name: name.trim(), email: email.toLowerCase(), gender })
@@ -77,6 +81,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })
     return { success: true }
   }
+
+  const pinLogin = (pin: string) => {
+    const user = users.find(u => u.pin === pin)
+    if (!user) return { success: false, error: 'Incorrect PIN.' }
+    setCurrentUser({
+      name: user.name,
+      email: user.email,
+      gender: user.gender,
+      assessmentCompleted: user.assessmentCompleted,
+      assessmentResult: user.assessmentResult,
+    })
+    return { success: true }
+  }
+
+  const setPin = (pin: string) => {
+    if (!currentUser) return { success: false, error: 'Not logged in.' }
+    if (!/^\d{4}$/.test(pin)) return { success: false, error: 'PIN must be 4 digits.' }
+    setUsers(prev =>
+      prev.map(u =>
+        u.email === currentUser.email ? { ...u, pin } : u
+      )
+    )
+    return { success: true }
+  }
+
+  const hasPin = users.some(u => u.pin && currentUser?.email === u.email)
 
   const logout = () => {
     setCurrentUser(null)
@@ -129,7 +159,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user: currentUser, login, signup, logout, setGender, completeAssessment, retakeAssessment }}>
+    <AuthContext.Provider value={{ user: currentUser, login, signup, pinLogin, setPin, hasPin, logout, setGender, completeAssessment, retakeAssessment }}>
       {children}
     </AuthContext.Provider>
   )
