@@ -6,10 +6,10 @@ import { useReducedMotion } from '../../hooks/useReducedMotion'
 import { useTranslation } from '../../hooks/useTranslation'
 
 const FEATURES = [
-  { icon: Gamepad2, label: '7 Cognitive Games', color: 'from-pink-400/20 to-purple-400/20', iconColor: '#EC4899', x: '8%', y: '25%', delay: 0.8 },
-  { icon: Brain, label: 'AI Personalization', color: 'from-blue-400/20 to-cyan-400/20', iconColor: '#3B82F6', x: '82%', y: '20%', delay: 1.0 },
-  { icon: Mic, label: 'Voice Assistant', color: 'from-green-400/20 to-emerald-400/20', iconColor: '#22C55E', x: '85%', y: '65%', delay: 1.2 },
-  { icon: Heart, label: 'Family Connection', color: 'from-amber-400/20 to-orange-400/20', iconColor: '#F59E0B', x: '5%', y: '70%', delay: 1.4 },
+  { icon: Gamepad2, label: '7 Cognitive Games', color: 'from-pink-400/20 to-purple-400/20', iconColor: '#EC4899', x: '5%', y: '22%', delay: 0.8 },
+  { icon: Brain, label: 'AI Personalization', color: 'from-blue-400/20 to-cyan-400/20', iconColor: '#3B82F6', x: '68%', y: '18%', delay: 1.0 },
+  { icon: Mic, label: 'Voice Assistant', color: 'from-green-400/20 to-emerald-400/20', iconColor: '#22C55E', x: '70%', y: '62%', delay: 1.2 },
+  { icon: Heart, label: 'Family Connection', color: 'from-amber-400/20 to-orange-400/20', iconColor: '#F59E0B', x: '3%', y: '68%', delay: 1.4 },
 ]
 
 interface Ripple {
