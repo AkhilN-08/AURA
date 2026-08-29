@@ -15,6 +15,7 @@ import AmbientBackground from './components/ui/AmbientBackground'
 import { TranslationProvider } from './hooks/useTranslation'
 import { useGenderTheme } from './hooks/useGenderTheme'
 import { useDemoData } from './hooks/useDemoData'
+import { useReminderNotifications } from './hooks/useReminderNotifications'
 import { useLocation } from 'react-router-dom'
 import PageTransition from './components/ui/PageTransition'
 import GenderThemeApplier from './components/ui/GenderThemeApplier'
@@ -53,6 +54,7 @@ function AppRoutes() {
   const { user } = useAuth()
   useGenderTheme()
   useDemoData()
+  useReminderNotifications()
 
   return (
     <>
