@@ -5,12 +5,7 @@ import { ArrowDown, Sparkles as SparklesIcon, Brain, Mic, Gamepad2, Heart } from
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import { useTranslation } from '../../hooks/useTranslation'
 
-const FEATURES = [
-  { icon: Gamepad2, label: '7 Cognitive Games', color: 'from-pink-400/20 to-purple-400/20', iconColor: '#EC4899', x: '5%', y: '22%', delay: 0.8 },
-  { icon: Brain, label: 'AI Personalization', color: 'from-blue-400/20 to-cyan-400/20', iconColor: '#3B82F6', x: '68%', y: '18%', delay: 1.0 },
-  { icon: Mic, label: 'Voice Assistant', color: 'from-green-400/20 to-emerald-400/20', iconColor: '#22C55E', x: '70%', y: '62%', delay: 1.2 },
-  { icon: Heart, label: 'Family Connection', color: 'from-amber-400/20 to-orange-400/20', iconColor: '#F59E0B', x: '3%', y: '68%', delay: 1.4 },
-]
+const FEATURES: {icon: typeof Gamepad2; label: string; color: string; iconColor: string; x: string; y: string; delay: number}[] = []
 
 interface Ripple {
   id: number

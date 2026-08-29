@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './hooks/useAuth'
 import Landing from './pages/Landing'
+import PatientHome from './pages/PatientHome'
 import Games from './pages/Games'
 import Assistant from './pages/Assistant'
 import Caregiver from './pages/Caregiver'
@@ -30,18 +31,18 @@ function AssessmentGate({ children }: { children: ReactNode }) {
   return <>{children}</>
 }
 
-function AuthenticatedLayout({ children }: { children: ReactNode }) {
+function AuthenticatedLayout({ children, hideNav }: { children: ReactNode; hideNav?: boolean }) {
   const location = useLocation()
   const isGamesPage = location.pathname.startsWith('/games')
 
   return (
     <div className="min-h-screen bg-transparent">
-      <Navbar />
+      {!hideNav && <Navbar />}
       <main>
         <PageTransition key={location.pathname}>{children}</PageTransition>
       </main>
-      <AssistantButton />
-      {!isGamesPage && <AmbientBackground />}
+      {location.pathname !== '/' && <AssistantButton />}
+      {!isGamesPage && location.pathname !== '/' && <AmbientBackground />}
     </div>
   )
 }
@@ -53,7 +54,7 @@ function AppRoutes() {
   return (
     <>
       <GenderThemeApplier />
-      <CustomCursor />
+      {location.pathname !== "/" && <CustomCursor />}
       <Routes>
         <Route path="/login" element={user ? <Navigate to="/" replace /> : <PageTransition><Login /></PageTransition>} />
         <Route path="/assessment" element={
@@ -63,7 +64,7 @@ function AppRoutes() {
         } />
         <Route path="/" element={
           <AssessmentGate>
-            <AuthenticatedLayout><Landing /></AuthenticatedLayout>
+            <AuthenticatedLayout hideNav><PatientHome /></AuthenticatedLayout>
           </AssessmentGate>
         } />
         <Route path="/games" element={

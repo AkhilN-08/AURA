@@ -112,7 +112,7 @@ export default function HeroScene() {
       })
     }
 
-    for (let i = 0; i < 70; i++) {
+    for (let i = 0; i < 30; i++) {
       stars.push({
         x: rand(), y: rand() * 0.65,
         size: 0.3 + rand() * 1.8, brightness: 0.2 + rand() * 0.6,
@@ -357,14 +357,14 @@ export default function HeroScene() {
       // Mouse glow follows cursor
       drawMouseGlow(mx, my)
 
-      const sway = Math.sin(time * 0.006) * 4 + Math.sin(time * 0.0025) * 2
+      const sway = Math.sin(time * 0.003) * 2 + Math.sin(time * 0.0015) * 1
 
       // Branches (back to front)
       branches.sort((a, b) => b.depth - a.depth).forEach(b => drawBranch(b, sway, mx))
       blossoms.forEach(b => drawBlossom(b, sway, mx))
 
       // Falling petals
-      if (time % 15 === 0 && fallingPetals.length < 40) spawnPetal()
+      if (time % 30 === 0 && fallingPetals.length < 15) spawnPetal()
 
       for (let i = fallingPetals.length - 1; i >= 0; i--) {
         const p = fallingPetals[i]

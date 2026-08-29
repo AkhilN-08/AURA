@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { RotateCcw, Trophy, Clock, Target } from 'lucide-react'
+import { RotateCcw, Trophy } from 'lucide-react'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { calculateDifficulty, getDifficultyConfig } from '../../utils/adaptiveDifficulty'
 import type { GameSession } from '../../data/models'
@@ -60,6 +60,7 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
 
   useEffect(() => {
     initGame()
+    localStorage.setItem("aura-last-activity", "/games")
   }, [initGame])
 
   useEffect(() => {
@@ -132,24 +133,9 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
 
   return (
     <div className="max-w-2xl mx-auto">
-      {/* Stats bar */}
-      <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2 text-charcoal-500">
-            <Target size={18} />
-            <span className="font-medium">{matches}/{config.pairs} pairs</span>
-          </div>
-          <div className="flex items-center gap-2 text-charcoal-500">
-            <RotateCcw size={18} />
-            <span className="font-medium">{attempts} attempts</span>
-          </div>
-          <div className="flex items-center gap-2 text-charcoal-500">
-            <Clock size={18} />
-            <span className="font-medium">{elapsed}s</span>
-          </div>
-        </div>
-        <div className="bg-sage-50 px-4 py-2 rounded-xl">
-          <span className="text-sm font-medium text-sage-600">{difficulty} mode</span>
+      <div className="flex items-center justify-center mb-8">
+        <div className="px-5 py-2.5 rounded-full bg-sage-50/80 border border-sage-200/50">
+          <span className="text-sm font-medium text-sage-700">{matches === 0 ? 'Tap a card to start!' : matches + ' of ' + config.pairs + ' pairs found - keep going!'}</span>
         </div>
       </div>
 
@@ -163,7 +149,7 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
             key={card.id}
             onClick={() => handleCardClick(card.id)}
             disabled={card.isFlipped || card.isMatched || lockBoard}
-            className={`aspect-square rounded-2xl text-3xl md:text-4xl font-bold
+            className={`aspect-square rounded-2xl text-3xl md:text-5xl min-h-[80px] font-bold
                        transition-all duration-400 ease-[cubic-bezier(0.25,0.1,0.25,1)]
                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-400
                        ${card.isMatched
