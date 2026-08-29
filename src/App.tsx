@@ -10,7 +10,6 @@ import Navbar from './components/navigation/Navbar'
 import AssistantButton from './components/assistant/AssistantButton'
 import CustomCursor from './components/ui/CustomCursor'
 import AmbientBackground from './components/ui/AmbientBackground'
-import AccessibilityToggle from './components/ui/AccessibilityToggle'
 import { TranslationProvider } from './hooks/useTranslation'
 import { useGenderTheme } from './hooks/useGenderTheme'
 import { useLocation } from 'react-router-dom'
@@ -42,7 +41,6 @@ function AuthenticatedLayout({ children }: { children: ReactNode }) {
         <PageTransition key={location.pathname}>{children}</PageTransition>
       </main>
       <AssistantButton />
-      <AccessibilityToggle />
       {!isGamesPage && <AmbientBackground />}
     </div>
   )
