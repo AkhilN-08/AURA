@@ -1,16 +1,14 @@
-import { Suspense, lazy, useEffect, useRef } from 'react'
+import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import HeroContent from '../components/hero/HeroContent'
-import MemorySection from '../components/sections/MemorySection'
-import GamesSection from '../components/sections/GamesSection'
-import AISection from '../components/sections/AISection'
-import AssistantSection from '../components/sections/AssistantSection'
-import CaregiverSection from '../components/sections/CaregiverSection'
+import StatsBar from '../components/sections/StatsBar'
+import ProductShowcase from '../components/sections/ProductShowcase'
+import AdaptSection from '../components/sections/AdaptSection'
+import NerStrip from '../components/sections/NerStrip'
 import ScrollProgress from '../components/ui/ScrollProgress'
 import GlowOrbs from '../components/ui/GlowOrbs'
-import BlurText from '../components/ui/BlurText'
 import { Flower2, Heart, Github } from 'lucide-react'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { useTranslation } from '../hooks/useTranslation'
@@ -18,53 +16,51 @@ import { useTranslation } from '../hooks/useTranslation'
 gsap.registerPlugin(ScrollTrigger)
 
 const HeroScene = lazy(() => import('../components/hero/HeroScene'))
-const Antigravity = lazy(() => import('../components/ui/Antigravity'))
 
 function HeroFallback() {
-  return <div className="absolute inset-0 bg-gradient-to-b from-forest-50 via-cream-50 to-cream-100" />
+  return <div className="absolute inset-0 bg-gradient-to-b from-[#070d1f] via-[#0c1633] to-[#111f45]" />
 }
 
 export default function Landing() {
   const { t } = useTranslation()
   const heroRef = useRef<HTMLElement>(null)
   const heroContentRef = useRef<HTMLDivElement>(null)
-  const nerRef = useRef<HTMLElement>(null)
+  const [growthProgress, setGrowthProgress] = useState(1)
+  const [contentVisibility, setContentVisibility] = useState(1)
   const reducedMotion = useReducedMotion()
 
   useEffect(() => {
     if (reducedMotion) return
 
     const ctx = gsap.context(() => {
-      // Hero content parallax
-      if (heroContentRef.current) {
-        gsap.to(heroContentRef.current, {
-          y: -80,
-          opacity: 0,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: heroRef.current,
-            start: 'top top',
-            end: 'bottom top',
-            scrub: 0.8,
+      // Hero — scroll-driven tree growth
+      if (heroRef.current) {
+        ScrollTrigger.create({
+          trigger: heroRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 0.5,
+          onUpdate: (self) => {
+            const p = self.progress
+            setGrowthProgress(Math.min(1, p * 2.5)) // tree fully grown at 40% scroll
+            setContentVisibility(p)
           },
         })
       }
 
-      // NER section reveal
-      if (nerRef.current) {
-        const emojis = nerRef.current.querySelectorAll('.ner-emoji')
-        gsap.fromTo(emojis,
-          { opacity: 0, y: 30, scale: 0.8 },
-          {
-            opacity: 1, y: 0, scale: 1,
-            duration: 1, stagger: 0.12, ease: 'power2.out',
-            scrollTrigger: {
-              trigger: nerRef.current,
-              start: 'top 85%',
-              toggleActions: 'play none none reverse',
-            }
-          }
-        )
+      // Hero content fade out on scroll
+      if (heroContentRef.current) {
+        gsap.to(heroContentRef.current, {
+          y: -60,
+          opacity: 0,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: 'center center',
+            end: 'bottom top',
+            scrub: 0.5,
+          },
+        })
       }
     })
 
@@ -75,73 +71,58 @@ export default function Landing() {
     <div className="overflow-x-hidden">
       <ScrollProgress />
 
-      {/* Hero */}
-      <section ref={heroRef} className="relative min-h-screen dark:bg-[#0f0f1a]">
-        {/* Antigravity particle ring — non-interactive background */}
-        <div className="absolute inset-0 z-0 pointer-events-none">
-          <Suspense fallback={null}>
-            <Antigravity
-              count={80}
-              magnetRadius={8}
-              ringRadius={9}
-              waveSpeed={0.35}
-              waveAmplitude={0.8}
-              particleSize={1.2}
-              lerpSpeed={0.04}
-              color="#93C5FD"
-              autoAnimate={true}
-              particleVariance={0.8}
-              rotationSpeed={0.15}
-              depthFactor={1}
-              pulseSpeed={2}
-              particleShape="sphere"
-              fieldStrength={12}
-            />
-          </Suspense>
-        </div>
-        {/* 3D Memory Garden — non-interactive (uses window mousemove) */}
-        <div className="absolute inset-0 z-[1] pointer-events-none">
-          <Suspense fallback={<HeroFallback />}>
-            <HeroScene />
-          </Suspense>
-        </div>
-        <GlowOrbs />
-        <div ref={heroContentRef} className="relative z-10">
-          <HeroContent />
-        </div>
-      </section>
+      {/* Hero — Tall section for scroll room */}
+      <section ref={heroRef} className="relative dark:bg-[#0f0f1a]" style={{ height: '180vh' }}>
+        {/* Sticky canvas + content */}
+        <div className="sticky top-0 h-screen overflow-hidden">
+          {/* Growing tree canvas */}
+          <div className="absolute inset-0 z-0">
+            <Suspense fallback={<HeroFallback />}>
+              <HeroScene growthProgress={reducedMotion ? 1 : growthProgress} />
+            </Suspense>
+          </div>
 
-      {/* Scroll chapters */}
-      <MemorySection />
-      <GamesSection />
-      <AISection />
-      <AssistantSection />
-      <CaregiverSection />
+          <GlowOrbs />
 
-      {/* NER Cultural Relevance */}
-      <section ref={nerRef} className="py-28 md:py-40 px-4 relative overflow-hidden dark:bg-[#0f0f1a]/50">
-        <GlowOrbs />
-        <div className="max-w-4xl mx-auto text-center relative">
-          <BlurText tag="h2" className="section-heading mb-6">
-            Rooted in the North East.
-          </BlurText>
-          <BlurText tag="p" className="section-subheading mx-auto mb-14" delay={0.3}>
-            AURA-NER is designed with the North Eastern Region in mind — incorporating locally familiar foods,
-            landscapes, festivals, and household objects into cognitive activities.
-          </BlurText>
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
-            {['🎋', '🪷', '🏔️', '🍵', '🥁', '🏮'].map((emoji, i) => (
-              <div
-                key={i}
-                className="ner-emoji bg-white/60 dark:bg-white/5 backdrop-blur-xl rounded-2xl p-5 border border-white/50 dark:border-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.04)] flex items-center justify-center text-4xl hover:scale-110 hover:rotate-6 hover:shadow-[0_8px_30px_rgba(59,130,246,0.12)] transition-all duration-500 cursor-default"
-                style={{ opacity: reducedMotion ? 1 : 0 }}
-              >
-                {emoji}
-              </div>
-            ))}
+          {/* Hero content — fades in as tree grows */}
+          <div ref={heroContentRef} className="relative z-10">
+            <HeroContent visibilityProgress={reducedMotion ? 1 : contentVisibility} />
           </div>
         </div>
       </section>
+
+      {/* About section — appears after hero */}
+      <section className="py-20 md:py-28 px-4 relative">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl md:text-5xl font-bold text-charcoal-800 dark:text-white mb-6">
+            AURA-NER
+          </h2>
+          <p className="text-lg md:text-xl text-charcoal-400 dark:text-charcoal-500 max-w-2xl mx-auto leading-relaxed mb-8">
+            AI-powered cognitive gaming and memory assistance for elderly people in the North Eastern Region.
+            Combining culturally familiar activities with gentle AI personalization.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/games" className="inline-flex items-center gap-2 justify-center bg-gradient-to-r from-sage-400 to-sage-600 text-white px-8 py-3.5 rounded-2xl font-semibold shadow-[0_0_20px_rgba(132,204,22,0.25)] hover:shadow-[0_0_30px_rgba(132,204,22,0.4)] hover:scale-105 transition-all duration-300">
+              Explore Games
+            </Link>
+            <Link to="/assessment" className="inline-flex items-center gap-2 justify-center bg-white/60 dark:bg-white/10 backdrop-blur-sm border border-white/50 dark:border-white/10 text-charcoal-700 dark:text-white/80 px-8 py-3.5 rounded-2xl font-semibold hover:bg-white/80 dark:hover:bg-white/15 transition-all duration-300">
+              Start Assessment
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats */}
+      <StatsBar />
+
+      {/* Product Showcase */}
+      <ProductShowcase />
+
+      {/* Adapt Section */}
+      <AdaptSection />
+
+      {/* NER Cultural Strip */}
+      <NerStrip />
 
       {/* Footer */}
       <footer className="py-16 px-4 relative overflow-hidden">
@@ -151,7 +132,7 @@ export default function Landing() {
           <div className="grid md:grid-cols-4 gap-12 mb-12">
             <div>
               <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sage-400/80 to-sage-600/80 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-[0_0_16px_rgba(236,72,153,0.2)]">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sage-400/80 to-sage-600/80 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-[0_0_16px_rgba(132,204,22,0.2)]">
                   <Flower2 size={22} className="text-white" />
                 </div>
                 <span className="text-xl font-bold text-white">{t('AURA-NER')}</span>

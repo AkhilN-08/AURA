@@ -5,7 +5,6 @@ import { X, Mail, Flower2, Heart, LogOut, Gamepad2, Brain, Mic, BarChart3, Shiel
 import { useAuth } from '../../hooks/useAuth'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { useTranslation } from '../../hooks/useTranslation'
-import { useGenderTheme } from '../../hooks/useGenderTheme'
 import { useDarkMode } from '../../hooks/useDarkMode'
 
 interface ProfileMenuProps {
@@ -17,7 +16,6 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
   const { user, logout } = useAuth()
   const { sessions, getAverageAccuracy } = useGameProgress()
   const { language, setLanguage, t } = useTranslation()
-  const { gender, setGender } = useGenderTheme()
   const { isDark, toggle: toggleDark } = useDarkMode()
   const navigate = useNavigate()
   const panelRef = useRef<HTMLDivElement>(null)
@@ -185,38 +183,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                 </div>
               </div>
 
-              <div className="mx-5 h-px bg-white/10 dark:bg-white/[0.05]" />
-
-              {/* Theme */}
-              <div className="px-5 py-3">
-                <p className="text-[11px] font-semibold text-charcoal-700 dark:text-white/60 uppercase tracking-wider mb-2.5">Appearance</p>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setGender('male')}
-                    className={`flex-1 py-2.5 rounded-[10px] text-[13px] font-medium flex items-center justify-center gap-1.5 transition-all duration-200 ${
-                      gender === 'male'
-                        ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30'
-                        : 'text-charcoal-700 dark:text-white/55 hover:bg-white/10 dark:hover:bg-white/[0.04] border border-transparent'
-                    }`}
-                  >
-                    👨 Male
-                  </button>
-                  <button
-                    onClick={() => setGender('female')}
-                    className={`flex-1 py-2.5 rounded-[10px] text-[13px] font-medium flex items-center justify-center gap-1.5 transition-all duration-200 ${
-                      gender === 'female'
-                        ? 'bg-pink-500/20 text-pink-600 dark:text-pink-400 border border-pink-500/30'
-                        : 'text-charcoal-700 dark:text-white/55 hover:bg-white/10 dark:hover:bg-white/[0.04] border border-transparent'
-                    }`}
-                  >
-                    👩 Female
-                  </button>
-                </div>
-              </div>
-
-              <div className="mx-5 h-px bg-white/10 dark:bg-white/[0.05]" />
-
-              {/* Dark Mode */}
+              <div className="mx-5 h-px bg-white/10 dark:bg-white/[0.05]" />              {/* Dark Mode */}
               <button
                 onClick={toggleDark}
                 className="w-full flex items-center gap-3.5 px-5 py-3.5 hover:bg-white/10 dark:hover:bg-white/[0.04] transition-all duration-200 text-left"
