@@ -1,8 +1,9 @@
-import { useEffect, useRef, useMemo } from 'react'
+import { useEffect, useRef, useMemo, useCallback } from 'react'
 
-interface Branch { x1: number; y1: number; x2: number; y2: number; width: number; depth: number; growAt: number }
-interface Blossom { x: number; y: number; size: number; opacity: number; phase: number; petalCount: number; appearAt: number }
+interface Branch { x1: number; y1: number; x2: number; y2: number; width: number; depth: number }
+interface Blossom { x: number; y: number; size: number; opacity: number; phase: number; petalCount: number; burst: boolean }
 interface FallingPetal { x: number; y: number; size: number; rot: number; vx: number; vy: number; rotSpeed: number; wobblePhase: number; wobbleAmp: number; wobbleFreq: number; opacity: number; fadeTimer: number; maxLife: number; color: number[] }
+interface BurstPetal { x: number; y: number; vx: number; vy: number; size: number; rot: number; rotSpeed: number; opacity: number; color: number[]; life: number }
 interface Star { x: number; y: number; size: number; brightness: number; twinkleSpeed: number; twinkleOffset: number }
 
 const PETAL_COLORS = [[249,168,212],[251,207,232],[253,164,175],[252,231,243],[244,114,182],[251,191,236],[255,228,230],[248,180,210]]
@@ -12,14 +13,10 @@ function seededRandom(seed: number) {
   return () => { s = (s * 16807 + 0) % 2147483647; return (s - 1) / 2147483646 }
 }
 
-interface Props {
-  growthProgress?: number
-}
-
-export default function HeroScene({ growthProgress = 1 }: Props) {
+export default function HeroScene() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const progressRef = useRef(growthProgress)
-  progressRef.current = growthProgress
+  const mouseRef = useRef({ x: 0.5, y: 0.5 })
+  const burstPetalsRef = useRef<BurstPetal[]>([])
 
   const { branches, blossoms, stars } = useMemo(() => {
     const branches: Branch[] = []
@@ -27,24 +24,21 @@ export default function HeroScene({ growthProgress = 1 }: Props) {
     const stars: Star[] = []
     const rand = seededRandom(77)
 
-    // Trunk — starts from bottom center
     const baseX = 0.5, trunkTop = 0.28
     const trunkSegs = 12
     let trunkBranches: Branch[] = []
     for (let i = 0; i < trunkSegs; i++) {
       const t1 = i / trunkSegs, t2 = (i + 1) / trunkSegs
-      const wobble = Math.sin(t1 * Math.PI * 0.7) * 0.02 + (rand() - 0.5) * 0.005
-      const wobble2 = Math.sin(t2 * Math.PI * 0.7) * 0.02 + (rand() - 0.5) * 0.005
+      const w1 = Math.sin(t1 * Math.PI * 0.7) * 0.02 + (rand() - 0.5) * 0.005
+      const w2 = Math.sin(t2 * Math.PI * 0.7) * 0.02 + (rand() - 0.5) * 0.005
       trunkBranches.push({
-        x1: baseX + wobble, y1: 1.05 + (trunkTop - 1.05) * t1,
-        x2: baseX + wobble2, y2: 1.05 + (trunkTop - 1.05) * t2,
-        width: Math.max(3, 20 - i * 1.5), depth: 0,
-        growAt: t1 * 0.25 // grows during first 25% of progress
+        x1: baseX + w1, y1: 1.05 + (trunkTop - 1.05) * t1,
+        x2: baseX + w2, y2: 1.05 + (trunkTop - 1.05) * t2,
+        width: Math.max(3, 20 - i * 1.5), depth: 0
       })
     }
     branches.push(...trunkBranches)
 
-    // Main branches — grow outward from trunk
     const branchCfgs = [
       { angle: -0.7, lengthRatio: 0.38, spread: 0.18 },
       { angle: -1.3, lengthRatio: 0.34, spread: 0.15 },
@@ -57,7 +51,6 @@ export default function HeroScene({ growthProgress = 1 }: Props) {
       const parentIdx = Math.min(Math.floor((0.3 + bi / 5 * 0.5) * (trunkBranches.length - 1)), trunkBranches.length - 1)
       const parent = trunkBranches[parentIdx]
       const baseAngle = cfg.angle + (rand() - 0.5) * 0.3
-      const branchGrowBase = 0.25 + bi * 0.07
       let px = parent.x2, py = parent.y2
       const segs = 4 + Math.floor(rand() * 2)
 
@@ -66,52 +59,34 @@ export default function HeroScene({ growthProgress = 1 }: Props) {
         const segLen = cfg.lengthRatio / segs
         const nx = px + Math.cos(ang) * segLen + (rand() - 0.5) * 0.012
         const ny = py + Math.sin(ang) * segLen + (rand() - 0.5) * 0.012
-        const growAt = branchGrowBase + j * 0.01
-        branches.push({
-          x1: px, y1: py, x2: nx, y2: ny,
-          width: Math.max(1, 9 - j * 1.5 - bi * 0.5), depth: 1,
-          growAt
-        })
+        branches.push({ x1: px, y1: py, x2: nx, y2: ny, width: Math.max(1, 9 - j * 1.5 - bi * 0.5), depth: 1 })
 
-        // Sub-branches
         if (j > 0 && rand() > 0.25) {
           const subAngle = ang + (rand() > 0.5 ? 1 : -1) * (0.4 + rand() * 0.6)
           const subLen = (cfg.lengthRatio / segs) * (0.5 + rand() * 0.5)
           const sx = px + Math.cos(subAngle) * subLen
           const sy = py + Math.sin(subAngle) * subLen
-          branches.push({
-            x1: px, y1: py, x2: sx, y2: sy,
-            width: Math.max(0.5, 5 - j), depth: 2,
-            growAt: growAt + 0.02
-          })
+          branches.push({ x1: px, y1: py, x2: sx, y2: sy, width: Math.max(0.5, 5 - j), depth: 2 })
 
-          // Blossoms on sub-branches
           for (let k = 0; k < 2 + Math.floor(rand() * 4); k++) {
             blossoms.push({
               x: sx + (rand() - 0.5) * 0.06, y: sy + (rand() - 0.5) * 0.05,
               size: 5.5 + rand() * 8, opacity: 0.5 + rand() * 0.5,
-              phase: rand() * Math.PI * 2, petalCount: rand() > 0.3 ? 5 : 6,
-              appearAt: growAt + 0.06 + rand() * 0.04
+              phase: rand() * Math.PI * 2, petalCount: rand() > 0.3 ? 5 : 6, burst: false
             })
           }
 
-          // Tiny twigs
           if (rand() > 0.4) {
             const twigAngle = subAngle + (rand() - 0.5) * 0.8
             const twigLen = subLen * 0.6
             const tx = sx + Math.cos(twigAngle) * twigLen
             const ty = sy + Math.sin(twigAngle) * twigLen
-            branches.push({
-              x1: sx, y1: sy, x2: tx, y2: ty,
-              width: Math.max(0.3, 2.5 - j * 0.3), depth: 3,
-              growAt: growAt + 0.04
-            })
+            branches.push({ x1: sx, y1: sy, x2: tx, y2: ty, width: Math.max(0.3, 2.5 - j * 0.3), depth: 3 })
             for (let k = 0; k < 1 + Math.floor(rand() * 3); k++) {
               blossoms.push({
                 x: tx + (rand() - 0.5) * 0.04, y: ty + (rand() - 0.5) * 0.03,
                 size: 4.5 + rand() * 6, opacity: 0.4 + rand() * 0.5,
-                phase: rand() * Math.PI * 2, petalCount: 5,
-                appearAt: growAt + 0.08 + rand() * 0.03
+                phase: rand() * Math.PI * 2, petalCount: 5, burst: false
               })
             }
           }
@@ -119,41 +94,74 @@ export default function HeroScene({ growthProgress = 1 }: Props) {
         }
       }
 
-      // Tip blossoms
       for (let k = 0; k < 3 + Math.floor(rand() * 5); k++) {
         blossoms.push({
           x: px + (rand() - 0.5) * 0.07, y: py + (rand() - 0.5) * 0.06,
           size: 6 + rand() * 9, opacity: 0.5 + rand() * 0.5,
-          phase: rand() * Math.PI * 2, petalCount: rand() > 0.3 ? 5 : 6,
-          appearAt: 0.55 + rand() * 0.1
+          phase: rand() * Math.PI * 2, petalCount: rand() > 0.3 ? 5 : 6, burst: false
         })
       }
     })
 
-    // Extra scattered blossoms around canopy
     for (let i = 0; i < 15; i++) {
       const a = rand() * Math.PI * 2, d = rand() * 0.12
       blossoms.push({
         x: baseX + 0.01 + Math.cos(a) * d, y: 0.2 + Math.sin(a) * d * 0.6,
         size: 5 + rand() * 7, opacity: 0.3 + rand() * 0.4,
-        phase: rand() * Math.PI * 2, petalCount: 5,
-        appearAt: 0.65 + rand() * 0.1
+        phase: rand() * Math.PI * 2, petalCount: 5, burst: false
       })
     }
 
-    // Stars — always visible
     for (let i = 0; i < 70; i++) {
       stars.push({
         x: rand(), y: rand() * 0.65,
-        size: 0.3 + rand() * 1.8,
-        brightness: 0.2 + rand() * 0.6,
-        twinkleSpeed: 0.3 + rand() * 2,
-        twinkleOffset: rand() * Math.PI * 2
+        size: 0.3 + rand() * 1.8, brightness: 0.2 + rand() * 0.6,
+        twinkleSpeed: 0.3 + rand() * 2, twinkleOffset: rand() * Math.PI * 2
       })
     }
 
     return { branches, blossoms, stars }
   }, [])
+
+  // Handle mouse move for parallax
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    mouseRef.current = { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight }
+  }, [])
+
+  // Handle click to burst blossoms
+  const handleClick = useCallback((e: MouseEvent) => {
+    const cx = e.clientX / window.innerWidth
+    const cy = e.clientY / window.innerHeight
+    const burstPetals = burstPetalsRef.current
+
+    blossoms.forEach(b => {
+      const dx = b.x - cx
+      const dy = b.y - cy
+      const dist = Math.sqrt(dx * dx + dy * dy)
+      if (dist < 0.06) {
+        // Burst this blossom!
+        b.burst = true
+        const c = PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)]
+        for (let i = 0; i < 12; i++) {
+          const angle = (Math.PI * 2 * i) / 12 + (Math.random() - 0.5) * 0.5
+          const speed = 0.002 + Math.random() * 0.004
+          burstPetals.push({
+            x: b.x, y: b.y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - 0.001,
+            size: 2 + Math.random() * 3,
+            rot: Math.random() * Math.PI * 2,
+            rotSpeed: (Math.random() - 0.5) * 0.05,
+            opacity: 0.8,
+            color: c,
+            life: 0,
+          })
+        }
+        // Reset blossom after delay
+        setTimeout(() => { b.burst = false }, 800)
+      }
+    })
+  }, [blossoms])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -172,9 +180,7 @@ export default function HeroScene({ growthProgress = 1 }: Props) {
     }
 
     const spawnPetal = () => {
-      const visibleBlossoms = blossoms.filter(b => b.appearAt <= progressRef.current)
-      if (!visibleBlossoms.length) return
-      const s = visibleBlossoms[Math.floor(Math.random() * visibleBlossoms.length)]
+      const s = blossoms[Math.floor(Math.random() * blossoms.length)]
       const c = PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)]
       fallingPetals.push({
         x: s.x + (Math.random() - 0.5) * 0.03,
@@ -187,8 +193,7 @@ export default function HeroScene({ growthProgress = 1 }: Props) {
         wobblePhase: Math.random() * Math.PI * 2,
         wobbleAmp: 0.0003 + Math.random() * 0.0006,
         wobbleFreq: 0.008 + Math.random() * 0.012,
-        opacity: 0,
-        fadeTimer: 0,
+        opacity: 0, fadeTimer: 0,
         maxLife: 350 + Math.random() * 250,
         color: c
       })
@@ -203,17 +208,19 @@ export default function HeroScene({ growthProgress = 1 }: Props) {
       g.addColorStop(1, '#1e3a6a')
       ctx.fillStyle = g; ctx.fillRect(0, 0, w, h)
 
-      // Moon
+      // Moon with mouse-reactive glow
       const mx = w * 0.82, my = h * 0.12
-      const mg = ctx.createRadialGradient(mx, my, 0, mx, my, w * 0.2)
-      mg.addColorStop(0, 'rgba(200,220,255,0.1)')
-      mg.addColorStop(0.3, 'rgba(147,197,253,0.04)')
+      const mxr = mx + (mouseRef.current.x - 0.5) * 15
+      const myr = my + (mouseRef.current.y - 0.5) * 10
+      const mg = ctx.createRadialGradient(mxr, myr, 0, mxr, myr, w * 0.22)
+      mg.addColorStop(0, 'rgba(200,220,255,0.12)')
+      mg.addColorStop(0.3, 'rgba(147,197,253,0.05)')
       mg.addColorStop(1, 'rgba(0,0,0,0)')
       ctx.fillStyle = mg; ctx.fillRect(0, 0, w, h)
-      ctx.fillStyle = 'rgba(220,230,255,0.15)'
-      ctx.beginPath(); ctx.arc(mx, my, 22, 0, Math.PI * 2); ctx.fill()
-      ctx.fillStyle = 'rgba(230,240,255,0.07)'
-      ctx.beginPath(); ctx.arc(mx, my, 32, 0, Math.PI * 2); ctx.fill()
+      ctx.fillStyle = 'rgba(220,230,255,0.18)'
+      ctx.beginPath(); ctx.arc(mxr, myr, 22, 0, Math.PI * 2); ctx.fill()
+      ctx.fillStyle = 'rgba(230,240,255,0.08)'
+      ctx.beginPath(); ctx.arc(mxr, myr, 32, 0, Math.PI * 2); ctx.fill()
 
       // Stars
       stars.forEach(s => {
@@ -232,8 +239,9 @@ export default function HeroScene({ growthProgress = 1 }: Props) {
       ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath(); ctx.fill()
     }
 
-    const drawBranch = (b: Branch, sway: number) => {
-      const ds = sway * (1 - b.depth * 0.25)
+    const drawBranch = (b: Branch, sway: number, mx: number) => {
+      const mouseInfluence = (mx - 0.5) * 8 * (1 - b.depth * 0.2)
+      const ds = sway * (1 - b.depth * 0.25) + mouseInfluence
       const x1 = b.x1 * w + ds, y1 = b.y1 * h
       const x2 = b.x2 * w + ds * 0.7, y2 = b.y2 * h
       const r = 55 + b.depth * 12 + Math.floor(Math.sin(time * 0.005 + b.depth) * 3)
@@ -244,7 +252,6 @@ export default function HeroScene({ growthProgress = 1 }: Props) {
       const midy = (y1 + y2) / 2 + Math.cos(b.depth * 1.8) * 3
       ctx.beginPath(); ctx.moveTo(x1, y1); ctx.quadraticCurveTo(midx, midy, x2, y2); ctx.stroke()
 
-      // Bark texture on trunk
       if (b.depth === 0 && b.width > 10) {
         ctx.strokeStyle = 'rgba(40,25,15,0.25)'
         ctx.lineWidth = 0.5
@@ -255,8 +262,10 @@ export default function HeroScene({ growthProgress = 1 }: Props) {
       }
     }
 
-    const drawBlossom = (b: Blossom, sway: number) => {
-      const bx = b.x * w + sway * (0.5 + b.phase * 0.15)
+    const drawBlossom = (b: Blossom, sway: number, mx: number) => {
+      if (b.burst) return // skip burst blossoms
+      const mouseInfluence = (mx - 0.5) * 5
+      const bx = b.x * w + sway * (0.5 + b.phase * 0.15) + mouseInfluence
       const by = b.y * h
       const br = 1 + Math.sin(time * 0.012 + b.phase) * 0.06
       const sz = b.size * br
@@ -275,7 +284,6 @@ export default function HeroScene({ growthProgress = 1 }: Props) {
         ctx.fill()
         ctx.restore()
       }
-      // Center
       const cg = ctx.createRadialGradient(0, 0, 0, 0, 0, sz * 0.08)
       cg.addColorStop(0, 'rgba(253,224,71,0.55)')
       cg.addColorStop(0.5, 'rgba(251,191,36,0.25)')
@@ -303,7 +311,6 @@ export default function HeroScene({ growthProgress = 1 }: Props) {
       ctx.bezierCurveTo(-p.size * 0.5, p.size * 0.3, -p.size * 0.6, -p.size * 0.3, 0, -p.size)
       ctx.fill()
       ctx.shadowBlur = 0
-      // Highlight
       ctx.fillStyle = `rgba(255,255,255,${p.opacity * 0.15})`
       ctx.beginPath()
       ctx.ellipse(-p.size * 0.1, -p.size * 0.12, p.size * 0.1, p.size * 0.22, -0.3, 0, Math.PI * 2)
@@ -311,29 +318,53 @@ export default function HeroScene({ growthProgress = 1 }: Props) {
       ctx.restore()
     }
 
+    const drawBurstPetal = (p: BurstPetal) => {
+      ctx.save()
+      ctx.translate(p.x * w, p.y * h)
+      ctx.rotate(p.rot)
+      ctx.globalAlpha = p.opacity
+      ctx.shadowColor = `rgba(${p.color[0]},${p.color[1]},${p.color[2]},0.4)`
+      ctx.shadowBlur = 12
+      const g = ctx.createRadialGradient(0, 0, 0, 0, 0, p.size)
+      g.addColorStop(0, `rgba(${p.color[0]},${p.color[1]},${p.color[2]},${p.opacity})`)
+      g.addColorStop(1, `rgba(${p.color[0]},${p.color[1]},${p.color[2]},0)`)
+      ctx.fillStyle = g
+      ctx.beginPath()
+      ctx.moveTo(0, -p.size)
+      ctx.bezierCurveTo(p.size * 0.6, -p.size * 0.3, p.size * 0.5, p.size * 0.3, 0, p.size)
+      ctx.bezierCurveTo(-p.size * 0.5, p.size * 0.3, -p.size * 0.6, -p.size * 0.3, 0, -p.size)
+      ctx.fill()
+      ctx.restore()
+    }
+
+    // Mouse glow
+    const drawMouseGlow = (mx: number, my: number) => {
+      const x = mx * w, y = my * h
+      const g = ctx.createRadialGradient(x, y, 0, x, y, 120)
+      g.addColorStop(0, 'rgba(236,72,153,0.08)')
+      g.addColorStop(0.5, 'rgba(236,72,153,0.03)')
+      g.addColorStop(1, 'rgba(236,72,153,0)')
+      ctx.fillStyle = g
+      ctx.beginPath(); ctx.arc(x, y, 120, 0, Math.PI * 2); ctx.fill()
+    }
+
     const animate = () => {
       time++
-      const progress = progressRef.current
+      const mx = mouseRef.current.x, my = mouseRef.current.y
       ctx.clearRect(0, 0, w, h)
       drawSky()
 
+      // Mouse glow follows cursor
+      drawMouseGlow(mx, my)
+
       const sway = Math.sin(time * 0.006) * 4 + Math.sin(time * 0.0025) * 2
 
-      // Draw branches that have appeared
-      branches
-        .filter(b => b.growAt <= progress)
-        .sort((a, b) => b.depth - a.depth)
-        .forEach(b => drawBranch(b, sway))
+      // Branches (back to front)
+      branches.sort((a, b) => b.depth - a.depth).forEach(b => drawBranch(b, sway, mx))
+      blossoms.forEach(b => drawBlossom(b, sway, mx))
 
-      // Draw blossoms that have appeared
-      blossoms
-        .filter(b => b.appearAt <= progress)
-        .forEach(b => drawBlossom(b, sway))
-
-      // Falling petals — only when fully grown
-      if (progress > 0.7 && time % 15 === 0 && fallingPetals.length < 40) {
-        spawnPetal()
-      }
+      // Falling petals
+      if (time % 15 === 0 && fallingPetals.length < 40) spawnPetal()
 
       for (let i = fallingPetals.length - 1; i >= 0; i--) {
         const p = fallingPetals[i]
@@ -342,7 +373,7 @@ export default function HeroScene({ growthProgress = 1 }: Props) {
         if (p.fadeTimer < 25) p.opacity = (p.fadeTimer / 25) * 0.5
         else if (lr > 0.75) p.opacity = Math.max(0, 0.5 * (1 - (lr - 0.75) / 0.25))
         else p.opacity = 0.5
-        const breeze = Math.sin(time * 0.003 + p.wobblePhase) * 0.2
+        const breeze = Math.sin(time * 0.003 + p.wobblePhase) * 0.2 + (mx - 0.5) * 0.3
         p.x += p.vx + Math.sin(time * p.wobbleFreq + p.wobblePhase) * p.wobbleAmp + breeze / w
         p.y += p.vy / h * 600
         p.vy += 0.0001
@@ -352,6 +383,23 @@ export default function HeroScene({ growthProgress = 1 }: Props) {
           fallingPetals.splice(i, 1)
         } else {
           drawFallingPetal(p)
+        }
+      }
+
+      // Burst petals
+      const bp = burstPetalsRef.current
+      for (let i = bp.length - 1; i >= 0; i--) {
+        const p = bp[i]
+        p.life++
+        p.x += p.vx
+        p.y += p.vy
+        p.vy += 0.00008
+        p.rot += p.rotSpeed
+        p.opacity = Math.max(0, 0.8 * (1 - p.life / 60))
+        if (p.life > 60 || p.opacity <= 0) {
+          bp.splice(i, 1)
+        } else {
+          drawBurstPetal(p)
         }
       }
 
@@ -367,13 +415,21 @@ export default function HeroScene({ growthProgress = 1 }: Props) {
     resize()
     animate()
     window.addEventListener('resize', resize)
-    return () => { cancelAnimationFrame(animId); window.removeEventListener('resize', resize) }
-  }, [branches, blossoms, stars])
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('click', handleClick)
+
+    return () => {
+      cancelAnimationFrame(animId)
+      window.removeEventListener('resize', resize)
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('click', handleClick)
+    }
+  }, [branches, blossoms, stars, handleMouseMove, handleClick])
 
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 w-full h-full"
+      className="absolute inset-0 w-full h-full cursor-pointer"
       aria-hidden="true"
     />
   )

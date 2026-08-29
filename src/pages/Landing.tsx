@@ -57,7 +57,7 @@ export default function Landing() {
       {/* Fixed tree canvas — persists behind entire page */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <Suspense fallback={<HeroFallback />}>
-          <HeroScene growthProgress={1} />
+          <HeroScene />
         </Suspense>
       </div>
 
