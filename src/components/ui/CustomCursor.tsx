@@ -147,7 +147,7 @@ export default function CustomCursor() {
   const dotSize = isHovering ? 8 : 6
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-[9999] hidden lg:block" aria-hidden>
+    <div className="pointer-events-none fixed inset-0 z-[9999] block" aria-hidden>
       {/* Particle trail canvas */}
       <canvas
         ref={trailRef}

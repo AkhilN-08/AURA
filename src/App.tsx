@@ -57,7 +57,7 @@ function AppRoutes() {
   return (
     <>
       <GenderThemeApplier />
-      {location.pathname !== "/" && <CustomCursor />}
+      <CustomCursor />
       <Routes>
         <Route path="/login" element={user ? <Navigate to="/" replace /> : <PageTransition><Login /></PageTransition>} />
         <Route path="/assessment" element={
