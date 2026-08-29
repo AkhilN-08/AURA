@@ -66,7 +66,22 @@ export default function PatientHome() {
     const thisAvg = thisWeek.reduce((a, s) => a + s.accuracy, 0) / thisWeek.length
     const lastAvg = lastWeek.reduce((a, s) => a + s.accuracy, 0) / lastWeek.length
     const change = Math.round(thisAvg - lastAvg)
-    return { thisWeek: thisWeek.length, thisAvg: Math.round(thisAvg), change }
+    // Build daily accuracies for last 7 days from real session data
+    const dailyAccuracies: number[] = []
+    for (let d = 6; d >= 0; d--) {
+      const dayStart = new Date(); dayStart.setDate(dayStart.getDate() - d); dayStart.setHours(0, 0, 0, 0)
+      const dayEnd = new Date(dayStart); dayEnd.setHours(23, 59, 59, 999)
+      const daySessions = sessions.filter(s => {
+        const t = new Date(s.timestamp)
+        return t >= dayStart && t <= dayEnd
+      })
+      if (daySessions.length > 0) {
+        dailyAccuracies.push(Math.round(daySessions.reduce((a, s) => a + s.accuracy, 0) / daySessions.length))
+      } else {
+        dailyAccuracies.push(0)
+      }
+    }
+    return { thisWeek: thisWeek.length, thisAvg: Math.round(thisAvg), change, dailyAccuracies }
   }, [sessions])
   const gamesPlayed = sessions.length
   const avgAccuracy = getAverageAccuracy()
@@ -185,10 +200,9 @@ export default function PatientHome() {
             </span>
           </div>
           <div className="flex items-end gap-1 h-16">
-            {Array.from({ length: 7 }, (_, i) => {
-              const h = 30 + Math.random() * 60
-              return <div key={i} className="flex-1 rounded-t bg-gradient-to-t from-sage-400 to-sage-300 opacity-60" style={{ height: h + '%' }} />
-            })}
+            {weeklyProgress.dailyAccuracies.map((acc, i) => (
+              <div key={i} className="flex-1 rounded-t bg-gradient-to-t from-sage-400 to-sage-300 opacity-80 transition-all" style={{ height: Math.max(8, acc) + '%' }} />
+            ))}
           </div>
           <p className="text-xs text-charcoal-400 mt-2 text-center">
             {weeklyProgress.change > 0

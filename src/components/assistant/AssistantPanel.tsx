@@ -20,6 +20,24 @@ const INITIAL_MESSAGES: Message[] = [
   },
 ]
 
+function normalizeTime(raw: string): string {
+  const t = raw.trim().toLowerCase()
+  const match12 = t.match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)$/)
+  if (match12) {
+    let hours = parseInt(match12[1])
+    const minutes = match12[2] || '00'
+    const period = match12[3]
+    if (period === 'pm' && hours < 12) hours += 12
+    if (period === 'am' && hours === 12) hours = 0
+    return `${hours.toString().padStart(2, '0')}:${minutes}`
+  }
+  const match24 = t.match(/^(\d{1,2}):(\d{2})$/)
+  if (match24) return `${parseInt(match24[1]).toString().padStart(2, '0')}:${match24[2]}`
+  const matchHour = t.match(/^(\d{1,2})/)
+  if (matchHour) return `${parseInt(matchHour[1]).toString().padStart(2, '0')}:00`
+  return raw
+}
+
 const QUICK_ACTIONS = [
   { label: 'Set a reminder', icon: Bell },
   { label: "What's today's date?", icon: null },
@@ -39,7 +57,7 @@ export default function AssistantPanel({ onClose }: AssistantPanelProps) {
   const [reminderTitle, setReminderTitle] = useState('')
   const [reminderTime, setReminderTime] = useState('')
   const [reminderType, setReminderType] = useState<Reminder['type']>('routine')
-  const [, setReminders] = useLocalStorage<Reminder[]>('aura-reminders', [])
+  const [reminders, setReminders] = useLocalStorage<Reminder[]>('aura-reminders', [])
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -62,7 +80,37 @@ export default function AssistantPanel({ onClose }: AssistantPanelProps) {
       const lower = userText.toLowerCase()
       let response = ''
 
-      if (lower.includes('reminder') || lower.includes('remind')) {
+      // --- Smart reminder detection: save directly if time is mentioned ---
+      const reminderMatch = lower.match(/(?:remind(?:er)?(?:\s+me)?(?:\s+to)?|set\s+(?:a\s+)?reminder(?:\s+for)?)\s+(.+)/i)
+      if (reminderMatch) {
+        const content = reminderMatch[1].trim()
+        // Try to extract time: "at 6am", "at 6:00", etc.
+        const timeMatch = content.match(/(?:at\s+)?(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)/i)
+        let time = ''
+        let title = content
+        if (timeMatch) {
+          time = normalizeTime(timeMatch[1])
+          title = content.replace(timeMatch[0], '').replace(/\s+/g, ' ').trim()
+        }
+        if (title.length < 2) title = content
+        // Detect reminder type
+        let rtype: Reminder['type'] = 'routine'
+        if (/medicine|medication|pill|drug/i.test(content)) rtype = 'medicine'
+        else if (/call|phone|ring/i.test(content)) rtype = 'call'
+        else if (/appointment|doctor|visit/i.test(content)) rtype = 'appointment'
+        else if (/eat|food|meal|breakfast|lunch|dinner/i.test(content)) rtype = 'meal'
+
+        const newReminder: Reminder = {
+          id: Date.now().toString(),
+          title,
+          time,
+          type: rtype,
+          completed: false,
+          createdAt: new Date().toISOString(),
+        }
+        setReminders(prev => [...prev, newReminder])
+        response = `Done! I\'ll remind you to "${title}"${time ? ` at ${time}` : ''}. You can see it on your home screen.`
+      } else if (lower.includes('reminder') || lower.includes('remind')) {
         response = "I'd be happy to help set a reminder for you. Would you like to tell me the details?"
         setShowReminderForm(true)
       } else if (lower.includes('good morning') || lower.includes('hello') || lower.includes('hi')) {

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { RotateCcw, Trophy, Clock, Target } from 'lucide-react'
+import { Trophy } from 'lucide-react'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { calculateDifficulty, getDifficultyConfig } from '../../utils/adaptiveDifficulty'
 import type { GameSession } from '../../data/models'
@@ -36,13 +36,17 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
 
   const [cards, setCards] = useState<Card[]>([])
   const [flippedIds, setFlippedIds] = useState<number[]>([])
-  const [attempts, setAttempts] = useState(0)
   const [matches, setMatches] = useState(0)
   const [gameStarted, setGameStarted] = useState(false)
   const [gameOver, setGameOver] = useState(false)
-  const [startTime, setStartTime] = useState(0)
-  const [elapsed, setElapsed] = useState(0)
   const [lockBoard, setLockBoard] = useState(false)
+  const [encouragement, setEncouragement] = useState('')
+
+  const MATCH_MESSAGES = [
+    'Beautiful! 🌸', 'Wonderful! 💐', 'You remembered! 🌺',
+    'Amazing! 🏡', 'That\'s right! ☀️', 'Brilliant! 🎋',
+    'Lovely! 🎋', 'So clever! 🍵', 'Keep going! 🌸',
+  ]
 
   const initGame = useCallback(() => {
     const emojis = shuffle(EMOJI_SETS[0]).slice(0, config.pairs)
@@ -50,11 +54,9 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
     const shuffled = shuffle(pairs)
     setCards(shuffled.map((emoji, i) => ({ id: i, emoji, isFlipped: false, isMatched: false })))
     setFlippedIds([])
-    setAttempts(0)
     setMatches(0)
     setGameStarted(false)
     setGameOver(false)
-    setElapsed(0)
     setLockBoard(false)
   }, [config.pairs])
 
@@ -64,28 +66,19 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
   }, [initGame])
 
   useEffect(() => {
-    if (!gameStarted || gameOver) return
-    const interval = setInterval(() => {
-      setElapsed(Math.floor((Date.now() - startTime) / 1000))
-    }, 1000)
-    return () => clearInterval(interval)
-  }, [gameStarted, gameOver, startTime])
-
-  useEffect(() => {
     if (matches > 0 && matches === config.pairs) {
       setGameOver(true)
-      const accuracy = Math.round((matches / (attempts || 1)) * 100)
       const session: GameSession = {
         gameType: 'memory-match',
-        score: accuracy,
-        accuracy,
-        duration: elapsed,
+        score: 100,
+        accuracy: 100,
+        duration: 0,
         timestamp: new Date().toISOString(),
         difficulty,
       }
       onComplete?.(session)
     }
-  }, [matches, attempts, config.pairs, elapsed, difficulty, onComplete])
+  }, [matches, config.pairs, difficulty, onComplete])
 
   const handleCardClick = (id: number) => {
     if (lockBoard || gameOver) return
@@ -94,7 +87,6 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
 
     if (!gameStarted) {
       setGameStarted(true)
-      setStartTime(Date.now())
     }
 
     const newCards = [...cards]
@@ -105,7 +97,6 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
     setFlippedIds(newFlipped)
 
     if (newFlipped.length === 2) {
-      setAttempts(a => a + 1)
       setLockBoard(true)
 
       if (cards[newFlipped[0]].emoji === cards[newFlipped[1]].emoji) {
@@ -114,6 +105,8 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
             c.emoji === cards[newFlipped[0]].emoji ? { ...c, isMatched: true } : c
           ))
           setMatches(m => m + 1)
+          setEncouragement(MATCH_MESSAGES[Math.floor(Math.random() * MATCH_MESSAGES.length)])
+          setTimeout(() => setEncouragement(''), 1200)
           setFlippedIds([])
           setLockBoard(false)
         }, 500)
@@ -129,29 +122,16 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
     }
   }
 
-  const accuracy = attempts > 0 ? Math.round((matches / attempts) * 100) : 0
-
   return (
     <div className="max-w-2xl mx-auto">
-      {/* Stats bar */}
-      <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2 text-charcoal-500">
-            <Target size={18} />
-            <span className="font-medium">{matches}/{config.pairs} pairs</span>
-          </div>
-          <div className="flex items-center gap-2 text-charcoal-500">
-            <RotateCcw size={18} />
-            <span className="font-medium">{attempts} attempts</span>
-          </div>
-          <div className="flex items-center gap-2 text-charcoal-500">
-            <Clock size={18} />
-            <span className="font-medium">{elapsed}s</span>
-          </div>
-        </div>
-        <div className="bg-sage-50 px-4 py-2 rounded-xl">
-          <span className="text-sm font-medium text-sage-600">{difficulty} mode</span>
-        </div>
+      {/* Warm encouragement banner */}
+      <div className="text-center mb-6 h-8">
+        {encouragement && (
+          <p className="text-xl font-bold text-sage-600 animate-bounce">{encouragement}</p>
+        )}
+        {!gameOver && !encouragement && (
+          <p className="text-charcoal-400 text-sm">Tap a card to find a pair!</p>
+        )}
       </div>
 
       {/* Cards grid */}
@@ -185,19 +165,14 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
         <div className="mt-8 text-center animate-fade-in">
           <div className="card bg-sage-50 border-forest-200">
             <Trophy className="mx-auto text-amber-500 mb-4" size={48} />
-            <h3 className="text-2xl font-bold text-charcoal-800 mb-2">Wonderful!</h3>
+            <h3 className="text-2xl font-bold text-charcoal-800 mb-2">Beautiful! Your memory is wonderful today! 🌸</h3>
             <p className="text-charcoal-400 mb-6">
-              You found all {config.pairs} pairs in {attempts} attempts and {elapsed} seconds.
+              You found all {config.pairs} pairs! Keep it up — your mind is getting stronger every day.
             </p>
-            <div className="flex items-center justify-center gap-6 mb-6">
-              <div className="text-center">
-                <p className="text-3xl font-bold text-sage-600">{accuracy}%</p>
-                <p className="text-sm text-charcoal-400">Accuracy</p>
-              </div>
-              <div className="text-center">
-                <p className="text-3xl font-bold text-sage-600">{elapsed}s</p>
-                <p className="text-sm text-charcoal-400">Time</p>
-              </div>
+            <div className="flex items-center justify-center gap-3 mb-6">
+              {[...Array(3)].map((_, i) => (
+                <span key={i} className="text-3xl">🌸</span>
+              ))}
             </div>
             <button onClick={initGame} className="btn-primary">
               Play Again
