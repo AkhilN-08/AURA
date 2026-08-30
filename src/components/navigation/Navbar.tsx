@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Flower2, LogOut } from 'lucide-react'
+import { Brain, LogOut } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { useTranslation } from '../../hooks/useTranslation'
 import MobileMenu from './MobileMenu'
@@ -51,10 +51,10 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 group" aria-label="AURA-NER NER Home">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sage-400/80 to-sage-600/80 backdrop-blur-sm border border-white/30 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-400 ease-[cubic-bezier(0.25,0.1,0.25,1)] shadow-[0_0_16px_rgba(59,130,246,0.2)]">
-              <Flower2 className="text-white" size={22} />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-400 ease-[cubic-bezier(0.25,0.1,0.25,1)] shadow-[0_4px_20px_rgba(244,114,182,0.35)]">
+              <Brain className="text-white" size={24} strokeWidth={2.5} />
             </div>
-            <span className="text-lg font-bold text-charcoal-800 tracking-tight">AURA-NER</span>
+            <span className="text-xl font-bold text-charcoal-800 dark:text-white tracking-tight">AURA-NER</span>
           </Link>
 
           {/* Desktop Nav — glass pills */}
