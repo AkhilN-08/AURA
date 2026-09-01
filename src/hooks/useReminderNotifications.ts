@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useLocalStorage } from './useLocalStorage'
+import { playReminderChime, vibrateDevice, speakText } from '../utils/audio'
 import type { Reminder } from '../data/models'
 
 const REMINDER_TYPE_ICONS: Record<string, string> = {
@@ -73,6 +74,12 @@ export function useReminderNotifications() {
 
         // Fire notification
         const icon = REMINDER_TYPE_ICONS[reminder.type] || '🔔'
+        
+        // Play chime and vibrate
+        playReminderChime()
+        vibrateDevice([200, 100, 200, 100, 200])
+        speakText(`Reminder: ${reminder.title}`)
+        
         try {
           new Notification(`${icon} ${reminder.title}`, {
             body: reminder.time

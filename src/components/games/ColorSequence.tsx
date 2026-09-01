@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { RotateCcw, Trophy, Clock, Palette } from 'lucide-react'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { calculateDifficulty, getDifficultyConfig } from '../../utils/adaptiveDifficulty'
-import { playMatchChime, playWinChime } from '../../utils/audio'
+import { playMatchChime, playWinChime, playTapSound, speakText } from '../../utils/audio'
 import type { GameSession } from '../../data/models'
 
 const ENCOURAGEMENTS = [
@@ -70,7 +70,7 @@ export default function ColorSequence({ onComplete }: ColorSequenceProps) {
     }, 900)
   }, [config.colorLength])
 
-  const startGame = () => { setRounds(0); setTotalScore(0); setElapsed(0); initRound() }
+  const startGame = () => { setRounds(0); setTotalScore(0); setElapsed(0); initRound(); speakText('Watch the colors light up in order, then tap them back from memory!') }
 
   useEffect(() => {
     if (phase !== 'showing' && phase !== 'input') return
@@ -155,7 +155,7 @@ export default function ColorSequence({ onComplete }: ColorSequenceProps) {
           <p className="text-charcoal-400 mb-8 max-w-md mx-auto">
             Watch the colors light up in order, then tap them back from memory!
           </p>
-          <button onClick={startGame} className="btn-primary">Start Round 1</button>
+          <button onClick={() => { playTapSound(); startGame() }} className="btn-primary">Start Round 1</button>
         </div>
       )}
 

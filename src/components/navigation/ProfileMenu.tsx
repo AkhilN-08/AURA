@@ -7,6 +7,8 @@ import { useAuth } from '../../hooks/useAuth'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { useTranslation } from '../../hooks/useTranslation'
 import { useDarkMode } from '../../hooks/useDarkMode'
+import { useElderMode } from '../../hooks/useElderMode'
+import { playTapSound } from '../../utils/audio'
 
 interface ProfileMenuProps {
   isOpen: boolean
@@ -18,10 +20,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
   const { sessions, getAverageAccuracy } = useGameProgress()
   const { language, setLanguage, t } = useTranslation()
   const { isDark, toggle: toggleDark } = useDarkMode()
-  const [viewMode, setViewState] = useState<'elder' | 'adult'>(() => {
-    const saved = localStorage.getItem('aura-view-mode')
-    return (saved === 'elder' || saved === 'adult') ? saved : 'adult'
-  })
+  const { elderMode, setElderMode } = useElderMode()
   const navigate = useNavigate()
   const panelRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -195,26 +194,18 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                 <p className="text-[11px] font-semibold text-charcoal-700 dark:text-white/60 uppercase tracking-wider mb-2.5">View Mode</p>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => {
-                      setViewState('elder')
-                      localStorage.setItem('aura-view-mode', 'elder')
-                      document.documentElement.classList.add('elder-mode')
-                    }}
+                    onClick={() => { playTapSound(); setElderMode(true) }}
                     className={`flex-1 py-2.5 rounded-[10px] text-[13px] font-medium flex items-center justify-center gap-1.5 transition-all duration-200 ${
-                      viewMode === 'elder'
+                      elderMode
                         ? 'bg-sage-500/20 text-sage-600 dark:text-sage-400 border border-sage-500/30'
                         : 'text-charcoal-700 dark:text-white/55 hover:bg-white/10 dark:hover:bg-white/[0.04] border border-transparent'
                     }`}>
                     <Eye size={14} /> Elder
                   </button>
                   <button
-                    onClick={() => {
-                      setViewState('adult')
-                      localStorage.setItem('aura-view-mode', 'adult')
-                      document.documentElement.classList.remove('elder-mode')
-                    }}
+                    onClick={() => { playTapSound(); setElderMode(false) }}
                     className={`flex-1 py-2.5 rounded-[10px] text-[13px] font-medium flex items-center justify-center gap-1.5 transition-all duration-200 ${
-                      viewMode === 'adult'
+                      !elderMode
                         ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30'
                         : 'text-charcoal-700 dark:text-white/55 hover:bg-white/10 dark:hover:bg-white/[0.04] border border-transparent'
                     }`}>
@@ -225,11 +216,10 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
 
               <div className="mx-5 h-px bg-white/10 dark:bg-white/[0.05]" />
 
-              {/* Dark Mode */}
-              <button
-                onClick={toggleDark}
-                className="w-full flex items-center gap-3.5 px-5 py-3.5 hover:bg-white/10 dark:hover:bg-white/[0.04] transition-all duration-200 text-left"
-              >
+              {/* Dark Mode */}                <button
+                  onClick={() => { playTapSound(); toggleDark() }}
+                  className="w-full flex items-center gap-3.5 px-5 py-3.5 hover:bg-white/10 dark:hover:bg-white/[0.04] transition-all duration-200 text-left"
+                >
                 <div className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0" style={{ backgroundColor: isDark ? 'rgba(99,102,241,0.15)' : 'rgba(245,158,11,0.15)' }}>
                   {isDark ? <Moon size={18} style={{ color: '#818CF8' }} /> : <Sun size={18} style={{ color: '#F59E0B' }} />}
                 </div>

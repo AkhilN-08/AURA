@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { Trophy } from 'lucide-react'
+import { Trophy, RotateCcw, Volume2 } from 'lucide-react'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { calculateDifficulty, getDifficultyConfig } from '../../utils/adaptiveDifficulty'
-import { playMatchChime, playWinChime } from '../../utils/audio'
+import { playMatchChime, playWinChime, playTapSound, speakText } from '../../utils/audio'
 import type { GameSession } from '../../data/models'
 
 interface Card {
@@ -64,6 +64,8 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
   useEffect(() => {
     initGame()
     localStorage.setItem("aura-last-activity", "/games")
+    // Read instructions aloud
+    speakText('Find matching pairs of cards. Tap a card to flip it over, then find its match!')
   }, [initGame])
 
   useEffect(() => {
@@ -86,6 +88,7 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
     if (lockBoard || gameOver) return
     if (flippedIds.length >= 2) return
     if (cards[id].isFlipped || cards[id].isMatched) return
+    playTapSound()
 
     if (!gameStarted) {
       setGameStarted(true)
@@ -177,8 +180,8 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
                 <span key={i} className="text-3xl">🌸</span>
               ))}
             </div>
-            <button onClick={initGame} className="btn-primary">
-              Play Again
+            <button onClick={() => { playTapSound(); initGame() }} className="btn-primary flex items-center gap-2 mx-auto">
+              <RotateCcw size={20} /> Play Again
             </button>
           </div>
         </div>

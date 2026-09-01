@@ -3,7 +3,7 @@ import { RotateCcw, Trophy, Clock, Eye } from 'lucide-react'
 import { GAME_OBJECTS } from '../../data/games'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { calculateDifficulty, getDifficultyConfig } from '../../utils/adaptiveDifficulty'
-import { playMatchChime, playWinChime } from '../../utils/audio'
+import { playMatchChime, playWinChime, playTapSound, speakText } from '../../utils/audio'
 import type { GameSession } from '../../data/models'
 
 const ENCOURAGEMENTS = [
@@ -63,6 +63,7 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
     setTotalScore(0)
     setElapsed(0)
     initRound()
+    speakText('Study these objects carefully. Remember as many as you can!')
   }
 
   useEffect(() => {
@@ -159,7 +160,7 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
           <p className="text-charcoal-400 mb-8 max-w-md mx-auto">
             You'll see {config.objects} objects for a moment. Then tell us which ones you remember.
           </p>
-          <button onClick={startGame} className="btn-primary">
+          <button onClick={() => { playTapSound(); startGame() }} className="btn-primary">
             Start Round 1
           </button>
         </div>

@@ -546,15 +546,11 @@ export default function Assistant() {
 
             {/* Tips Card */}
             <div className="card bg-gradient-to-br from-sage-50 to-cream-100 border-sage-100">
-              <h3 className="text-sm font-semibold text-charcoal-700 mb-2">💡 Voice Tips</h3>
+              <h3 className="text-sm font-semibold text-charcoal-700 mb-2">💡 Try saying:</h3>
               <ul className="space-y-1.5 text-xs text-charcoal-500">
-                <li>• Say <strong>"Remind me to take medicine at 8 AM"</strong></li>
-                <li>• Say <strong>"Add task buy groceries"</strong></li>
-                <li>• Say <strong>"I need to water the plants"</strong></li>
-                <li>• Say <strong>"Call mom"</strong> to open phone dialer</li>
-                <li>• Say <strong>"Set an alarm for 7:00"</strong></li>
-                <li>• Say <strong>"What time is it?"</strong></li>
-                <li>• Say <strong>"Open games"</strong> to play memory games</li>
+                <li>• <strong>"Remind me to take medicine"</strong></li>
+                <li>• <strong>"Call mom"</strong></li>
+                <li>• <strong>"What time is it?"</strong></li>
               </ul>
             </div>
           </div>
