@@ -45,60 +45,86 @@ function AnalogClock() {
   const secDeg = s * 6
   const minDeg = m * 6 + s * 0.1
   const hrDeg = h * 30 + m * 0.5
+  const cx = 80, cy = 80
+
+  const ticks = Array.from({ length: 60 }, (_, i) => i)
+  const numbers = [
+    { num: 12, deg: 0 }, { num: 1, deg: 30 }, { num: 2, deg: 60 },
+    { num: 3, deg: 90 }, { num: 4, deg: 120 }, { num: 5, deg: 150 },
+    { num: 6, deg: 180 }, { num: 7, deg: 210 }, { num: 8, deg: 240 },
+    { num: 9, deg: 270 }, { num: 10, deg: 300 }, { num: 11, deg: 330 },
+  ]
+
+  const toXY = (deg: number, r: number) => {
+    const rad = (deg - 90) * (Math.PI / 180)
+    return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) }
+  }
 
   return (
-    <div style={{
-      width: 120, height: 120, borderRadius: '50%',
-      background: 'white', border: '4px solid #86efac',
-      boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-      position: 'relative', margin: '0 auto'
-    }}>
-      {/* 12,3,6,9 numbers */}
-      {[12,3,6,9].map((num, i) => {
-        const angle = (num === 12 ? 0 : num * 30) * (Math.PI / 180) - Math.PI/2
-        const r = 46
+    <svg viewBox="0 0 160 160" width="140" height="140" style={{ display: 'block', margin: '0 auto' }}>
+      <defs>
+        <filter id="clockShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="2" stdDeviation="4" floodOpacity="0.12" />
+        </filter>
+        <radialGradient id="faceGrad" cx="50%" cy="40%" r="55%">
+          <stop offset="0%" stopColor="#fefefe" />
+          <stop offset="100%" stopColor="#f0ede8" />
+        </radialGradient>
+        <linearGradient id="rimGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#d4c9b8" />
+          <stop offset="50%" stopColor="#b8a994" />
+          <stop offset="100%" stopColor="#c4b5a2" />
+        </linearGradient>
+      </defs>
+
+      <circle cx={cx} cy={cy} r="76" fill="url(#rimGrad)" filter="url(#clockShadow)" />
+      <circle cx={cx} cy={cy} r="73" fill="none" stroke="#a89882" strokeWidth="0.5" />
+      <circle cx={cx} cy={cy} r="70" fill="url(#faceGrad)" />
+      <circle cx={cx} cy={cy} r="70" fill="none" stroke="#e0d8cc" strokeWidth="0.5" />
+
+      {ticks.map(i => {
+        const isHour = i % 5 === 0
+        const outer = 65
+        const inner = isHour ? 56 : 61
+        const p1 = toXY(i * 6, outer)
+        const p2 = toXY(i * 6, inner)
         return (
-          <span key={num} style={{
-            position: 'absolute',
-            left: 60 + r * Math.cos(angle) - 6,
-            top: 60 + r * Math.sin(angle) - 7,
-            fontSize: 13, fontWeight: 700, color: '#374151',
-            width: 14, textAlign: 'center'
-          }}>{num}</span>
+          <line key={i} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y}
+            stroke={isHour ? '#2d2a26' : '#b5ad9f'}
+            strokeWidth={isHour ? 2 : 0.7}
+            strokeLinecap="round"
+          />
         )
       })}
-      {/* Hour hand */}
-      <div style={{
-        position: 'absolute', width: 4, height: 28,
-        background: '#1f2937', borderRadius: 2,
-        left: '50%', bottom: '50%',
-        transformOrigin: 'bottom center',
-        transform: `translateX(-50%) rotate(${hrDeg}deg)`
-      }} />
-      {/* Minute hand */}
-      <div style={{
-        position: 'absolute', width: 3, height: 38,
-        background: '#22c55e', borderRadius: 2,
-        left: '50%', bottom: '50%',
-        transformOrigin: 'bottom center',
-        transform: `translateX(-50%) rotate(${minDeg}deg)`
-      }} />
-      {/* Second hand */}
-      <div style={{
-        position: 'absolute', width: 1.5, height: 42,
-        background: '#ef4444', borderRadius: 1,
-        left: '50%', bottom: '50%',
-        transformOrigin: 'bottom center',
-        transform: `translateX(-50%) rotate(${secDeg}deg)`
-      }} />
-      {/* Center dot */}
-      <div style={{
-        position: 'absolute', width: 10, height: 10,
-        background: '#22c55e', borderRadius: '50%',
-        left: '50%', top: '50%',
-        transform: 'translate(-50%, -50%)'
-      }} />
-    </div>
+
+      {numbers.map(({ num, deg }) => {
+        const p = toXY(deg, 48)
+        const isMain = num % 3 === 0
+        return (
+          <text key={num} x={p.x} y={p.y}
+            textAnchor="middle" dominantBaseline="central"
+            fill="#2d2a26"
+            style={{ fontSize: isMain ? 13 : 10.5, fontWeight: isMain ? 700 : 500, fontFamily: 'Georgia, Times New Roman, serif' }}
+          >{num}</text>
+        )
+      })}
+
+      <line x1={cx} y1={cy + 5} x2={cx} y2={cy - 35}
+        stroke="#2d2a26" strokeWidth="3.5" strokeLinecap="round"
+        transform={`rotate(${hrDeg} ${cx} ${cy})`}
+      />
+      <line x1={cx} y1={cy + 6} x2={cx} y2={cy - 55}
+        stroke="#2d2a26" strokeWidth="2.2" strokeLinecap="round"
+        transform={`rotate(${minDeg} ${cx} ${cy})`}
+      />
+      <line x1={cx} y1={cy + 12} x2={cx} y2={cy - 58}
+        stroke="#c0392b" strokeWidth="1" strokeLinecap="round"
+        transform={`rotate(${secDeg} ${cx} ${cy})`}
+      />
+
+      <circle cx={cx} cy={cy} r="3.5" fill="#2d2a26" />
+      <circle cx={cx} cy={cy} r="1.8" fill="#c0392b" />
+    </svg>
   )
 }
 
@@ -153,7 +179,7 @@ export default function PatientHome() {
         </h1>
         <p className="text-charcoal-400 dark:text-charcoal-500 text-lg">{greeting.sub}</p>
         {/* Analog Clock */}
-        <div className="flex justify-center mt-5 mb-3">
+        <div className="flex justify-center mt-4 mb-2">
           <AnalogClock />
         </div>
         <div className="flex items-center justify-center gap-2 text-charcoal-300 dark:text-charcoal-500 text-sm">
