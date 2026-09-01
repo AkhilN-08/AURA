@@ -47,11 +47,18 @@ function SOSButton() {
   return (
     <button
       onClick={handleClick}
-      className="fixed bottom-24 left-6 z-50 w-16 h-16 rounded-full bg-gradient-to-br from-red-500 to-red-600 text-white shadow-[0_4px_24px_rgba(239,68,68,0.4)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300 animate-pulse-slow"
+      className="fixed bottom-24 left-6 z-50 w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300"
+      style={{
+        background: 'linear-gradient(135deg, rgba(239,68,68,0.3) 0%, rgba(239,68,68,0.15) 100%)',
+        backdropFilter: 'blur(12px) saturate(150%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(150%)',
+        border: '1px solid rgba(239,68,68,0.2)',
+        boxShadow: '0 4px 16px rgba(239,68,68,0.15), inset 0 1px 0 rgba(255,255,255,0.3)',
+      }}
       aria-label="Call for help"
       title="Call for help"
     >
-      <Phone size={28} />
+      <Phone size={16} style={{ color: '#ef4444' }} />
     </button>
   )
 }
@@ -74,10 +81,17 @@ function AuthenticatedLayout({ children, hideNav }: { children: ReactNode; hideN
         <>
           <button
             onClick={() => { playTapSound(); navigate('/') }}
-            className="fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full bg-gradient-to-br from-sage-400 to-sage-600 text-white shadow-[0_4px_20px_rgba(244,114,182,0.3)] flex items-center justify-center hover:scale-110 active:scale-95 transition-transform duration-300"
+            className="fixed bottom-6 left-6 z-50 w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300"
+            style={{
+              background: 'linear-gradient(135deg, rgba(134,239,172,0.4) 0%, rgba(134,239,172,0.2) 100%)',
+              backdropFilter: 'blur(12px) saturate(150%)',
+              WebkitBackdropFilter: 'blur(12px) saturate(150%)',
+              border: '1px solid rgba(134,239,172,0.3)',
+              boxShadow: '0 4px 16px rgba(134,239,172,0.15), inset 0 1px 0 rgba(255,255,255,0.3)',
+            }}
             aria-label="Go Home"
           >
-            <Home size={24} />
+            <Home size={18} style={{ color: '#22c55e' }} />
           </button>
           <SOSButton />
         </>
