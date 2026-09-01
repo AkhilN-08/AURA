@@ -45,89 +45,104 @@ function AnalogClock() {
   const secDeg = s * 6
   const minDeg = m * 6 + s * 0.1
   const hrDeg = h * 30 + m * 0.5
-  const cx = 80, cy = 80
-
-  const ticks = Array.from({ length: 60 }, (_, i) => i)
-  const numbers = [
-    { num: 12, deg: 0 }, { num: 1, deg: 30 }, { num: 2, deg: 60 },
-    { num: 3, deg: 90 }, { num: 4, deg: 120 }, { num: 5, deg: 150 },
-    { num: 6, deg: 180 }, { num: 7, deg: 210 }, { num: 8, deg: 240 },
-    { num: 9, deg: 270 }, { num: 10, deg: 300 }, { num: 11, deg: 330 },
-  ]
-
-  const toXY = (deg: number, r: number) => {
-    const rad = (deg - 90) * (Math.PI / 180)
-    return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) }
-  }
 
   return (
-    <svg viewBox="0 0 160 160" width="140" height="140" style={{ display: 'block', margin: '0 auto' }}>
-      <defs>
-        <filter id="clockShadow" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="2" stdDeviation="4" floodOpacity="0.12" />
-        </filter>
-        <radialGradient id="faceGrad" cx="50%" cy="40%" r="55%">
-          <stop offset="0%" stopColor="#fefefe" />
-          <stop offset="100%" stopColor="#f0ede8" />
-        </radialGradient>
-        <linearGradient id="rimGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#d4c9b8" />
-          <stop offset="50%" stopColor="#b8a994" />
-          <stop offset="100%" stopColor="#c4b5a2" />
-        </linearGradient>
-      </defs>
+    <div style={{
+      width: 140, height: 140, borderRadius: '50%',
+      background: 'linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0.5) 100%)',
+      backdropFilter: 'blur(20px) saturate(180%)',
+      WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+      border: '1px solid rgba(255,255,255,0.8)',
+      boxShadow: '0 8px 32px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -1px 0 rgba(0,0,0,0.05)',
+      position: 'relative', margin: '0 auto',
+    }}>
+      <div style={{
+        position: 'absolute', inset: 4, borderRadius: '50%',
+        border: '0.5px solid rgba(255,255,255,0.6)',
+        pointerEvents: 'none',
+      }} />
 
-      <circle cx={cx} cy={cy} r="76" fill="url(#rimGrad)" filter="url(#clockShadow)" />
-      <circle cx={cx} cy={cy} r="73" fill="none" stroke="#a89882" strokeWidth="0.5" />
-      <circle cx={cx} cy={cy} r="70" fill="url(#faceGrad)" />
-      <circle cx={cx} cy={cy} r="70" fill="none" stroke="#e0d8cc" strokeWidth="0.5" />
-
-      {ticks.map(i => {
+      {Array.from({ length: 60 }, (_, i) => {
         const isHour = i % 5 === 0
-        const outer = 65
-        const inner = isHour ? 56 : 61
-        const p1 = toXY(i * 6, outer)
-        const p2 = toXY(i * 6, inner)
+        const angle = i * 6
         return (
-          <line key={i} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y}
-            stroke={isHour ? '#2d2a26' : '#b5ad9f'}
-            strokeWidth={isHour ? 2 : 0.7}
-            strokeLinecap="round"
-          />
+          <div key={i} style={{
+            position: 'absolute',
+            width: isHour ? 2 : 0.8,
+            height: isHour ? 10 : 5,
+            background: isHour ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0.2)',
+            borderRadius: 1,
+            left: '50%', top: 6,
+            transformOrigin: '50% 64px',
+            transform: 'translateX(-50%) rotate(' + angle + 'deg)',
+          }} />
         )
       })}
 
-      {numbers.map(({ num, deg }) => {
-        const p = toXY(deg, 48)
-        const isMain = num % 3 === 0
+      {[
+        { n: 12, d: 0 }, { n: 3, d: 90 }, { n: 6, d: 180 }, { n: 9, d: 270 }
+      ].map(({ n, d }) => {
+        const rad = (d - 90) * (Math.PI / 180)
+        const r = 48
         return (
-          <text key={num} x={p.x} y={p.y}
-            textAnchor="middle" dominantBaseline="central"
-            fill="#2d2a26"
-            style={{ fontSize: isMain ? 13 : 10.5, fontWeight: isMain ? 700 : 500, fontFamily: 'Georgia, Times New Roman, serif' }}
-          >{num}</text>
+          <span key={n} style={{
+            position: 'absolute',
+            left: 70 + r * Math.cos(rad) - 7,
+            top: 70 + r * Math.sin(rad) - 8,
+            fontSize: 14, fontWeight: 600,
+            color: 'rgba(0,0,0,0.7)',
+            fontFamily: '-apple-system, SF Pro Display, Helvetica Neue, sans-serif',
+            width: 14, textAlign: 'center',
+          }}>{n}</span>
         )
       })}
 
-      <line x1={cx} y1={cy + 5} x2={cx} y2={cy - 35}
-        stroke="#2d2a26" strokeWidth="3.5" strokeLinecap="round"
-        transform={`rotate(${hrDeg} ${cx} ${cy})`}
-      />
-      <line x1={cx} y1={cy + 6} x2={cx} y2={cy - 55}
-        stroke="#2d2a26" strokeWidth="2.2" strokeLinecap="round"
-        transform={`rotate(${minDeg} ${cx} ${cy})`}
-      />
-      <line x1={cx} y1={cy + 12} x2={cx} y2={cy - 58}
-        stroke="#c0392b" strokeWidth="1" strokeLinecap="round"
-        transform={`rotate(${secDeg} ${cx} ${cy})`}
-      />
+      <div style={{
+        position: 'absolute', width: 3.5, height: 30,
+        background: 'linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.6))',
+        borderRadius: 2, left: '50%', bottom: '50%',
+        transformOrigin: 'bottom center',
+        transform: 'translateX(-50%) rotate(' + hrDeg + 'deg)',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
+      }} />
 
-      <circle cx={cx} cy={cy} r="3.5" fill="#2d2a26" />
-      <circle cx={cx} cy={cy} r="1.8" fill="#c0392b" />
-    </svg>
+      <div style={{
+        position: 'absolute', width: 2.5, height: 44,
+        background: 'linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0.5))',
+        borderRadius: 2, left: '50%', bottom: '50%',
+        transformOrigin: 'bottom center',
+        transform: 'translateX(-50%) rotate(' + minDeg + 'deg)',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
+      }} />
+
+      <div style={{
+        position: 'absolute', width: 1, height: 48,
+        background: 'linear-gradient(to top, #FF3B30, rgba(255,59,48,0.6))',
+        borderRadius: 0.5, left: '50%', bottom: '50%',
+        transformOrigin: 'bottom center',
+        transform: 'translateX(-50%) rotate(' + secDeg + 'deg)',
+      }} />
+
+      <div style={{
+        position: 'absolute', width: 10, height: 10,
+        background: 'linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.4))',
+        border: '1.5px solid rgba(0,0,0,0.15)',
+        borderRadius: '50%', left: '50%', top: '50%',
+        transform: 'translate(-50%, -50%)',
+        boxShadow: '0 1px 4px rgba(0,0,0,0.12)',
+      }} />
+
+      <div style={{
+        position: 'absolute',
+        width: '60%', height: '30%',
+        top: '8%', left: '20%',
+        background: 'linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 100%)',
+        borderRadius: '50%',
+        pointerEvents: 'none',
+      }} />
+    </div>
   )
 }
-
 function getDailyEncouragement() {
   const d = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000)
   return ENCOURAGEMENTS[d % ENCOURAGEMENTS.length]
