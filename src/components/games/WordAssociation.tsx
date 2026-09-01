@@ -2,7 +2,14 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { RotateCcw, Trophy, Clock, BookOpen } from 'lucide-react'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { calculateDifficulty, getDifficultyConfig } from '../../utils/adaptiveDifficulty'
+import { playMatchChime, playWinChime } from '../../utils/audio'
 import type { GameSession } from '../../data/models'
+
+const ENCOURAGEMENTS = [
+  'Beautiful! 🌸', 'Wonderful! 💐', 'You remembered! 🌺',
+  'Amazing! 🏡', "That's right! ☀️", 'Brilliant! 🎋',
+  'Lovely! 🍵', 'So clever! 🌸', 'Keep going! 💐',
+]
 
 function shuffle<T>(array: T[]): T[] {
   const arr = [...array]
@@ -43,6 +50,7 @@ export default function WordAssociation({ onComplete }: WordAssociationProps) {
   const [totalScore, setTotalScore] = useState(0)
   const [elapsed, setElapsed] = useState(0)
   const [correctThisRound, setCorrectThisRound] = useState(0)
+  const [encouragement, setEncouragement] = useState('')
 
   const initRound = useCallback(() => {
     const selected = shuffle(WORD_PAIRS).slice(0, config.wordPairs)
@@ -81,6 +89,9 @@ export default function WordAssociation({ onComplete }: WordAssociationProps) {
       setMatches(newMatches)
       setSelectedLeft(null)
       setCorrectThisRound(c => c + 1)
+      playMatchChime()
+      setEncouragement(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)])
+      setTimeout(() => setEncouragement(''), 2000)
 
       if (newMatches.size === pairs.length) {
         const accuracy = Math.round((correctThisRound + 1) / pairs.length * 100)
@@ -131,6 +142,12 @@ export default function WordAssociation({ onComplete }: WordAssociationProps) {
         <div className="bg-blue-50 px-4 py-2 rounded-xl">
           <span className="text-sm font-medium text-blue-600">{difficulty} mode</span>
         </div>
+      </div>
+
+      <div className="text-center mb-6 h-8">
+        {encouragement && (
+          <p className="text-xl font-bold text-sage-600 animate-bounce">{encouragement}</p>
+        )}
       </div>
 
       {phase === 'ready' && (

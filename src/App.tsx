@@ -17,9 +17,10 @@ import { TranslationProvider } from './hooks/useTranslation'
 import { useGenderTheme } from './hooks/useGenderTheme'
 import { useDemoData } from './hooks/useDemoData'
 import { useReminderNotifications } from './hooks/useReminderNotifications'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import PageTransition from './components/ui/PageTransition'
 import GenderThemeApplier from './components/ui/GenderThemeApplier'
+import { Home } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
@@ -47,6 +48,15 @@ function AuthenticatedLayout({ children, hideNav }: { children: ReactNode; hideN
       </main>
       {location.pathname !== '/' && <AssistantButton />}
       {!isGamesPage && location.pathname !== '/' && <AmbientBackground />}
+      {location.pathname !== '/' && location.pathname !== '/login' && location.pathname !== '/assessment' && (
+        <button
+          onClick={() => window.location.assign('/')}
+          className="fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full bg-gradient-to-br from-sage-400 to-sage-600 text-white shadow-[0_4px_20px_rgba(244,114,182,0.3)] flex items-center justify-center hover:scale-110 transition-transform duration-300"
+          aria-label="Go Home"
+        >
+          <Home size={24} />
+        </button>
+      )}
     </div>
   )
 }
@@ -70,7 +80,7 @@ function AppRoutes() {
         } />
         <Route path="/" element={
           <AssessmentGate>
-            <AuthenticatedLayout hideNav><PatientHome /></AuthenticatedLayout>
+            <AuthenticatedLayout><PatientHome /></AuthenticatedLayout>
           </AssessmentGate>
         } />
         <Route path="/games" element={

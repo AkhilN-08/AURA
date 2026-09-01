@@ -2,7 +2,14 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { RotateCcw, Trophy, Clock, BookOpen, Check, X } from 'lucide-react'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { calculateDifficulty, getDifficultyConfig } from '../../utils/adaptiveDifficulty'
+import { playMatchChime, playWinChime } from '../../utils/audio'
 import type { GameSession } from '../../data/models'
+
+const ENCOURAGEMENTS = [
+  'Beautiful! 🌸', 'Wonderful! 💐', 'You remembered! 🌺',
+  'Amazing! 🏡', "That's right! ☀️", 'Brilliant! 🎋',
+  'Lovely! 🍵', 'So clever! 🌸', 'Keep going! 💐',
+]
 
 const STORIES = [
   {
@@ -83,6 +90,7 @@ export default function StoryRecall({ onComplete }: StoryRecallProps) {
   const [rounds, setRounds] = useState(0)
   const [totalScore, setTotalScore] = useState(0)
   const [elapsed, setElapsed] = useState(0)
+  const [encouragement, setEncouragement] = useState('')
 
   const story = STORIES[storyIndex % STORIES.length]
   const questionsToShow = story.questions.slice(0, config.storyQuestions)
@@ -128,6 +136,9 @@ export default function StoryRecall({ onComplete }: StoryRecallProps) {
     setShowFeedback(true)
     const newAnswers = [...answers, selectedAnswer]
     setAnswers(newAnswers)
+    playMatchChime()
+    setEncouragement(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)])
+    setTimeout(() => setEncouragement(''), 2000)
 
     setTimeout(() => {
       if (questionIndex < questionsToShow.length - 1) {
@@ -180,6 +191,12 @@ export default function StoryRecall({ onComplete }: StoryRecallProps) {
         <div className="bg-amber-50 px-4 py-2 rounded-xl">
           <span className="text-sm font-medium text-amber-600">{difficulty} mode</span>
         </div>
+      </div>
+
+      <div className="text-center mb-6 h-8">
+        {encouragement && (
+          <p className="text-xl font-bold text-sage-600 animate-bounce">{encouragement}</p>
+        )}
       </div>
 
       {phase === 'ready' && (

@@ -2,7 +2,14 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { RotateCcw, Trophy, Clock, Grid3X3 } from 'lucide-react'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { calculateDifficulty, getDifficultyConfig } from '../../utils/adaptiveDifficulty'
+import { playMatchChime, playWinChime } from '../../utils/audio'
 import type { GameSession } from '../../data/models'
+
+const ENCOURAGEMENTS = [
+  'Beautiful! 🌸', 'Wonderful! 💐', 'You remembered! 🌺',
+  'Amazing! 🏡', "That's right! ☀️", 'Brilliant! 🎋',
+  'Lovely! 🍵', 'So clever! 🌸', 'Keep going! 💐',
+]
 
 function shuffle<T>(array: T[]): T[] {
   const arr = [...array]
@@ -32,6 +39,7 @@ export default function PatternGrid({ onComplete }: PatternGridProps) {
   const [rounds, setRounds] = useState(0)
   const [totalScore, setTotalScore] = useState(0)
   const [elapsed, setElapsed] = useState(0)
+  const [encouragement, setEncouragement] = useState('')
 
   const initRound = useCallback(() => {
     const indices = shuffle(Array.from({ length: config.gridCells }, (_, i) => i)).slice(0, numHighlights)
@@ -71,6 +79,9 @@ export default function PatternGrid({ onComplete }: PatternGridProps) {
     const correct = [...highlighted].filter(i => userSelected.has(i)).length
     const accuracy = Math.round((correct / numHighlights) * 100)
     setPhase('result')
+    playMatchChime()
+    setEncouragement(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)])
+    setTimeout(() => setEncouragement(''), 2000)
 
     const newTotal = totalScore + accuracy
     const newRounds = rounds + 1
@@ -116,6 +127,12 @@ export default function PatternGrid({ onComplete }: PatternGridProps) {
         <div className="bg-purple-50 px-4 py-2 rounded-xl">
           <span className="text-sm font-medium text-purple-600">{difficulty} mode</span>
         </div>
+      </div>
+
+      <div className="text-center mb-6 h-8">
+        {encouragement && (
+          <p className="text-xl font-bold text-sage-600 animate-bounce">{encouragement}</p>
+        )}
       </div>
 
       {phase === 'ready' && (

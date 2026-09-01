@@ -227,18 +227,27 @@ export default function PatientHome() {
         <div className="home-anim mb-6 p-4 rounded-2xl bg-white/50 dark:bg-white/5 backdrop-blur-sm border border-white/40 dark:border-white/10">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-semibold text-charcoal-500 dark:text-charcoal-400 uppercase tracking-wider">Your Progress</h3>
-            <span className={'text-sm font-bold ' + (weeklyProgress.change >= 0 ? 'text-green-500' : 'text-amber-500')}>
-              {weeklyProgress.change >= 0 ? '+' + weeklyProgress.change + '%' : weeklyProgress.change + '%'}
-            </span>
+            {weeklyProgress.change > 0 && (
+              <span className="text-sm font-bold text-green-500">You're getting better! 🌸</span>
+            )}
           </div>
-          <div className="flex items-end gap-1 h-16">
-            {weeklyProgress.dailyAccuracies.map((acc, i) => (
-              <div key={i} className="flex-1 rounded-t bg-gradient-to-t from-sage-400 to-sage-300 opacity-80 transition-all" style={{ height: Math.max(8, acc) + '%' }} />
-            ))}
+          <div className="flex items-center justify-center gap-1 h-16">
+            {weeklyProgress.dailyAccuracies.map((acc, i) => {
+              const flowerCount = Math.round(acc / 20)
+              return (
+                <div key={i} className="flex-1 flex items-center justify-center">
+                  {flowerCount > 0 ? (
+                    <span className="text-2xl">🌸</span>
+                  ) : (
+                    <span className="text-lg opacity-30">🌿</span>
+                  )}
+                </div>
+              )
+            })}
           </div>
           <p className="text-xs text-charcoal-400 mt-2 text-center">
             {weeklyProgress.change > 0
-              ? 'You are getting better! ' + weeklyProgress.thisWeek + ' games this week with ' + weeklyProgress.thisAvg + '% accuracy.'
+              ? 'Your memory garden is blooming! ' + weeklyProgress.thisWeek + ' games played this week.'
               : weeklyProgress.thisWeek + ' games played this week. Keep going!'}
           </p>
         </div>

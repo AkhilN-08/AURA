@@ -2,7 +2,14 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { RotateCcw, Trophy, Clock, Hash } from 'lucide-react'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { calculateDifficulty, getDifficultyConfig } from '../../utils/adaptiveDifficulty'
+import { playMatchChime, playWinChime } from '../../utils/audio'
 import type { GameSession } from '../../data/models'
+
+const ENCOURAGEMENTS = [
+  'Beautiful! 🌸', 'Wonderful! 💐', 'You remembered! 🌺',
+  'Amazing! 🏡', "That's right! ☀️", 'Brilliant! 🎋',
+  'Lovely! 🍵', 'So clever! 🌸', 'Keep going! 💐',
+]
 
 const SEQUENCE_ITEMS = ['🍎', '🏠', '🌸', '🐦', '🍵', '🎵', '🎋', '☀️', '🏮', '🐟', '🪷', '🏔️', '🧘', '🎹', '🧶', '🌶️']
 
@@ -33,6 +40,7 @@ export default function SequenceRecall({ onComplete }: SequenceRecallProps) {
   const [totalScore, setTotalScore] = useState(0)
   const [elapsed, setElapsed] = useState(0)
   const [shuffledItems, setShuffledItems] = useState<string[]>([])
+  const [encouragement, setEncouragement] = useState('')
 
   const initRound = useCallback(() => {
     const seq = shuffle(SEQUENCE_ITEMS).slice(0, config.sequenceLength)
@@ -84,6 +92,9 @@ export default function SequenceRecall({ onComplete }: SequenceRecallProps) {
       setRounds(newRounds)
       setTotalScore(newTotal)
       setPhase('result')
+      playMatchChime()
+      setEncouragement(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)])
+      setTimeout(() => setEncouragement(''), 2000)
 
       if (newRounds >= 3) {
         const session: GameSession = {
@@ -122,6 +133,12 @@ export default function SequenceRecall({ onComplete }: SequenceRecallProps) {
         <div className="bg-sage-50 px-4 py-2 rounded-xl">
           <span className="text-sm font-medium text-sage-600">{difficulty} mode</span>
         </div>
+      </div>
+
+      <div className="text-center mb-6 h-8">
+        {encouragement && (
+          <p className="text-xl font-bold text-sage-600 animate-bounce">{encouragement}</p>
+        )}
       </div>
 
       {phase === 'ready' && (

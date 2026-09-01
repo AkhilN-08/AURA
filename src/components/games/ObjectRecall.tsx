@@ -6,6 +6,12 @@ import { calculateDifficulty, getDifficultyConfig } from '../../utils/adaptiveDi
 import { playMatchChime, playWinChime } from '../../utils/audio'
 import type { GameSession } from '../../data/models'
 
+const ENCOURAGEMENTS = [
+  'Beautiful! 🌸', 'Wonderful! 💐', 'You remembered! 🌺',
+  'Amazing! 🏡', "That's right! ☀️", 'Brilliant! 🎋',
+  'Lovely! 🍵', 'So clever! 🌸', 'Keep going! 💐',
+]
+
 function shuffle<T>(array: T[]): T[] {
   const arr = [...array]
   for (let i = arr.length - 1; i > 0; i--) {
@@ -33,6 +39,7 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
   const [elapsed, setElapsed] = useState(0)
   const [rounds, setRounds] = useState(0)
   const [totalScore, setTotalScore] = useState(0)
+  const [encouragement, setEncouragement] = useState('')
 
   const initRound = useCallback(() => {
     const shuffled = shuffle(GAME_OBJECTS)
@@ -82,6 +89,10 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
     setCorrectIds([...correct, ...missed.map(m => m.id)])
     setPhase('result')
     playMatchChime()
+    setEncouragement(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)])
+    setTimeout(() => setEncouragement(''), 2000)
+    setEncouragement(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)])
+    setTimeout(() => setEncouragement(''), 2000)
 
     const accuracy = Math.round((correct.length / targetObjects.length) * 100)
     const newTotalScore = totalScore + accuracy
@@ -120,6 +131,25 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
         <div className="bg-sage-50 px-4 py-2 rounded-xl">
           <span className="text-sm font-medium text-sage-600">{difficulty} mode</span>
         </div>
+      </div>
+
+      {/* Encouragement banner */}
+      <div className="text-center mb-6 h-8">
+        {encouragement && (
+          <p className="text-xl font-bold text-sage-600 animate-bounce">{encouragement}</p>
+        )}
+        {!encouragement && phase !== 'ready' && phase !== 'result' && (
+          <p className="text-charcoal-400 text-sm">You're doing great!</p>
+        )}
+      </div>
+
+      <div className="text-center mb-6 h-8">
+        {encouragement && (
+          <p className="text-xl font-bold text-sage-600 animate-bounce">{encouragement}</p>
+        )}
+        {!encouragement && phase !== 'ready' && phase !== 'result' && (
+          <p className="text-charcoal-400 text-sm">You're doing great!</p>
+        )}
       </div>
 
       {phase === 'ready' && (

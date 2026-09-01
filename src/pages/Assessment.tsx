@@ -665,26 +665,14 @@ export default function Assessment() {
             </div>
             <h2 className="text-xl font-bold text-charcoal-800 mb-2">Assessment Complete!</h2>
             <p className="text-charcoal-400 text-sm mb-6">
-              We're personalizing your experience based on your results...
+              You did wonderfully! We're setting up your personalized experience...
             </p>
-            <div className="grid grid-cols-2 gap-3 text-left mb-6">
-              <div className="bg-sage-50/50 rounded-xl p-3">
-                <p className="text-xs text-charcoal-400">Object Recall</p>
-                <p className="text-lg font-bold text-sage-600">{scores[0]}%</p>
-              </div>
-              <div className="bg-amber-50/50 rounded-xl p-3">
-                <p className="text-xs text-charcoal-400">Sequence Memory</p>
-                <p className="text-lg font-bold text-amber-600">{scores[1]}%</p>
-              </div>
-              <div className="bg-sage-50/50 rounded-xl p-3">
-                <p className="text-xs text-charcoal-400">Focus</p>
-                <p className="text-lg font-bold text-sage-600">{scores[2]}%</p>
-              </div>
-              <div className="bg-sage-50/50 rounded-xl p-3">
-                <p className="text-xs text-charcoal-400">Word Recall</p>
-                <p className="text-lg font-bold text-sage-600">{scores[3]}%</p>
-              </div>
+            <div className="flex justify-center gap-3 mb-6">
+              {[...Array(5)].map((_, i) => (
+                <span key={i} className="text-3xl" style={{ animationDelay: `${i * 200}ms` }}>{i < Math.round(scores.reduce((a, s) => a + s, 0) / scores.length / 20) ? '🌸' : '🌿'}</span>
+              ))}
             </div>
+            <p className="text-charcoal-500 text-sm italic">"Every small step makes a big difference!"</p>
             <div className="animate-pulse text-charcoal-400 text-sm flex items-center justify-center gap-2">
               <Sparkles size={14} />
               Setting up your personalized experience...
