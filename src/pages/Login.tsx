@@ -12,6 +12,7 @@ export default function Login() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [pin, setPin] = useState('')
+  const [caregiverPin, setCaregiverPin] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const { login, signup, pinLogin, hasPin, user } = useAuth()
@@ -60,7 +61,7 @@ export default function Login() {
     setTimeout(() => {
       if (!name.trim()) { setError('Please enter your name.'); setLoading(false); return }
       if (pin.length !== 4 || !/^\d{4}$/.test(pin)) { setError('PIN must be 4 digits.'); setLoading(false); return }
-      const result = signup(name, email || `${name.toLowerCase().replace(/\s/g, '')}@aura.local`, 'pin-set', undefined, pin)
+      const result = signup(name, email || `${name.toLowerCase().replace(/\s/g, '')}@aura.local`, 'pin-set', undefined, pin, undefined, caregiverPin || undefined)
       if (result.success) {
         gsap.to(formRef.current, { opacity: 0, y: -20, duration: 0.5, ease: 'power2.in', onComplete: () => navigate('/') })
       } else {
@@ -244,6 +245,42 @@ export default function Login() {
                     <button type="button" onClick={() => setPin(p => p.slice(0, -1))}
                       className="h-12 rounded-xl bg-white/40 dark:bg-white/5 border border-white/30 dark:border-white/10 flex items-center justify-center text-charcoal-400 hover:bg-white/60 dark:hover:bg-white/10 active:scale-95 transition-all duration-150">
                       <Delete size={18} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Caregiver PIN (optional) */}
+                <div className="login-anim">
+                  <label className="text-sm font-medium text-charcoal-700 dark:text-charcoal-200 mb-1.5 block">
+                    Caregiver PIN <span className="text-charcoal-400 font-normal">(optional)</span>
+                  </label>
+                  <p className="text-xs text-charcoal-400 dark:text-charcoal-500 mb-2">A separate PIN for caregiver access. Only caregivers should know this.</p>
+                  <div className="flex justify-center gap-2">
+                    {[0, 1, 2, 3].map(i => (
+                      <div key={i} className={`w-10 h-10 rounded-lg flex items-center justify-center text-lg font-bold transition-all duration-200 ${
+                        i < caregiverPin.length
+                          ? 'bg-blue-500 text-white scale-110'
+                          : 'bg-white/30 dark:bg-white/5 border-2 border-white/30 dark:border-white/10 text-charcoal-300'
+                      }`}>
+                        {i < caregiverPin.length ? '•' : ''}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-3 gap-1.5 max-w-[200px] mx-auto mt-2">
+                    {['1','2','3','4','5','6','7','8','9'].map(d => (
+                      <button key={d} type="button" onClick={() => { if (caregiverPin.length < 4) setCaregiverPin(p => p + d) }}
+                        className="h-10 rounded-lg bg-white/40 dark:bg-white/5 border border-white/30 dark:border-white/10 text-sm font-bold text-charcoal-700 dark:text-white hover:bg-white/60 dark:hover:bg-white/10 active:scale-95 transition-all duration-150">
+                        {d}
+                      </button>
+                    ))}
+                    <div />
+                    <button type="button" onClick={() => { if (caregiverPin.length < 4) setCaregiverPin(p => p + '0') }}
+                      className="h-10 rounded-lg bg-white/40 dark:bg-white/5 border border-white/30 dark:border-white/10 text-sm font-bold text-charcoal-700 dark:text-white hover:bg-white/60 dark:hover:bg-white/10 active:scale-95 transition-all duration-150">
+                      0
+                    </button>
+                    <button type="button" onClick={() => setCaregiverPin(p => p.slice(0, -1))}
+                      className="h-10 rounded-lg bg-white/40 dark:bg-white/5 border border-white/30 dark:border-white/10 flex items-center justify-center text-charcoal-400 hover:bg-white/60 dark:hover:bg-white/10 active:scale-95 transition-all duration-150">
+                      <Delete size={14} />
                     </button>
                   </div>
                 </div>

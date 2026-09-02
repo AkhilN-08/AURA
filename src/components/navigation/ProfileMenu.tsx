@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import gsap from 'gsap'
 import { useState, useEffect as useEff } from 'react'
-import { X, Mail, Flower2, Heart, LogOut, Gamepad2, Brain, Mic, BarChart3, Shield, ChevronRight, Moon, Sun, Eye, Users } from 'lucide-react'
+import { X, Mail, Flower2, Heart, LogOut, Gamepad2, Brain, Mic, BarChart3, Shield, ChevronRight, Moon, Sun, Eye, Users, Delete } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { useTranslation } from '../../hooks/useTranslation'
@@ -21,7 +21,10 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
   const { language, setLanguage, t } = useTranslation()
   const { isDark, toggle: toggleDark } = useDarkMode()
   const { elderMode, setElderMode } = useElderMode()
-  const { setRole } = useAuth()
+  const { setRole, validateCaregiverPin } = useAuth()
+  const [showCaregiverPin, setShowCaregiverPin] = useState(false)
+  const [cgPin, setCgPin] = useState('')
+  const [cgPinError, setCgPinError] = useState('')
   const navigate = useNavigate()
   const panelRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -141,10 +144,10 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
           <div ref={el => { itemsRef.current[2] = el }}>
             <div className="rounded-[20px] bg-white/15 dark:bg-white/[0.06] backdrop-blur-xl border border-white/25 dark:border-white/[0.08] overflow-hidden">
               {[
-                { icon: Gamepad2, label: 'Memory Games', path: '/games', iconBg: 'rgba(236,72,153,0.15)', iconColor: '#EC4899' },
-                { icon: Brain, label: 'Memory Assistant', path: '/assistant', iconBg: 'rgba(249,115,22,0.15)', iconColor: '#F97316' },
-                { icon: BarChart3, label: 'Caregiver Dashboard', path: '/caregiver', iconBg: 'rgba(59,130,246,0.15)', iconColor: '#3B82F6' },
-              ].map((item, i) => (
+                { icon: Gamepad2, label: 'Memory Games', path: '/games', iconBg: 'rgba(236,72,153,0.15)', iconColor: '#EC4899', show: true },
+                { icon: Brain, label: 'Memory Assistant', path: '/assistant', iconBg: 'rgba(249,115,22,0.15)', iconColor: '#F97316', show: true },
+                { icon: BarChart3, label: 'Caregiver Dashboard', path: '/caregiver', iconBg: 'rgba(59,130,246,0.15)', iconColor: '#3B82F6', show: user?.role === 'caregiver' },
+              ].filter(item => item.show).map((item, i) => (
                 <button
                   key={i}
                   onClick={() => { handleClose(); setTimeout(() => navigate(item.path), 350) }}
@@ -222,7 +225,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                 <p className="text-[11px] font-semibold text-charcoal-700 dark:text-white/60 uppercase tracking-wider mb-2.5">I am a</p>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => { playTapSound(); setRole('patient') }}
+                    onClick={() => { playTapSound(); setRole('patient'); setShowCaregiverPin(false); setCgPin(''); setCgPinError('') }}
                     className={`flex-1 py-2.5 rounded-[10px] text-[13px] font-medium flex items-center justify-center gap-1.5 transition-all duration-200 ${
                       (user?.role || 'patient') === 'patient'
                         ? 'bg-sage-500/20 text-sage-600 dark:text-sage-400 border border-sage-500/30'
@@ -231,7 +234,16 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                     <Eye size={14} /> Patient
                   </button>
                   <button
-                    onClick={() => { playTapSound(); setRole('caregiver') }}
+                    onClick={() => {
+                      playTapSound()
+                      if (user?.role === 'caregiver') {
+                        setRole('patient')
+                      } else {
+                        setShowCaregiverPin(true)
+                        setCgPin('')
+                        setCgPinError('')
+                      }
+                    }}
                     className={`flex-1 py-2.5 rounded-[10px] text-[13px] font-medium flex items-center justify-center gap-1.5 transition-all duration-200 ${
                       user?.role === 'caregiver'
                         ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30'
@@ -241,6 +253,71 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                   </button>
                 </div>
               </div>
+
+              {/* Caregiver PIN Modal */}
+              {showCaregiverPin && (
+                <div className="mx-5 mb-3 rounded-[14px] bg-white/10 dark:bg-white/[0.04] border border-blue-500/20 p-4">
+                  <p className="text-[12px] font-medium text-charcoal-700 dark:text-white/80 mb-2">Enter caregiver PIN</p>
+                  <div className="flex justify-center gap-2 mb-2">
+                    {[0, 1, 2, 3].map(i => (
+                      <div key={i} className={`w-9 h-9 rounded-lg flex items-center justify-center text-lg font-bold transition-all ${
+                        i < cgPin.length
+                          ? 'bg-blue-500 text-white scale-110'
+                          : 'bg-white/20 dark:bg-white/5 border border-white/20 dark:border-white/10 text-charcoal-400'
+                      }`}>
+                        {i < cgPin.length ? '•' : ''}
+                      </div>
+                    ))}
+                  </div>
+                  {cgPinError && <p className="text-[11px] text-red-500 text-center mb-2">{cgPinError}</p>}
+                  <div className="grid grid-cols-3 gap-1.5 max-w-[180px] mx-auto">
+                    {['1','2','3','4','5','6','7','8','9'].map(d => (
+                      <button key={d} type="button" onClick={() => {
+                        if (cgPin.length < 4) {
+                          const next = cgPin + d
+                          setCgPin(next)
+                          if (next.length === 4) {
+                            if (validateCaregiverPin(next)) {
+                              setRole('caregiver')
+                              setShowCaregiverPin(false)
+                              setCgPin('')
+                              setCgPinError('')
+                            } else {
+                              setCgPinError('Wrong PIN')
+                              setTimeout(() => setCgPin(''), 600)
+                            }
+                          }
+                        }
+                      }} className="h-9 rounded-lg bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 text-sm font-bold text-charcoal-700 dark:text-white hover:bg-white/50 active:scale-95 transition-all">
+                        {d}
+                      </button>
+                    ))}
+                    <div />
+                    <button type="button" onClick={() => {
+                      if (cgPin.length < 4) {
+                        const next = cgPin + '0'
+                        setCgPin(next)
+                        if (next.length === 4) {
+                          if (validateCaregiverPin(next)) {
+                            setRole('caregiver')
+                            setShowCaregiverPin(false)
+                            setCgPin('')
+                            setCgPinError('')
+                          } else {
+                            setCgPinError('Wrong PIN')
+                            setTimeout(() => setCgPin(''), 600)
+                          }
+                        }
+                      }
+                    }} className="h-9 rounded-lg bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 text-sm font-bold text-charcoal-700 dark:text-white hover:bg-white/50 active:scale-95 transition-all">
+                      0
+                    </button>
+                    <button type="button" onClick={() => { setCgPin(p => p.slice(0, -1)); setCgPinError('') }} className="h-9 rounded-lg bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 flex items-center justify-center text-charcoal-400 hover:bg-white/50 active:scale-95 transition-all">
+                      <Delete size={12} />
+                    </button>
+                  </div>
+                </div>
+              )}
 
               <div className="mx-5 h-px bg-white/10 dark:bg-white/[0.05]" />
 
