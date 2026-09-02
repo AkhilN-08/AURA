@@ -322,7 +322,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
               Made with <Heart size={9} className="inline text-sage-400" /> for memory that matters
             </p>
             <p className="text-[11px] text-charcoal-500 dark:text-white/40 mt-1">
-              © 2024 · AURA-NER
+              © 2024 · <span className="text-sage-400/80 font-medium">Developed by Team OriginX</span>
             </p>
           </div>
         </div>
