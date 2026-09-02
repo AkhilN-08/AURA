@@ -81,7 +81,6 @@ const HI: Record<string, string> = {
   'Stay connected with family care': 'पारिवारिक देखभाल से जुड़े रहें',
 
   // Games Page
-  'Cognitive Games': 'संज्ञानात्मक खेल',
   'Choose an activity to engage your mind. Each game gently adapts to your pace.': 'अपने दिमाग को सक्रिय करने के लिए एक गतिविधि चुनें। हर खेल आपकी गति के अनुसार ढल जाता है।',
   'Your Cognitive Profile': 'आपका संज्ञानात्मक प्रोफ़ाइल',
   'Based on your initial assessment': 'आपके प्रारंभिक मूल्यांकन पर आधारित',

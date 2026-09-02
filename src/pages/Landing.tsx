@@ -134,7 +134,7 @@ export default function Landing() {
               <h4 className="font-semibold text-white mb-4">{t('Platform')}</h4>
               <div className="space-y-2">
                 <Link to="/" className="block text-charcoal-300 dark:text-charcoal-400 hover:text-white text-sm transition-colors">{t('Home')}</Link>
-                <Link to="/games" className="block text-charcoal-300 dark:text-charcoal-400 hover:text-white text-sm transition-colors">{t('Cognitive Games')}</Link>
+                <Link to="/games" className="block text-charcoal-300 dark:text-charcoal-400 hover:text-white text-sm transition-colors">{t('Memory Games')}</Link>
                 <Link to="/assistant" className="block text-charcoal-300 dark:text-charcoal-400 hover:text-white text-sm transition-colors">{t('Memory Assistant')}</Link>
                 <Link to="/caregiver" className="block text-charcoal-300 dark:text-charcoal-400 hover:text-white text-sm transition-colors">{t('Caregiver Dashboard')}</Link>
               </div>

@@ -63,7 +63,7 @@ export default function About() {
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center mx-auto mb-3 shadow-md">
               <Brain size={22} className="text-white" />
             </div>
-            <h4 className="font-semibold text-charcoal-800 mb-1">{t('7 Cognitive Games')}</h4>
+            <h4 className="font-semibold text-charcoal-800 mb-1">{t('7 Memory Games')}</h4>
             <p className="text-xs text-charcoal-400 leading-relaxed">
               {t('Memory Match, Object Recall, Sequence Recall, Word Association, Pattern Grid, Story Recall, and Color Sequence. Each game adapts difficulty based on performance.')}
             </p>

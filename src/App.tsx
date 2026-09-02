@@ -38,6 +38,13 @@ function AssessmentGate({ children }: { children: ReactNode }) {
   return <>{children}</>
 }
 
+function CaregiverGate({ children }: { children: ReactNode }) {
+  const { user } = useAuth()
+  if (!user) return <Navigate to="/login" replace />
+  if (user.role !== 'caregiver') return <Navigate to="/" replace />
+  return <>{children}</>
+}
+
 function SOSButton() {
   const handleClick = () => {
     playTapSound()
@@ -150,7 +157,9 @@ function AppRoutes() {
         } />
         <Route path="/caregiver" element={
           <AssessmentGate>
-            <AuthenticatedLayout><Caregiver /></AuthenticatedLayout>
+            <CaregiverGate>
+              <AuthenticatedLayout><Caregiver /></AuthenticatedLayout>
+            </CaregiverGate>
           </AssessmentGate>
         } />
         <Route path="/about" element={

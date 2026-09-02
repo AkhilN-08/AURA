@@ -14,11 +14,13 @@ export interface AssessmentResult {
 }
 
 export type Gender = 'male' | 'female' | null
+export type UserRole = 'patient' | 'caregiver'
 
 interface User {
   email: string
   name: string
   gender?: Gender
+  role?: UserRole
   assessmentCompleted?: boolean
   assessmentResult?: AssessmentResult
 }
@@ -26,12 +28,13 @@ interface User {
 interface AuthContextType {
   user: User | null
   login: (email: string, password: string) => { success: boolean; error?: string }
-  signup: (name: string, email: string, password: string, gender?: Gender, pin?: string) => { success: boolean; error?: string }
+  signup: (name: string, email: string, password: string, gender?: Gender, pin?: string, role?: UserRole) => { success: boolean; error?: string }
   pinLogin: (pin: string) => { success: boolean; error?: string }
   setPin: (pin: string) => { success: boolean; error?: string }
   hasPin: boolean
   logout: () => void
   setGender: (gender: Gender) => void
+  setRole: (role: UserRole) => void
   completeAssessment: (result: AssessmentResult) => void
   retakeAssessment: () => void
 }
@@ -42,6 +45,7 @@ interface StoredUser {
   email: string
   name: string
   gender?: Gender
+  role?: UserRole
   passwordHash: string
   pin?: string
   assessmentCompleted?: boolean
@@ -52,19 +56,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [users, setUsers] = useLocalStorage<StoredUser[]>('aura-users', [])
   const [currentUser, setCurrentUser] = useLocalStorage<User | null>('aura-current-user', null)
 
-  const signup = (name: string, email: string, password: string, gender?: Gender, pin?: string) => {
+  const signup = (name: string, email: string, password: string, gender?: Gender, pin?: string, role?: UserRole) => {
     const exists = users.find(u => u.email === email.toLowerCase())
     if (exists) return { success: false, error: 'An account with this email already exists.' }
 
+    const userRole: UserRole = role || 'patient'
     const newUser: StoredUser = {
       name: name.trim(),
       email: email.toLowerCase(),
       gender,
+      role: userRole,
       passwordHash: btoa(password),
       pin,
     }
     setUsers(prev => [...prev, newUser])
-    setCurrentUser({ name: name.trim(), email: email.toLowerCase(), gender })
+    setCurrentUser({ name: name.trim(), email: email.toLowerCase(), gender, role: userRole })
     return { success: true }
   }
 
@@ -76,6 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       name: user.name,
       email: user.email,
       gender: user.gender,
+      role: user.role,
       assessmentCompleted: user.assessmentCompleted,
       assessmentResult: user.assessmentResult,
     })
@@ -89,6 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       name: user.name,
       email: user.email,
       gender: user.gender,
+      role: user.role,
       assessmentCompleted: user.assessmentCompleted,
       assessmentResult: user.assessmentResult,
     })
@@ -158,8 +166,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     )
   }
 
+  const setRole = (role: UserRole) => {
+    if (!currentUser) return
+    const updatedUser = { ...currentUser, role }
+    setCurrentUser(updatedUser)
+    setUsers(prev =>
+      prev.map(u =>
+        u.email === currentUser.email ? { ...u, role } : u
+      )
+    )
+  }
+
   return (
-    <AuthContext.Provider value={{ user: currentUser, login, signup, pinLogin, setPin, hasPin, logout, setGender, completeAssessment, retakeAssessment }}>
+    <AuthContext.Provider value={{ user: currentUser, login, signup, pinLogin, setPin, hasPin, logout, setGender, setRole, completeAssessment, retakeAssessment }}>
       {children}
     </AuthContext.Provider>
   )

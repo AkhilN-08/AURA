@@ -138,7 +138,7 @@ export default function Games() {
           <>
             <div className="text-center mb-12">
               <h1 className="section-heading mb-4">
-                Cognitive <span className="text-gradient">Games</span>
+                Memory <span className="text-gradient">Games</span>
               </h1>
               <p className="section-subheading mx-auto">
                 Choose an activity to engage your mind. Each game gently adapts to your pace.

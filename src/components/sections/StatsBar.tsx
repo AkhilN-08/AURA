@@ -7,7 +7,7 @@ import { useTranslation } from '../../hooks/useTranslation'
 gsap.registerPlugin(ScrollTrigger)
 
 const STATS = [
-  { value: 7, suffix: '', label: 'Cognitive Games' },
+  { value: 7, suffix: '', label: 'Memory Games' },
   { value: 3, suffix: '', label: 'Difficulty Levels' },
   { value: 100, suffix: '%', label: 'Voice-First Design' },
 ]

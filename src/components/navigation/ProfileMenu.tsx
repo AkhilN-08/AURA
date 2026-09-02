@@ -21,6 +21,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
   const { language, setLanguage, t } = useTranslation()
   const { isDark, toggle: toggleDark } = useDarkMode()
   const { elderMode, setElderMode } = useElderMode()
+  const { setRole } = useAuth()
   const navigate = useNavigate()
   const panelRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -140,7 +141,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
           <div ref={el => { itemsRef.current[2] = el }}>
             <div className="rounded-[20px] bg-white/15 dark:bg-white/[0.06] backdrop-blur-xl border border-white/25 dark:border-white/[0.08] overflow-hidden">
               {[
-                { icon: Gamepad2, label: 'Cognitive Games', path: '/games', iconBg: 'rgba(236,72,153,0.15)', iconColor: '#EC4899' },
+                { icon: Gamepad2, label: 'Memory Games', path: '/games', iconBg: 'rgba(236,72,153,0.15)', iconColor: '#EC4899' },
                 { icon: Brain, label: 'Memory Assistant', path: '/assistant', iconBg: 'rgba(249,115,22,0.15)', iconColor: '#F97316' },
                 { icon: BarChart3, label: 'Caregiver Dashboard', path: '/caregiver', iconBg: 'rgba(59,130,246,0.15)', iconColor: '#3B82F6' },
               ].map((item, i) => (
@@ -216,6 +217,33 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
 
               <div className="mx-5 h-px bg-white/10 dark:bg-white/[0.05]" />
 
+              {/* Role */}
+              <div className="px-5 py-3">
+                <p className="text-[11px] font-semibold text-charcoal-700 dark:text-white/60 uppercase tracking-wider mb-2.5">I am a</p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => { playTapSound(); setRole('patient') }}
+                    className={`flex-1 py-2.5 rounded-[10px] text-[13px] font-medium flex items-center justify-center gap-1.5 transition-all duration-200 ${
+                      (user?.role || 'patient') === 'patient'
+                        ? 'bg-sage-500/20 text-sage-600 dark:text-sage-400 border border-sage-500/30'
+                        : 'text-charcoal-700 dark:text-white/55 hover:bg-white/10 dark:hover:bg-white/[0.04] border border-transparent'
+                    }`}>
+                    <Eye size={14} /> Patient
+                  </button>
+                  <button
+                    onClick={() => { playTapSound(); setRole('caregiver') }}
+                    className={`flex-1 py-2.5 rounded-[10px] text-[13px] font-medium flex items-center justify-center gap-1.5 transition-all duration-200 ${
+                      user?.role === 'caregiver'
+                        ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30'
+                        : 'text-charcoal-700 dark:text-white/55 hover:bg-white/10 dark:hover:bg-white/[0.04] border border-transparent'
+                    }`}>
+                    <Users size={14} /> Caregiver
+                  </button>
+                </div>
+              </div>
+
+              <div className="mx-5 h-px bg-white/10 dark:bg-white/[0.05]" />
+
               {/* Dark Mode */}                <button
                   onClick={() => { playTapSound(); toggleDark() }}
                   className="w-full flex items-center gap-3.5 px-5 py-3.5 hover:bg-white/10 dark:hover:bg-white/[0.04] transition-all duration-200 text-left"
@@ -265,18 +293,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
             </div>
           </div>
 
-          {/* Tech Stack */}
-          <div ref={el => { itemsRef.current[5] = el }}>
-            <div className="rounded-[20px] bg-white/15 dark:bg-white/[0.06] backdrop-blur-xl border border-white/25 dark:border-white/[0.08] p-4">
-              <div className="flex flex-wrap gap-1.5">
-                {['React', 'TypeScript', 'Three.js', 'GSAP', 'Tailwind', 'Recharts'].map(tech => (
-                  <span key={tech} className="text-[11px] px-2.5 py-1 rounded-[8px] bg-white/10 dark:bg-white/[0.04] text-charcoal-700 dark:text-white/55 border border-white/10 dark:border-white/[0.05]">
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
+
 
           {/* Disclaimer */}
           <div ref={el => { itemsRef.current[6] = el }} className="rounded-[16px] bg-amber-500/[0.06] dark:bg-amber-500/[0.04] border border-amber-500/10 px-4 py-3">
@@ -305,7 +322,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
               Made with <Heart size={9} className="inline text-sage-400" /> for memory that matters
             </p>
             <p className="text-[11px] text-charcoal-500 dark:text-white/40 mt-1">
-              © 2024 · <span className="text-sage-400/80 font-medium">Developed by Team OriginX</span>
+              © 2024 · AURA-NER
             </p>
           </div>
         </div>

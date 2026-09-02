@@ -11,7 +11,7 @@ gsap.registerPlugin(ScrollTrigger)
 const VIEWS = [
   {
     id: 'games',
-    label: 'Cognitive Games',
+    label: 'Memory Games',
     caption: '7 adaptive games that challenge memory, focus, and recognition — tailored to each individual.',
     content: GamesView,
   },
@@ -44,7 +44,7 @@ function GamesView() {
     <div className="p-4 h-full flex flex-col">
       <div className="flex items-center gap-2 mb-3">
         <Gamepad2 size={14} className="text-sage-500" />
-        <span className="text-[11px] font-semibold text-charcoal-700">Cognitive Games</span>
+        <span className="text-[11px] font-semibold text-charcoal-700">Memory Games</span>
       </div>
       <div className="grid grid-cols-2 gap-2 flex-1">
         {games.map((g, i) => (

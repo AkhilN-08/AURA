@@ -119,7 +119,7 @@ export default function AssistantPanel({ onClose }: AssistantPanelProps) {
         const today = new Date()
         response = `Today is ${today.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}.`
       } else if (lower.includes('game') || lower.includes('play')) {
-        response = "I'd love to help you play a memory game! You can visit the Cognitive Games section to choose from Memory Match, Object Recall, or Sequence Recall."
+        response = "I'd love to help you play a memory game! You can visit the Memory Games section to choose from Memory Match, Object Recall, or Sequence Recall."
       } else if (lower.includes('breakfast') || lower.includes('lunch') || lower.includes('dinner') || lower.includes('eat')) {
         response = "That's a lovely question to help with memory. Would you like me to help you remember what you had earlier?"
       } else if (lower.includes('daughter') || lower.includes('son') || lower.includes('family')) {

@@ -16,9 +16,9 @@ export default function Navbar() {
   const { t } = useTranslation()
   const NAV_LINKS = [
     { label: t('Home'), href: '/' },
-    { label: t('Cognitive Games'), href: '/games' },
+    { label: t('Memory Games'), href: '/games' },
     { label: t('Memory Assistant'), href: '/assistant' },
-    { label: t('Caregiver'), href: '/caregiver' },
+    ...(user?.role === 'caregiver' ? [{ label: t('Caregiver'), href: '/caregiver' }] : []),
     { label: t('About'), href: '/about' },
   ]
 
