@@ -1,5 +1,5 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Legend } from 'recharts'
-import { Activity, TrendingUp, Clock, Gamepad2, Lightbulb, Users, BarChart3, Bell, Heart, Send, Sparkles, MessageCircle } from 'lucide-react'
+import { Activity, TrendingUp, Clock, Gamepad2, Lightbulb, Users, Bell, Heart, Send, Sparkles, MessageCircle, Image, Smile } from 'lucide-react'
 import { useState } from 'react'
 import { useGameProgress } from '../hooks/useGameProgress'
 import { useAuth } from '../hooks/useAuth'
@@ -7,6 +7,7 @@ import { generateInsights, formatGameName, calculateWeeklyStats, calculateGrowth
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import type { Reminder } from '../data/models'
 import type { FamilyMessage } from '../data/demoData'
+import type { FamilyPhotoMessage } from '../data/models'
 
 const tooltipStyle = {
   borderRadius: '12px',
@@ -32,8 +33,11 @@ export default function Caregiver() {
   const { user } = useAuth()
   const [reminders] = useLocalStorage<Reminder[]>('aura-reminders', [])
   const [messages, setMessages] = useLocalStorage<FamilyMessage[]>('aura-family-messages', [])
+  const [photoMessages, setPhotoMessages] = useLocalStorage<FamilyPhotoMessage[]>('aura-family-photos', [])
   const [newMsg, setNewMsg] = useState('')
   const [senderName, setSenderName] = useState('')
+  const [photoCaption, setPhotoCaption] = useState('')
+  const [photoFile, setPhotoFile] = useState<string | null>(null)
 
   const recentSessions = getRecentSessions(8)
   const weeklyStats = calculateWeeklyStats(sessions)
@@ -45,6 +49,44 @@ export default function Caregiver() {
 
   const avgAccuracy = getAverageAccuracy()
   const summaryText = sessions.length > 0 ? getSummaryText(avgAccuracy) : 'No games played yet'
+
+  const handleSend = () => {
+    if (!newMsg.trim() || !senderName.trim()) return
+    setMessages(prev => [...prev, {
+      id: Date.now().toString(),
+      from: senderName.trim(),
+      text: newMsg.trim(),
+      timestamp: new Date().toISOString(),
+      read: false,
+      type: 'text',
+    }])
+    setNewMsg('')
+  }
+
+  const handleSendPhoto = () => {
+    if (!photoCaption.trim() || !senderName.trim() || !photoFile) return
+    setPhotoMessages(prev => [...prev, {
+      id: Date.now().toString(),
+      from: senderName.trim(),
+      caption: photoCaption.trim(),
+      photoData: photoFile,
+      timestamp: new Date().toISOString(),
+      read: false,
+    }])
+    setPhotoCaption('')
+    setPhotoFile(null)
+  }
+
+  const handleImagePick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => {
+      const data = reader.result as string
+      setPhotoFile(data)
+    }
+    reader.readAsDataURL(file)
+  }
 
   return (
     <div className="min-h-screen pt-24 pb-16 px-4">
@@ -85,7 +127,7 @@ export default function Caregiver() {
           </div>
         )}
 
-        {/* Overview cards - warm, encouraging */}
+        {/* Overview cards - warm, encouraging, no raw percentages */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <div className="card">
             <div className="flex items-center gap-3 mb-3">
@@ -139,39 +181,60 @@ export default function Caregiver() {
           </div>
         </div>
 
-        {/* Send Message - PROMINENT, top section */}
+        {/* Send a Message - PROMINENT, top section */}
         <div className="mb-8 p-6 rounded-3xl bg-gradient-to-br from-rose-50 to-pink-50 border border-rose-100">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center">
-              <MessageCircle size={18} className="text-white" />
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center">
+                <MessageCircle size={18} className="text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-charcoal-800">Send a Message</h3>
+                <p className="text-xs text-charcoal-400">Your words will appear on their home screen</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-lg font-semibold text-charcoal-800">Send a Message</h3>
-              <p className="text-xs text-charcoal-400">Your message will appear on their home screen</p>
-            </div>
+            <button
+              type="button"
+              onClick={() => {
+                if (!senderName.trim()) setSenderName('You')
+                setPhotoCaption('')
+                setPhotoFile(null)
+              }}
+              className="text-xs text-rose-500 hover:text-rose-600 font-medium"
+            >
+              + Add a photo
+            </button>
           </div>
+
           <div className="space-y-3">
             <input type="text" value={senderName} onChange={e => setSenderName(e.target.value)}
               placeholder="Your name (e.g., Priya)"
               className="w-full px-4 py-3 rounded-xl bg-white border border-rose-100 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300" />
+
             <div className="flex gap-2">
               <input type="text" value={newMsg} onChange={e => setNewMsg(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter' && newMsg.trim() && senderName.trim()) {
-                  setMessages(prev => [...prev, { id: Date.now().toString(), from: senderName.trim(), text: newMsg.trim(), timestamp: new Date().toISOString(), read: false, type: 'text' as const }])
-                  setNewMsg('')
-                }}}
+                onKeyDown={e => { if (e.key === 'Enter' && newMsg.trim() && senderName.trim()) handleSend() }}
                 placeholder="Write something encouraging..."
                 className="flex-1 px-4 py-3 rounded-xl bg-white border border-rose-100 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300" />
-              <button onClick={() => {
-                if (newMsg.trim() && senderName.trim()) {
-                  setMessages(prev => [...prev, { id: Date.now().toString(), from: senderName.trim(), text: newMsg.trim(), timestamp: new Date().toISOString(), read: false, type: 'text' as const }])
-                  setNewMsg('')
-                }
-              }} className="px-6 py-3 rounded-xl bg-gradient-to-r from-rose-400 to-pink-500 text-white font-medium hover:shadow-lg transition-all disabled:opacity-50 flex items-center gap-2" disabled={!newMsg.trim() || !senderName.trim()}>
+              <button onClick={handleSend}
+                className="px-6 py-3 rounded-xl bg-gradient-to-r from-rose-400 to-pink-500 text-white font-medium hover:shadow-lg transition-all disabled:opacity-50 flex items-center gap-2"
+                disabled={!newMsg.trim() || !senderName.trim()}>
                 <Send size={16} /> Send
               </button>
             </div>
+
+            {photoFile && (
+              <div className="rounded-xl overflow-hidden border border-rose-200 bg-white/70 p-2">
+                <img src={photoFile} alt={photoCaption || 'Photo'} className="w-full aspect-square object-cover" />
+                <div className="p-2">
+                  <input type="text" value={photoCaption} onChange={e => setPhotoCaption(e.target.value)}
+                    placeholder="Add a short caption..."
+                    className="w-full px-2 py-1.5 rounded-lg bg-white border border-rose-100 text-xs focus:outline-none focus:ring-2 focus:ring-rose-300" />
+                </div>
+              </div>
+            )}
           </div>
+
           {messages.length > 0 && (
             <div className="mt-4 space-y-2">
               <p className="text-xs font-medium text-charcoal-500">Recent messages:</p>
@@ -184,6 +247,72 @@ export default function Caregiver() {
             </div>
           )}
         </div>
+
+        {/* Send a photo message */}
+        <div className="mb-8 p-6 rounded-3xl bg-gradient-to-br from-sky-50 to-blue-50 border border-sky-100">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-blue-500 flex items-center justify-center">
+              <Image size={18} className="text-white" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-charcoal-800">Send a Photo Message</h3>
+              <p className="text-xs text-charcoal-400">A picture from home lands right on their screen</p>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            {!photoFile ? (
+              <div className="border-2 border-dashed border-sky-200 rounded-xl p-6 text-center hover:border-sky-300 transition-colors">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImagePick}
+                  className="hidden"
+                  id="caregiver-photo-upload"
+                />
+                <label htmlFor="caregiver-photo-upload" className="cursor-pointer">
+                  <Image size={32} className="mx-auto text-sky-400 mb-2" />
+                  <p className="text-sm text-charcoal-500">Choose a photo to send</p>
+                  <p className="text-xs text-charcoal-400 mt-1">Family photos, a meal, a flower from the garden — anything familiar</p>
+                </label>
+              </div>
+            ) : (
+              <div className="rounded-xl overflow-hidden border border-sky-200 bg-white/70">
+                <img src={photoFile} alt={photoCaption || 'Selected photo'} className="w-full aspect-square object-cover" />
+                <div className="p-3">
+                  <input type="text" value={photoCaption} onChange={e => setPhotoCaption(e.target.value)}
+                    placeholder="Add a short caption..."
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-sky-100 text-sm focus:outline-none focus:ring-2 focus:ring-sky-300" />
+                </div>
+              </div>
+            )}
+
+            <div className="flex gap-2">
+              <button onClick={handleSendPhoto}
+                className="px-6 py-3 rounded-xl bg-gradient-to-r from-sky-400 to-blue-500 text-white font-medium hover:shadow-lg transition-all disabled:opacity-50 flex items-center gap-2"
+                disabled={!photoCaption.trim() || !senderName.trim() || !photoFile}>
+                <Send size={16} /> Send Photo
+              </button>
+              <button onClick={() => { setPhotoFile(null); setPhotoCaption('') }}
+                className="px-6 py-3 rounded-xl bg-white text-charcoal-600 border border-sky-200 font-medium hover:bg-white/80 transition-all">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mood check-in status */}
+        {sessions.length > 0 && (
+          <div className="mb-8 p-5 rounded-2xl bg-amber-50/70 border border-amber-100">
+            <div className="flex items-center gap-3 mb-3">
+              <Smile size={18} className="text-amber-500" />
+              <span className="text-sm font-medium text-charcoal-700">Today's mood check-in</span>
+            </div>
+            <p className="text-sm text-charcoal-500">
+              Remind them each morning to share how they're feeling. The response helps you notice patterns over time.
+            </p>
+          </div>
+        )}
 
         <div className="grid lg:grid-cols-2 gap-8 mb-8">
           {/* Weekly activity chart */}
@@ -240,10 +369,7 @@ export default function Caregiver() {
             <div className="space-y-3">
               {recentSessions.length > 0 ? recentSessions.map((session, i) => (
                 <div key={i} className="flex items-center gap-4 p-3 rounded-xl bg-rose-50/50 border border-rose-100/50">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg ${
-                    session.gameType === 'memory-match' ? 'bg-rose-100' :
-                    session.gameType === 'object-recall' ? 'bg-amber-100' : 'bg-sage-100'
-                  }`}>
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg ${session.gameType === 'memory-match' ? 'bg-rose-100' : session.gameType === 'object-recall' ? 'bg-amber-100' : 'bg-sage-100'}`}>
                     {session.gameType === 'memory-match' ? '🧠' : session.gameType === 'object-recall' ? '👁️' : '🔢'}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -267,7 +393,7 @@ export default function Caregiver() {
 
           {/* Insights + Reminders */}
           <div className="space-y-4">
-            {/* AI Insights */}
+            {/* Care Insights */}
             <div className="card">
               <h3 className="text-lg font-semibold text-charcoal-800 mb-4 flex items-center gap-2">
                 <Lightbulb size={20} className="text-amber-500" />
@@ -275,9 +401,7 @@ export default function Caregiver() {
               </h3>
               <div className="space-y-3">
                 {insights.map((insight, i) => (
-                  <div key={i} className={`rounded-2xl p-4 ${
-                    i === 0 ? 'bg-gradient-to-br from-rose-50 to-amber-50 border border-rose-100' : 'bg-cream-50 border border-cream-200'
-                  }`}>
+                  <div key={i} className={`rounded-2xl p-4 ${i === 0 ? 'bg-gradient-to-br from-rose-50 to-amber-50 border border-rose-100' : 'bg-cream-50 border border-cream-200'}`}>
                     <p className="text-charcoal-700 text-sm leading-relaxed">{insight}</p>
                   </div>
                 ))}

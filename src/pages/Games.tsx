@@ -14,8 +14,9 @@ import WordAssociation from '../components/games/WordAssociation'
 import PatternGrid from '../components/games/PatternGrid'
 import StoryRecall from '../components/games/StoryRecall'
 import ColorSequence from '../components/games/ColorSequence'
+import MemoryLane from '../components/games/MemoryLane'
 
-type GameType = 'select' | 'memory-match' | 'object-recall' | 'sequence-recall' | 'word-association' | 'pattern-grid' | 'story-recall' | 'color-sequence'
+type GameType = 'select' | 'memory-match' | 'object-recall' | 'sequence-recall' | 'word-association' | 'pattern-grid' | 'story-recall' | 'color-sequence' | 'memory-lane'
 
 const GAMES_RAW: Record<string, {
   id: GameType
@@ -72,6 +73,13 @@ const GAMES_RAW: Record<string, {
     descKey: 'Watch colors light up in order, then reproduce the pattern.',
     icon: Palette,
     color: 'from-pink-400 to-pink-600',
+  },
+  'memory-lane': {
+    id: 'memory-lane',
+    titleKey: 'Memory Lane',
+    descKey: 'Remember little moments from your life — people, places, foods, and warm routines.',
+    icon: Brain,
+    color: 'from-amber-400 to-amber-600',
   },
 }
 
@@ -237,6 +245,7 @@ export default function Games() {
               {activeGame === 'pattern-grid' && <PatternGrid onComplete={handleComplete} />}
               {activeGame === 'story-recall' && <StoryRecall onComplete={handleComplete} />}
               {activeGame === 'color-sequence' && <ColorSequence onComplete={handleComplete} />}
+              {activeGame === 'memory-lane' && <MemoryLane onComplete={handleComplete} />}
             </div>
           </>
         )}

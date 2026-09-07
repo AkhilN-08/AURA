@@ -210,7 +210,8 @@ export default function PatientHome() {
   }, [sessions])
 
   return (
-    <div className="min-h-screen px-4 pt-20 pb-8 max-w-2xl mx-auto">        <div className="home-anim text-center mb-8 pt-4">
+    <div className="min-h-screen px-4 pt-20 pb-8 max-w-2xl mx-auto">
+      <div className="home-anim text-center mb-8 pt-4">
         <div className="text-5xl mb-3">{greeting.emoji}</div>
         <h1 className="text-3xl md:text-4xl font-bold text-charcoal-800 dark:text-white mb-1">
           {greeting.text}, {user?.name || 'Friend'}!
@@ -310,10 +311,17 @@ export default function PatientHome() {
                   {r.time && <p className="text-xs text-charcoal-400">{r.time}</p>}
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      )}
+            ))}      </div>
+
+      <div className="home-anim text-center mt-8 p-6 rounded-2xl bg-white/30 dark:bg-white/5 backdrop-blur-sm border border-white/30 dark:border-white/10">
+        <Heart size={24} className="text-rose-300 mx-auto mb-2" />
+        <p className="text-charcoal-500 dark:text-charcoal-400 text-sm italic">"{getDailyEncouragement()}"</p>
+      </div>
+    </div>
+  )
+}
+
+
 
       {unreadMessages.length > 0 && (
         <div className="home-anim mb-6">
@@ -330,10 +338,43 @@ export default function PatientHome() {
                 </div>
                 <div className="w-2 h-2 rounded-full bg-rose-400 flex-shrink-0" />
               </div>
-            ))}
-          </div>
-        </div>
-      )}
+            ))}      </div>
+
+      <div className="home-anim text-center mt-8 p-6 rounded-2xl bg-white/30 dark:bg-white/5 backdrop-blur-sm border border-white/30 dark:border-white/10">
+        <Heart size={24} className="text-rose-300 mx-auto mb-2" />
+        <p className="text-charcoal-500 dark:text-charcoal-400 text-sm italic">"{getDailyEncouragement()}"</p>
+      </div>
+    </div>
+  )
+}
+
+
+
+      {unreadPhotos.length > 0 && (
+        <div className="home-anim mb-6">
+          <h3 className="text-sm font-semibold text-charcoal-500 dark:text-charcoal-400 mb-3 uppercase tracking-wider">Photos from Family</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {unreadPhotos.map((m) => (
+              <div key={m.id} className="group rounded-2xl overflow-hidden bg-white/60 dark:bg-white/5 border border-white/40 dark:border-white/10">
+                <div className="aspect-square bg-charcoal-100 dark:bg-charcoal-800 flex items-center justify-center text-4xl">
+                  <img src={m.photoData} alt={m.caption} className="w-full h-full object-cover" />
+                </div>
+                <div className="px-3 py-2 border-t border-white/40 dark:border-white/10">
+                  <p className="text-xs font-medium text-charcoal-700 dark:text-white truncate">{m.from}</p>
+                  <p className="text-[11px] text-charcoal-400 truncate">{m.caption}</p>
+                </div>
+              </div>
+            ))}      </div>
+
+      <div className="home-anim text-center mt-8 p-6 rounded-2xl bg-white/30 dark:bg-white/5 backdrop-blur-sm border border-white/30 dark:border-white/10">
+        <Heart size={24} className="text-rose-300 mx-auto mb-2" />
+        <p className="text-charcoal-500 dark:text-charcoal-400 text-sm italic">"{getDailyEncouragement()}"</p>
+      </div>
+    </div>
+  )
+}
+
+
 
       {sessions.length > 0 && (
         <div className="home-anim mb-6 p-4 rounded-2xl bg-white/50 dark:bg-white/5 backdrop-blur-sm border border-white/40 dark:border-white/10">
@@ -347,10 +388,49 @@ export default function PatientHome() {
         </div>
       )}
 
-      <div className="home-anim text-center mt-8 p-6 rounded-2xl bg-white/30 dark:bg-white/5 backdrop-blur-sm border border-white/30 dark:border-white/10">
-        <Heart size={24} className="text-rose-300 mx-auto mb-2" />
-        <p className="text-charcoal-500 dark:text-charcoal-400 text-sm italic">"{getDailyEncouragement()}"</p>
-      </div>
+      {!moodOpen && !mood && (
+        <div className="home-anim mb-6">
+          <button onClick={() => setMoodOpen(true)} className="w-full flex items-center gap-4 p-4 rounded-2xl bg-white/60 dark:bg-white/10 backdrop-blur-xl border border-white/50 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/15 transition-all duration-300 text-left">
+            <div className="w-12 h-12 rounded-xl bg-sage-100 dark:bg-sage-900/30 flex items-center justify-center">
+              <Smile size={22} className="text-sage-500" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-charcoal-800 dark:text-white">How are you feeling today?</p>
+              <p className="text-xs text-charcoal-400">A quick check-in to start the day</p>
+            </div>
+          </button>
+        </div>
+      )}
+
+      {moodOpen && (
+        <div className="home-anim mb-6 p-5 rounded-2xl bg-white/80 dark:bg-white/10 backdrop-blur-xl border border-white/60 dark:border-white/10">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-charcoal-700 dark:text-white">How are you feeling today?</h3>
+            <button onClick={() => { setMoodOpen(false); setMoodChoice('') }} className="p-1 rounded-full hover:bg-white/60 text-charcoal-400">
+              <X size={16} />
+            </button>
+          </div>
+          <div className="grid grid-cols-4 gap-2">
+            {['great', 'okay', 'tired', 'confused'].map((m) => (
+              <button
+                key={m}
+                onClick={() => {
+                  setMood({ mood: m, ts: new Date().toISOString() })
+                  setMoodOpen(false)
+                  setMoodChoice('')
+                  speakText('Feeling ' + m)
+                }}
+                className={`py-3 rounded-xl border-2 text-sm font-medium capitalize transition-all ${moodChoice === m ? 'bg-sage-100 border-sage-500 scale-105' : 'bg-white/70 border-white/50 hover:bg-white hover:border-sage-300'}`}
+              >
+                {m === 'great' ? '😊' : m === 'okay' ? '🙂' : m === 'tired' ? '😴' : '🤔'} {m}
+              </button>
+            ))}
+          </div>
+            {mood && (
+            <p className="text-xs text-charcoal-400 mt-3 text-center">We've noted how you're feeling today.</p>
+          )}
+        </div>
+      )}
     </div>
   )
 }
