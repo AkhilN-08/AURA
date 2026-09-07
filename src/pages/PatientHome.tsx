@@ -1,14 +1,18 @@
-import { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Gamepad2, Mic, Users, Pill, Clock, ChevronRight, Volume2, Heart, Sparkles, Brain, Eye, Hash, BookOpen, Grid3X3, Palette, BookMarked } from 'lucide-react'
+import { Gamepad2, Mic, Users, Pill, Clock, ChevronRight, Volume2, Heart, Sparkles, Brain, Eye, Hash, BookOpen, Grid3X3, Palette, BookMarked, Smile, PauseCircle, Sun, X } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 import { useTranslation } from '../hooks/useTranslation'
 import { useGameProgress } from '../hooks/useGameProgress'
 import { useLocalStorage } from '../hooks/useLocalStorage'
-import { playTapSound } from '../utils/audio'
+import { playTapSound, speakText } from '../utils/audio'
 import type { Reminder } from '../data/models'
+import { GAME_TYPES } from '../data/models'
 import type { FamilyMessage } from '../data/demoData'
+import type { FamilyPhotoMessage } from '../data/models'
+import { generateDemoMessages, generateDemoReminders } from '../data/demoData'
 import gsap from 'gsap'
+
 
 const ENCOURAGEMENTS = [
   'You are doing wonderfully today!',
@@ -152,10 +156,14 @@ export default function PatientHome() {
   const { user } = useAuth()
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { sessions, getAverageAccuracy } = useGameProgress()
-  const [reminders] = useLocalStorage<Reminder[]>('aura-reminders', [])
+  const { sessions } = useGameProgress()
+  const [reminders, setReminders] = useLocalStorage<Reminder[]>('aura-reminders', generateDemoReminders())
   const [lastActivity] = useLocalStorage<string | null>('aura-last-activity', null)
-  const [messages] = useLocalStorage<FamilyMessage[]>('aura-family-messages', [])
+  const [messages, setMessages] = useLocalStorage<FamilyMessage[]>('aura-family-messages', generateDemoMessages())
+  const [photoMessages, setPhotoMessages] = useLocalStorage<FamilyPhotoMessage[]>('aura-family-photos', [])
+  const [mood, setMood] = useLocalStorage<{ mood: string; ts: string } | null>('aura-mood', null)
+  const [moodOpen, setMoodOpen] = useState(false)
+  const [moodChoice, setMoodChoice] = useState('')
   const [greeting] = useState(getGreeting)
   const [currentTime, setCurrentTime] = useState(() => new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }))
 
@@ -171,20 +179,35 @@ export default function PatientHome() {
 
   const pendingReminders = useMemo(() => reminders.filter(r => !r.completed).slice(0, 3), [reminders])
   const unreadMessages = useMemo(() => messages.filter(m => !m.read), [messages])
+  const unreadPhotos = useMemo(() => photoMessages.filter(m => !m.read), [photoMessages])
   const gamesPlayed = sessions.length
   const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
 
-  // Today's recommended game based on day of week
-  const GAME_RECS = [
-    { id: 'memory-match', name: 'Memory Match', icon: Brain, color: 'from-sage-400 to-sage-600', tip: 'Find matching pairs of cards' },
-    { id: 'object-recall', name: 'Object Recall', icon: Eye, color: 'from-sky-400 to-blue-600', tip: 'Remember the objects you saw' },
-    { id: 'sequence-recall', name: 'Sequence Recall', icon: Hash, color: 'from-amber-400 to-amber-600', tip: 'Reproduce the number sequence' },
-    { id: 'word-association', name: 'Word Association', icon: BookOpen, color: 'from-sage-400 to-sage-600', tip: 'Match related words from memory' },
-    { id: 'pattern-grid', name: 'Pattern Grid', icon: Grid3X3, color: 'from-purple-400 to-purple-600', tip: 'Recreate the pattern you saw' },
-    { id: 'story-recall', name: 'Story Recall', icon: BookMarked, color: 'from-amber-500 to-orange-600', tip: 'Answer questions about a story' },
-    { id: 'color-sequence', name: 'Color Sequence', icon: Palette, color: 'from-pink-400 to-pink-600', tip: 'Watch and repeat the color pattern' },
-  ]
-  const todayRec = GAME_RECS[new Date().getDay() % GAME_RECS.length]
+  // Suggested game grounded in real history, not just weekday rotation
+  const suggestedGame = useCallback(() => {
+    // Prefer a game the user has played least recently among the familiar ones
+    const familiar = sessions.length > 0 ? [...new Set(sessions.map(s => s.gameType))] : ['memory-match']
+    const sorted = familiar.slice().sort((a, b) => {
+      const aLast = sessions.filter(s => s.gameType === a).pop()?.timestamp || ''
+      const bLast = sessions.filter(s => s.gameType === b).pop()?.timestamp || ''
+      return aLast.localeCompare(bLast)
+    })
+
+    const candidateIds: Array<keyof typeof GAME_TYPES> = ['memory-lane', ...sorted as Array<keyof typeof GAME_TYPES>]
+    const pickId = candidateIds[0] || ('memory-match' as const)
+    const picked = GAME_TYPES[pickId]
+    const tips: Record<string, string> = {
+      'memory-lane': 'Remember moments from your life - family, places, and little things.',
+      'memory-match': 'Find matching pairs of cards.',
+      'object-recall': 'Remember the objects you saw.',
+      'sequence-recall': 'Reproduce the sequence from memory.',
+      'word-association': 'Match related words from memory.',
+      'pattern-grid': 'Recreate the pattern you saw.',
+      'story-recall': 'Answer questions about a short story.',
+      'color-sequence': 'Watch and repeat the color pattern.',
+    }
+    return { id: pickId, name: picked.label, icon: picked.icon, color: 'from-amber-400 to-amber-600', tip: tips[pickId] || '' }
+  }, [sessions])
 
   return (
     <div className="min-h-screen px-4 pt-20 pb-8 max-w-2xl mx-auto">        <div className="home-anim text-center mb-8 pt-4">
@@ -242,24 +265,24 @@ export default function PatientHome() {
         </Link>
       </div>
 
-      {/* Today's Game */}
+      {/* Suggested for you */}
       <div className="home-anim mb-6">
-        <Link to={`/games`} className="group block p-5 rounded-3xl bg-gradient-to-br from-white/70 to-white/40 dark:from-white/10 dark:to-white/5 backdrop-blur-xl border border-white/50 dark:border-white/10 hover:shadow-[0_8px_30px_rgba(132,204,22,0.15)] hover:-translate-y-0.5 transition-all duration-500">
+        <button onClick={() => { playTapSound(); navigate('/games') }} className="group block w-full p-5 rounded-3xl bg-gradient-to-br from-white/70 to-white/40 dark:from-white/10 dark:to-white/5 backdrop-blur-xl border border-white/50 dark:border-white/10 hover:shadow-[0_8px_30px_rgba(132,204,22,0.15)] hover:-translate-y-0.5 transition-all duration-500">
           <div className="flex items-center gap-2 mb-3">
             <Sparkles size={14} className="text-amber-500" />
-            <span className="text-xs font-semibold text-amber-600 uppercase tracking-wider">Today's Game</span>
+            <span className="text-xs font-semibold text-amber-600 uppercase tracking-wider">Suggested for you</span>
           </div>
           <div className="flex items-center gap-4">
-            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${todayRec.color} flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-              <todayRec.icon size={26} className="text-white" />
+            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${suggestedGame().color} flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+              {React.createElement(suggestedGame().icon, { size: 26, className: 'text-white' })}
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-bold text-charcoal-800 dark:text-white">{todayRec.name}</h3>
-              <p className="text-sm text-charcoal-400 dark:text-charcoal-500">{todayRec.tip}</p>
+              <h3 className="text-lg font-bold text-charcoal-800 dark:text-white">{suggestedGame().name}</h3>
+              <p className="text-sm text-charcoal-400 dark:text-charcoal-500">{suggestedGame().tip}</p>
             </div>
             <ChevronRight size={22} className="text-sage-400 group-hover:translate-x-1 transition-transform" />
           </div>
-        </Link>
+        </button>
       </div>
 
       {lastActivity && (

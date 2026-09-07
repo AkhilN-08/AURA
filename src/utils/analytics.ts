@@ -11,6 +11,7 @@ export function formatGameName(type: GameSession['gameType']): string {
     case 'pattern-grid': return 'Pattern Grid'
     case 'story-recall': return 'Story Recall'
     case 'color-sequence': return 'Color Sequence'
+    case 'memory-lane': return 'Memory Lane'
   }
 }
 

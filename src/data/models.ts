@@ -1,5 +1,7 @@
+export type GameType = 'memory-match' | 'object-recall' | 'sequence-recall' | 'word-association' | 'pattern-grid' | 'story-recall' | 'color-sequence' | 'memory-lane'
+
 export interface GameSession {
-  gameType: 'memory-match' | 'object-recall' | 'sequence-recall' | 'word-association' | 'pattern-grid' | 'story-recall' | 'color-sequence'
+  gameType: GameType
   score: number
   accuracy: number
   duration: number
@@ -45,7 +47,25 @@ export const GAME_TYPES = {
   'pattern-grid': { label: 'Pattern Grid', icon: '🔲' },
   'story-recall': { label: 'Story Recall', icon: '📚' },
   'color-sequence': { label: 'Color Sequence', icon: '🎨' },
+  'memory-lane': { label: 'Memory Lane', icon: '🪷' },
 } as const
+
+export interface MemoryLanePrompt {
+  id: string
+  prompt: string
+  answer: string
+  hint: string
+  category: 'family' | 'place' | 'food' | 'ritual' | 'routine'
+}
+
+export interface FamilyPhotoMessage {
+  id: string
+  from: string
+  caption: string
+  photoData: string
+  timestamp: string
+  read: boolean
+}
 
 export const REMINDER_TYPES = {
   medicine: { label: 'Medicine', color: 'bg-red-100 text-red-600' },

@@ -5,6 +5,7 @@ import { useState, useEffect as useEff } from 'react'
 import { X, Mail, Flower2, Heart, LogOut, Gamepad2, Brain, Mic, BarChart3, Shield, ChevronRight, Moon, Sun, Eye, Users, Delete } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { useGameProgress } from '../../hooks/useGameProgress'
+import { GAME_TYPES } from '../../data/models'
 import { useTranslation } from '../../hooks/useTranslation'
 import { useDarkMode } from '../../hooks/useDarkMode'
 import { useElderMode } from '../../hooks/useElderMode'
@@ -17,7 +18,7 @@ interface ProfileMenuProps {
 
 export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
   const { user, logout } = useAuth()
-  const { sessions, getAverageAccuracy } = useGameProgress()
+  const { sessions } = useGameProgress()
   const { language, setLanguage, t } = useTranslation()
   const { isDark, toggle: toggleDark } = useDarkMode()
   const { elderMode, setElderMode } = useElderMode()
@@ -125,17 +126,21 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                 </div>
               </div>
               {/* Stats */}
-              <div className="grid grid-cols-3 gap-2.5">
-                {[
-                  { value: sessions.length, label: 'Played' },
-                  { value: sessions.length > 0 ? `${getAverageAccuracy()}%` : '—', label: 'Accuracy' },
-                  { value: new Set(sessions.map(s => s.gameType)).size, label: 'Types' },
-                ].map((stat, i) => (
-                  <div key={i} className="bg-white/10 dark:bg-white/[0.04] rounded-[14px] p-3 text-center border border-white/10 dark:border-white/[0.05]">
-                    <p className="text-[18px] font-semibold text-charcoal-900 dark:text-white/90">{stat.value}</p>
-                    <p className="text-[11px] text-charcoal-600 dark:text-white/55 mt-0.5">{stat.label}</p>
+              <div className="text-center">
+                <p className="text-sm text-charcoal-400 dark:text-white/60 mb-2">
+                  {sessions.length > 0
+                    ? sessions.length + ' games played — you are building a lovely routine'
+                    : 'No games yet — start when you are ready'}
+                </p>
+                {sessions.length > 0 && (
+                  <div className="flex gap-3 justify-center flex-wrap">
+                    {sessions.slice(-3).map((s) => (
+                      <div key={s.gameType} className="text-[11px] text-charcoal-500 dark:text-white/55">
+                        <span className="font-medium text-sage-500">{GAME_TYPES[s.gameType]?.label || 'Game'}</span>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </div>

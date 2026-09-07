@@ -223,7 +223,7 @@ export default function Games() {
                   {GAMES[activeGame]?.title}
                 </h2>
                 <p className="text-charcoal-400 text-sm">
-                  Difficulty: <span className="font-medium capitalize">{currentDifficulty}</span> · AI-adaptive
+                  We'll keep things comfortable for you as you play.
                 </p>
               </div>
             </div>

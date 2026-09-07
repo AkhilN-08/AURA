@@ -48,24 +48,17 @@ function CaregiverGate({ children }: { children: ReactNode }) {
 function SOSButton() {
   const handleClick = () => {
     playTapSound()
-    if ('vibrate' in navigator) navigator.vibrate([200, 100, 200])
+    if ('vibrate' in navigator) navigator.vibrate([200, 100, 200, 200, 100, 200])
     window.open('tel:112', '_self')
   }
   return (
     <button
       onClick={handleClick}
-      className="fixed bottom-24 left-6 z-50 w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300"
-      style={{
-        background: 'linear-gradient(135deg, rgba(239,68,68,0.3) 0%, rgba(239,68,68,0.15) 100%)',
-        backdropFilter: 'blur(12px) saturate(150%)',
-        WebkitBackdropFilter: 'blur(12px) saturate(150%)',
-        border: '1px solid rgba(239,68,68,0.2)',
-        boxShadow: '0 4px 16px rgba(239,68,68,0.15), inset 0 1px 0 rgba(255,255,255,0.3)',
-      }}
+      className="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300 shadow-lg"
       aria-label="Call for help"
       title="Call for help"
     >
-      <Phone size={16} style={{ color: '#ef4444' }} />
+      <Phone size={20} style={{ color: '#ef4444' }} />
     </button>
   )
 }
@@ -74,7 +67,8 @@ function AuthenticatedLayout({ children, hideNav }: { children: ReactNode; hideN
   const location = useLocation()
   const navigate = useNavigate()
   const isGamesPage = location.pathname.startsWith('/games')
-  const showChrome = location.pathname !== '/' && location.pathname !== '/login' && location.pathname !== '/assessment'
+  const showChrome = location.pathname !== '/login' && location.pathname !== '/assessment'
+  const isHome = location.pathname === '/'
 
   return (
     <div className="min-h-screen bg-transparent">
@@ -82,26 +76,30 @@ function AuthenticatedLayout({ children, hideNav }: { children: ReactNode; hideN
       <main>
         <PageTransition key={location.pathname}>{children}</PageTransition>
       </main>
-      {location.pathname !== '/' && <AssistantButton />}
-      {!isGamesPage && location.pathname !== '/' && <AmbientBackground />}
-      {showChrome && (
-        <>
-          <button
-            onClick={() => { playTapSound(); navigate('/') }}
-            className="fixed bottom-6 left-6 z-50 w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300"
-            style={{
-              background: 'linear-gradient(135deg, rgba(134,239,172,0.4) 0%, rgba(134,239,172,0.2) 100%)',
-              backdropFilter: 'blur(12px) saturate(150%)',
-              WebkitBackdropFilter: 'blur(12px) saturate(150%)',
-              border: '1px solid rgba(134,239,172,0.3)',
-              boxShadow: '0 4px 16px rgba(134,239,172,0.15), inset 0 1px 0 rgba(255,255,255,0.3)',
-            }}
-            aria-label="Go Home"
-          >
-            <Home size={18} style={{ color: '#22c55e' }} />
-          </button>
-          <SOSButton />
-        </>
+      {!isHome && <AssistantButton />}
+      {!isGamesPage && !isHome && <AmbientBackground />}
+      {!isHome && (
+        <button
+          onClick={() => { playTapSound(); navigate('/') }}
+          className="fixed bottom-6 left-6 z-50 w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300"
+          style={{
+            background: 'linear-gradient(135deg, rgba(134,239,172,0.4) 0%, rgba(134,239,172,0.2) 100%)',
+            backdropFilter: 'blur(12px) saturate(150%)',
+            WebkitBackdropFilter: 'blur(12px) saturate(150%)',
+            border: '1px solid rgba(134,239,172,0.3)',
+            boxShadow: '0 4px 16px rgba(134,239,172,0.15), inset 0 1px 0 rgba(255,255,255,0.3)',
+          }}
+          aria-label="Go Home"
+        >
+          <Home size={18} style={{ color: '#22c55e' }} />
+        </button>
+      )}
+      <SOSButton />
+      {isHome && (
+        <div className="fixed bottom-6 right-6 z-40 flex items-center gap-2 text-xs text-charcoal-400 dark:text-white/50 bg-white/40 dark:bg-white/5 backdrop-blur-sm rounded-full px-3 py-1.5 border border-white/40 dark:border-white/10">
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-sage-400 animate-pulse" />
+          You're home
+        </div>
       )}
     </div>
   )
@@ -140,12 +138,7 @@ function AppRoutes() {
             <AuthenticatedLayout><Games /></AuthenticatedLayout>
           </AssessmentGate>
         } />
-        <Route path="/games/objects" element={
-          <AssessmentGate>
-            <AuthenticatedLayout><Games /></AuthenticatedLayout>
-          </AssessmentGate>
-        } />
-        <Route path="/games/sequence" element={
+        <Route path="/games/memory-lane" element={
           <AssessmentGate>
             <AuthenticatedLayout><Games /></AuthenticatedLayout>
           </AssessmentGate>

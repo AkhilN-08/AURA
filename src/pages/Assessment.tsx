@@ -615,7 +615,7 @@ export default function Assessment() {
     setTimeout(() => navigate('/'), 2500)
   }, [scores, completeAssessment, navigate])
 
-  const progress = Math.min(100, (Math.min(step, TOTAL_STEPS) / TOTAL_STEPS) * 100)
+  const progress = Math.min(100, ((step + 1) / TOTAL_STEPS) * 100)
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-forest-50/30 via-cream-50 to-cream-50 flex items-center justify-center px-4 py-12">
@@ -625,18 +625,17 @@ export default function Assessment() {
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center mx-auto mb-4 shadow-lg">
             <Brain size={32} className="text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-charcoal-800 mb-2">Cognitive Assessment</h1>
+          <h1 className="text-2xl font-bold text-charcoal-800 mb-2">Let's get to know you</h1>
           <p className="text-charcoal-400 text-sm max-w-md mx-auto">
-            This short assessment helps AURA-NER understand your current cognitive profile so we can
-            personalize your experience. Take your time — there are no wrong answers.
+            A few gentle questions help us suggest the right games for you.
+            Take your time — there's no right or wrong here.
           </p>
         </div>
 
         {/* Progress bar */}
         <div className="mb-10">
-          <div className="flex justify-between text-xs text-charcoal-400 mb-2">
-            <span>Step {Math.min(step + 1, TOTAL_STEPS)} of {TOTAL_STEPS}</span>
-            <span>{Math.round(progress)}% complete</span>
+          <div className="text-xs text-charcoal-400 text-center mb-2">
+            {step === 0 ? 'Starting with a few simple taps' : step < TOTAL_STEPS - 1 ? 'Almost there - just one more moment' : 'Just one more, then you are done'}
           </div>
           <div className="w-full h-2 bg-charcoal-100 rounded-full overflow-hidden">
             <div
@@ -663,9 +662,9 @@ export default function Assessment() {
             <div className="w-16 h-16 rounded-full bg-sage-100 flex items-center justify-center mx-auto mb-4">
               <CheckCircle2 size={36} className="text-sage-500" />
             </div>
-            <h2 className="text-xl font-bold text-charcoal-800 mb-2">Assessment Complete!</h2>
+            <h2 className="text-xl font-bold text-charcoal-800 mb-2">You're all set!</h2>
             <p className="text-charcoal-400 text-sm mb-6">
-              You did wonderfully! We're setting up your personalized experience...
+              Thank you — we've saved your preferences and will suggest games that suit you.
             </p>
             <div className="flex justify-center gap-3 mb-6">
               {[...Array(5)].map((_, i) => (
