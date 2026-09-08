@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Heart, Plus, Pencil, Trash2, Eye, EyeOff, X, Sparkles,
-  User, MapPin, Package, CalendarDays, Clock, ShieldCheck, ArrowLeft,
+  User, MapPin, Package, CalendarDays, Clock, ShieldCheck, ArrowLeft, Camera,
 } from 'lucide-react'
 import { useMemoryCapsule } from '../hooks/useMemoryCapsule'
 import { useGameProgress } from '../hooks/useGameProgress'
@@ -331,8 +331,23 @@ function CapsuleEditor({ editor, onClose, onSave }: {
     const file = e.target.files?.[0]
     if (!file) return
     const reader = new FileReader()
-    reader.onload = ev => setPhotoData(ev.target?.result as string)
+    reader.onload = ev => {
+      // Downscale + compress so photos fit comfortably in localStorage
+      const img = new Image()
+      img.onload = () => {
+        const MAX = 480
+        const scale = Math.min(1, MAX / Math.max(img.width, img.height))
+        const canvas = document.createElement('canvas')
+        canvas.width = Math.round(img.width * scale)
+        canvas.height = Math.round(img.height * scale)
+        canvas.getContext('2d')?.drawImage(img, 0, 0, canvas.width, canvas.height)
+        setPhotoData(canvas.toDataURL('image/jpeg', 0.8))
+      }
+      img.onerror = () => setPhotoData(ev.target?.result as string)
+      img.src = ev.target?.result as string
+    }
     reader.readAsDataURL(file)
+    e.target.value = '' // allow re-selecting the same photo
   }
 
   const save = () => {
@@ -376,13 +391,27 @@ function CapsuleEditor({ editor, onClose, onSave }: {
 
         {/* Photo / emoji */}
         <div className="flex items-center gap-4 mb-5">
-          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-rose-50 to-amber-50 border border-cream-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+          <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-rose-50 to-amber-50 border border-cream-200 flex items-center justify-center overflow-hidden flex-shrink-0 relative">
             {photoData ? <img src={photoData} alt="preview" className="w-full h-full object-cover" /> : <span className="text-4xl">{emoji}</span>}
+            {photoData && (
+              <button
+                onClick={() => setPhotoData('')}
+                className="absolute top-1 right-1 w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center"
+                aria-label={t('Remove photo')}
+                title={t('Remove photo')}
+              >
+                <X size={13} />
+              </button>
+            )}
           </div>
           <div className="flex-1">
             <label className="block text-xs font-semibold text-charcoal-500 mb-2">{t('Photo (optional)')}</label>
-            <input type="file" accept="image/*" onChange={handlePhoto} className="text-sm text-charcoal-500 file:mr-3 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-cream-100 file:text-charcoal-600 file:text-sm" />
-            <div className="flex gap-1.5 mt-2 flex-wrap">
+            <label className="flex items-center justify-center gap-2 min-h-[52px] rounded-2xl border-2 border-dashed border-cream-200 bg-cream-50 px-4 py-2 text-base font-semibold text-charcoal-600 hover:border-sage-400 hover:text-sage-600 transition-colors cursor-pointer mb-2">
+              <Camera size={18} />
+              {photoData ? t('Change Photo') : t('Add a Photo')}
+              <input type="file" accept="image/*" className="hidden" onChange={handlePhoto} />
+            </label>
+            <div className="flex gap-1.5 flex-wrap">
               {EMOJI_CHOICES.map(e2 => (
                 <button key={e2} onClick={() => { setEmoji(e2); setPhotoData('') }} className={`w-8 h-8 rounded-lg text-lg flex items-center justify-center transition-all ${emoji === e2 && !photoData ? 'bg-sage-100 ring-2 ring-sage-400' : 'hover:bg-cream-50'}`}>
                   {e2}
