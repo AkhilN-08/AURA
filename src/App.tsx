@@ -56,7 +56,7 @@ function SOSButton() {
   return (
     <button
       onClick={handleClick}
-      className="fixed bottom-24 right-6 z-50 w-12 h-12 rounded-full flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300 shadow-lg"
+      className="fixed bottom-28 right-6 z-50 w-12 h-12 rounded-full flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300 shadow-lg"
       aria-label="Call for help"
       title="Call for help"
     >
@@ -98,7 +98,7 @@ function AuthenticatedLayout({ children, hideNav }: { children: ReactNode; hideN
       )}
       <SOSButton />
       {isHome && (
-        <div className="fixed bottom-6 right-6 z-40 flex items-center gap-2 text-xs text-charcoal-400 dark:text-white/50 bg-white/40 dark:bg-white/5 backdrop-blur-sm rounded-full px-3 py-1.5 border border-white/40 dark:border-white/10">
+        <div className="fixed bottom-6 left-6 z-40 flex items-center gap-2 text-xs text-charcoal-400 dark:text-white/50 bg-white/40 dark:bg-white/5 backdrop-blur-sm rounded-full px-3 py-1.5 border border-white/40 dark:border-white/10">
           <span className="inline-block w-1.5 h-1.5 rounded-full bg-sage-400 animate-pulse" />
           You're home
         </div>
