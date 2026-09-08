@@ -99,7 +99,7 @@ export default function Login() {
   return (
     <div className="min-h-screen flex">
       {/* Left panel — petal tree */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-[#0f1d3c]">
         <PetalTree />
         <div className="relative z-10 flex flex-col justify-center px-16 text-white">
           <div className="mb-8">

@@ -78,8 +78,11 @@ export default function PetalTree() {
 
     const resize = () => {
       const dpr = window.devicePixelRatio || 1
-      w = window.innerWidth
-      h = window.innerHeight
+      // Size to the parent panel (not the window) so the sky always fills
+      // the column even when the panel is taller than the viewport.
+      const rect = canvas.parentElement?.getBoundingClientRect()
+      w = Math.max(1, Math.round(rect?.width ?? window.innerWidth))
+      h = Math.max(1, Math.round(rect?.height ?? window.innerHeight))
       canvas.width = w * dpr
       canvas.height = h * dpr
       canvas.style.width = w + 'px'
@@ -405,10 +408,14 @@ export default function PetalTree() {
     resize()
     animate()
     window.addEventListener('resize', resize)
+    // Re-paint when the panel itself changes size (font mode, layout shifts)
+    const ro = new ResizeObserver(resize)
+    if (canvas.parentElement) ro.observe(canvas.parentElement)
 
     return () => {
       cancelAnimationFrame(animId)
       window.removeEventListener('resize', resize)
+      ro.disconnect()
     }
   }, [])
 
