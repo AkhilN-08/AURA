@@ -205,6 +205,14 @@ export default function PatientHome() {
       'pattern-grid': 'Recreate the pattern you saw.',
       'story-recall': 'Answer questions about a short story.',
       'color-sequence': 'Watch and repeat the color pattern.',
+      'memory-replay': 'Look through a memory album, then answer gentle questions.',
+      'forget-teach-retest': 'Meet familiar faces - if a name slips away, AURA teaches it again.',
+      'routine-deviation': 'Spot the small change in a familiar daily routine.',
+      'my-place-memories': 'Visit familiar places and hear their memories.',
+      'pattern-recall': 'A calm color pattern game that grows with you.',
+      'what-changed': 'Something small changed in a familiar room. Spot it!',
+      'memory-sequence': 'Listen to bells and claps, then tap them back.',
+      'memory-story': 'A little story from your own memories, read aloud.',
     }
     return { id: pickId, name: picked.label, icon: picked.icon, color: 'from-amber-400 to-amber-600', tip: tips[pickId] || '' }
   }, [sessions])
@@ -275,7 +283,7 @@ export default function PatientHome() {
           </div>
           <div className="flex items-center gap-4">
             <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${suggestedGame().color} flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-              {React.createElement(suggestedGame().icon, { size: 26, className: 'text-white' })}
+              <span className="text-2xl" role="img" aria-label={suggestedGame().name}>{suggestedGame().icon}</span>
             </div>
             <div className="flex-1">
               <h3 className="text-lg font-bold text-charcoal-800 dark:text-white">{suggestedGame().name}</h3>

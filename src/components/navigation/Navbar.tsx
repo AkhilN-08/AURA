@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Brain, LogOut } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { useTranslation } from '../../hooks/useTranslation'
+import AuraWordmark from '../branding/AuraWordmark'
 import MobileMenu from './MobileMenu'
 import ProfileMenu from './ProfileMenu'
 
@@ -18,7 +19,10 @@ export default function Navbar() {
     { label: t('Home'), href: '/' },
     { label: t('Memory Games'), href: '/games' },
     { label: t('Memory Assistant'), href: '/assistant' },
-    ...(user?.role === 'caregiver' ? [{ label: t('Caregiver'), href: '/caregiver' }] : []),
+    ...(user?.role === 'caregiver' ? [
+      { label: t('Caregiver'), href: '/caregiver' },
+      { label: t('Memory Capsule'), href: '/capsule' },
+    ] : []),
     { label: t('About'), href: '/about' },
   ]
 
@@ -49,12 +53,9 @@ export default function Navbar() {
         aria-label="Main navigation"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group" aria-label="AURA-NER NER Home">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-400 ease-[cubic-bezier(0.25,0.1,0.25,1)] shadow-[0_4px_20px_rgba(244,114,182,0.35)]">
-              <Brain className="text-white" size={24} strokeWidth={2.5} />
-            </div>
-            <span className="text-xl font-bold text-charcoal-800 dark:text-white tracking-tight">AURA-NER</span>
+          {/* Logo — handwritten AURA wordmark */}
+          <Link to="/" className="group flex items-center" aria-label="AURA home">
+            <AuraWordmark className="h-9 group-hover:opacity-80 transition-opacity" />
           </Link>
 
           {/* Desktop Nav — glass pills */}

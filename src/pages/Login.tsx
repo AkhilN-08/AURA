@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Flower2, User, ArrowRight, Delete } from 'lucide-react'
+import { User, ArrowRight, Delete } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 import { useTranslation } from '../hooks/useTranslation'
+import AuraWordmark from '../components/branding/AuraWordmark'
 import gsap from 'gsap'
 import GlowOrbs from '../components/ui/GlowOrbs'
 import PetalTree from '../components/ui/PetalTree'
@@ -101,11 +102,8 @@ export default function Login() {
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
         <PetalTree />
         <div className="relative z-10 flex flex-col justify-center px-16 text-white">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center shadow-[0_0_30px_rgba(251,207,232,0.2)]">
-              <Flower2 size={30} />
-            </div>
-            <span className="text-3xl font-bold tracking-tight">AURA-NER</span>
+          <div className="mb-8">
+            <AuraWordmark className="h-14" />
           </div>
           <h1 className="text-4xl font-bold leading-tight mb-4">
             Every Memory<br />Matters.
@@ -128,11 +126,8 @@ export default function Login() {
       <div className="flex-1 flex items-center justify-center px-6 py-12 relative dark:bg-[#0f0f1a]">
         <GlowOrbs />
         <div ref={formRef} className="w-full max-w-md relative z-10">
-          <div className="flex items-center gap-2.5 mb-10 lg:hidden login-anim">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sage-400/80 to-sage-600/80 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-[0_0_16px_rgba(236,72,153,0.2)]">
-              <Flower2 className="text-white" size={22} />
-            </div>
-            <span className="text-xl font-bold text-charcoal-800 dark:text-white">AURA-NER</span>
+          <div className="mb-10 lg:hidden login-anim">
+            <AuraWordmark className="h-10" />
           </div>
 
           {mode === 'pin' ? (

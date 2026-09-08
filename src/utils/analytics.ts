@@ -12,6 +12,14 @@ export function formatGameName(type: GameSession['gameType']): string {
     case 'story-recall': return 'Story Recall'
     case 'color-sequence': return 'Color Sequence'
     case 'memory-lane': return 'Memory Lane'
+    case 'memory-replay': return 'Memory Replay'
+    case 'forget-teach-retest': return 'Remember & Relearn'
+    case 'routine-deviation': return 'Routine Spotter'
+    case 'my-place-memories': return 'My Place, My Memories'
+    case 'pattern-recall': return 'Pattern Recall'
+    case 'what-changed': return 'What Changed?'
+    case 'memory-sequence': return 'Memory Sequence'
+    case 'memory-story': return 'Memory Story'
   }
 }
 

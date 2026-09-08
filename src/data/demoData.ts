@@ -1,11 +1,12 @@
-import type { GameSession, Reminder } from './models'
+import type { GameSession, Reminder, MemoryCapsuleItem } from './models'
 
 // Generate demo game sessions over the past 14 days
 export function generateDemoSessions(): GameSession[] {
   const sessions: GameSession[] = []
   const games: GameSession['gameType'][] = [
     'memory-match', 'object-recall', 'sequence-recall',
-    'word-association', 'pattern-grid', 'story-recall', 'color-sequence'
+    'word-association', 'pattern-grid', 'story-recall', 'color-sequence',
+    'memory-replay', 'pattern-recall', 'what-changed', 'memory-sequence',
   ]
   const difficulties: GameSession['difficulty'][] = ['easy', 'moderate', 'hard']
 
@@ -28,6 +29,8 @@ export function generateDemoSessions(): GameSession[] {
         duration: 30 + Math.floor(Math.random() * 120),
         timestamp: date.toISOString(),
         difficulty: difficulties[diffIdx],
+        responseTime: 2.5 + Math.random() * 3.5,
+        attempts: 2 + Math.floor(Math.random() * 3),
       })
     }
   }
@@ -52,6 +55,66 @@ export interface FamilyMessage {
   read: boolean
   type: 'text' | 'photo'
   photoData?: string
+}
+
+// ── Demo Memory Capsule (Ravi's profile) ────────────────────────
+// Realistic demo data so the prototype works immediately.
+// Easy to replace: users/caregivers add their own via the Memory Capsule page.
+
+export function generateDemoCapsule(): MemoryCapsuleItem[] {
+  const now = new Date().toISOString()
+  return [
+    {
+      type: 'person', id: 'capsule-ananya', name: 'Ananya', relationship: 'Daughter',
+      emoji: '👧', description: 'Ravi\'s daughter. Loves gardening and evening walks.',
+      enabled: true, createdAt: now,
+    },
+    {
+      type: 'person', id: 'capsule-lakshmi', name: 'Lakshmi', relationship: 'Wife',
+      emoji: '👩', description: 'Ravi\'s wife. Makes the best filter coffee in the house.',
+      enabled: true, createdAt: now,
+    },
+    {
+      type: 'place', id: 'capsule-garden', name: 'Family Garden',
+      emoji: '🌿', description: 'The small garden behind the house with rose plants.',
+      people: ['Ananya', 'Lakshmi'],
+      memory: 'Ravi spends his mornings here watering the roses with Ananya.',
+      enabled: true, createdAt: now,
+    },
+    {
+      type: 'place', id: 'capsule-home', name: 'Home',
+      emoji: '🏠', description: 'The house Ravi has lived in for 35 years.',
+      people: ['Lakshmi', 'Ananya'],
+      memory: 'Every evening ends with tea on the front porch.',
+      enabled: true, createdAt: now,
+    },
+    {
+      type: 'object', id: 'capsule-stick', name: 'Walking Stick',
+      emoji: '🦯', belongsTo: 'Beside the front door',
+      description: 'A wooden walking stick Ravi has used for 8 years.',
+      enabled: true, createdAt: now,
+    },
+    {
+      type: 'object', id: 'capsule-radio', name: 'Favorite Radio',
+      emoji: '📻', belongsTo: 'On the kitchen shelf',
+      description: 'An old radio that plays morning bhajans every day at 6 AM.',
+      enabled: true, createdAt: now,
+    },
+    {
+      type: 'event', id: 'capsule-gathering', name: 'Family Gathering',
+      dateLabel: '2025',
+      emoji: '📸', people: ['Ananya', 'Lakshmi'],
+      story: 'Ananya visited Ravi during the family gathering. Everyone planted a new rose bush in the garden together.',
+      enabled: true, createdAt: now,
+    },
+    {
+      type: 'routine', id: 'capsule-morning', activity: 'Morning Routine',
+      time: '7:00 AM', emoji: '🕰️',
+      steps: ['Wake up', 'Breakfast', 'Morning walk', 'Memory activity'],
+      notes: 'Radio plays bhajans during breakfast.',
+      enabled: true, createdAt: now,
+    },
+  ]
 }
 
 export function generateDemoMessages(): FamilyMessage[] {

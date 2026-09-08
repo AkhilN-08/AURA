@@ -1,4 +1,13 @@
-export type GameType = 'memory-match' | 'object-recall' | 'sequence-recall' | 'word-association' | 'pattern-grid' | 'story-recall' | 'color-sequence' | 'memory-lane'
+export type GameType =
+  // original
+  | 'memory-match' | 'object-recall' | 'sequence-recall' | 'word-association'
+  | 'pattern-grid' | 'story-recall' | 'color-sequence' | 'memory-lane'
+  // new experiences
+  | 'memory-replay' | 'forget-teach-retest' | 'routine-deviation'
+  | 'my-place-memories' | 'pattern-recall' | 'what-changed'
+  | 'memory-sequence' | 'memory-story'
+
+export type GameCategory = 'memory' | 'routine' | 'recognition' | 'attention'
 
 export interface GameSession {
   gameType: GameType
@@ -7,6 +16,10 @@ export interface GameSession {
   duration: number
   timestamp: string
   difficulty: 'easy' | 'moderate' | 'hard'
+  // richer adaptive-engine fields (backwards compatible)
+  responseTime?: number      // seconds, average per question
+  attempts?: number          // number of rounds/trials in the session
+  category?: GameCategory
 }
 
 export interface Reminder {
@@ -39,7 +52,7 @@ export interface CaregiverData {
 
 export type DifficultyLevel = 'easy' | 'moderate' | 'hard'
 
-export const GAME_TYPES = {
+export const GAME_TYPES: Record<GameType, { label: string; icon: string }> = {
   'memory-match': { label: 'Memory Match', icon: '🧠' },
   'object-recall': { label: 'Object Recall', icon: '👁️' },
   'sequence-recall': { label: 'Sequence Recall', icon: '🔢' },
@@ -48,7 +61,15 @@ export const GAME_TYPES = {
   'story-recall': { label: 'Story Recall', icon: '📚' },
   'color-sequence': { label: 'Color Sequence', icon: '🎨' },
   'memory-lane': { label: 'Memory Lane', icon: '🪷' },
-} as const
+  'memory-replay': { label: 'Memory Replay', icon: '📷' },
+  'forget-teach-retest': { label: 'Remember & Relearn', icon: '🌱' },
+  'routine-deviation': { label: 'Routine Spotter', icon: '🕰️' },
+  'my-place-memories': { label: 'My Place, My Memories', icon: '🏡' },
+  'pattern-recall': { label: 'Pattern Recall', icon: '🟦' },
+  'what-changed': { label: 'What Changed?', icon: '🔍' },
+  'memory-sequence': { label: 'Memory Sequence', icon: '🔔' },
+  'memory-story': { label: 'Memory Story', icon: '📔' },
+}
 
 export interface MemoryLanePrompt {
   id: string
@@ -67,6 +88,86 @@ export interface FamilyPhotoMessage {
   read: boolean
 }
 
+// ── Memory Capsule ─────────────────────────────────────────────
+// A personal library of meaningful memories used to personalize
+// cognitive activities. Private, local, and user-controlled.
+
+export type CapsuleType = 'person' | 'place' | 'object' | 'event' | 'routine'
+
+export interface CapsulePerson {
+  type: 'person'
+  id: string
+  name: string
+  relationship: string
+  photoData?: string
+  emoji: string
+  description: string
+  enabled: boolean
+  createdAt: string
+}
+
+export interface CapsulePlace {
+  type: 'place'
+  id: string
+  name: string
+  photoData?: string
+  emoji: string
+  description: string
+  people: string[]
+  memory: string
+  enabled: boolean
+  createdAt: string
+}
+
+export interface CapsuleObject {
+  type: 'object'
+  id: string
+  name: string
+  photoData?: string
+  emoji: string
+  belongsTo: string
+  description: string
+  enabled: boolean
+  createdAt: string
+}
+
+export interface CapsuleEvent {
+  type: 'event'
+  id: string
+  name: string
+  dateLabel: string
+  photoData?: string
+  emoji: string
+  people: string[]
+  story: string
+  enabled: boolean
+  createdAt: string
+}
+
+export interface CapsuleRoutine {
+  type: 'routine'
+  id: string
+  activity: string
+  time: string
+  steps: string[]
+  notes?: string
+  photoData?: string
+  emoji: string
+  enabled: boolean
+  createdAt: string
+}
+
+export type MemoryCapsuleItem =
+  | CapsulePerson | CapsulePlace | CapsuleObject | CapsuleEvent | CapsuleRoutine
+
+export const CAPSULE_TYPE_META: Record<CapsuleType, { label: string; icon: string }> = {
+  person: { label: 'People', icon: '👤' },
+  place: { label: 'Places', icon: '🏡' },
+  object: { label: 'Objects', icon: '🧸' },
+  event: { label: 'Events', icon: '📸' },
+  routine: { label: 'Routines', icon: '🕰️' },
+}
+
 export const REMINDER_TYPES = {
   medicine: { label: 'Medicine', color: 'bg-red-100 text-red-600' },
   appointment: { label: 'Appointment', color: 'bg-blue-100 text-blue-600' },
@@ -74,3 +175,4 @@ export const REMINDER_TYPES = {
   call: { label: 'Phone Call', color: 'bg-green-100 text-green-600' },
   routine: { label: 'Daily Routine', color: 'bg-purple-100 text-purple-600' },
 } as const
+

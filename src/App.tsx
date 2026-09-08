@@ -1,8 +1,10 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './hooks/useAuth'
+import SplashScreen from './components/branding/SplashScreen'
 import Landing from './pages/Landing'
 import PatientHome from './pages/PatientHome'
 import FamilyPage from './pages/FamilyPage'
+import Capsule from './pages/Capsule'
 import Games from './pages/Games'
 import Assistant from './pages/Assistant'
 import Caregiver from './pages/Caregiver'
@@ -143,6 +145,11 @@ function AppRoutes() {
             <AuthenticatedLayout><Games /></AuthenticatedLayout>
           </AssessmentGate>
         } />
+        <Route path="/capsule" element={
+          <AssessmentGate>
+            <AuthenticatedLayout><Capsule /></AuthenticatedLayout>
+          </AssessmentGate>
+        } />
         <Route path="/assistant" element={
           <AssessmentGate>
             <AuthenticatedLayout><Assistant /></AuthenticatedLayout>
@@ -173,10 +180,13 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <TranslationProvider>
-        <AppRoutes />
-      </TranslationProvider>
-    </AuthProvider>
+    <>
+      <SplashScreen onDone={() => {}} />
+      <AuthProvider>
+        <TranslationProvider>
+          <AppRoutes />
+        </TranslationProvider>
+      </AuthProvider>
+    </>
   )
 }
