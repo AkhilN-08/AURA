@@ -3,6 +3,7 @@ import { Eye, CheckCircle2, XCircle, Search, ArrowRight, ArrowLeftRight } from '
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { useMemoryCapsule } from '../../hooks/useMemoryCapsule'
 import { playMatchChime, playWinChime, playTapSound, speakText } from '../../utils/audio'
+import { useTranslation } from '../../hooks/useTranslation'
 import type { GameSession } from '../../data/models'
 
 // ── Identity: visual comparison interface ───────────────────────
@@ -15,6 +16,8 @@ interface ChangeRound {
   changeType: 'removed' | 'moved' | 'replaced' | 'added'
   answerLabel: string
   explanation: string
+  changedThing?: string
+  changedOther?: string
   options: string[]
 }
 
@@ -52,7 +55,8 @@ function buildRounds(extraPersonal: { name: string; emoji: string }[]): ChangeRo
       before, after,
       changeType: 'removed',
       answerLabel: removed.label,
-      explanation: `The ${removed.label.toLowerCase()} was taken away.`,
+      explanation: 'The {thing} was taken away.',
+      changedThing: removed.label,
       options: shuffle([removed.label, ...distractors.slice(0, 3)]),
     })
   }
@@ -86,7 +90,9 @@ function buildRounds(extraPersonal: { name: string; emoji: string }[]): ChangeRo
       before, after,
       changeType: 'replaced',
       answerLabel: replaced.label,
-      explanation: `The ${replaced.label.toLowerCase()} became a ${replacement.label.toLowerCase()}.`,
+      explanation: 'The {thing} became a {other}.',
+      changedThing: replaced.label,
+      changedOther: replacement.label,
       options: shuffle([replaced.label, replacement.label, 'Books', 'Plant']),
     })
   }
@@ -127,6 +133,7 @@ function SceneGrid({ objects, dim }: { objects: SceneObject[]; dim?: boolean }) 
 }
 
 export default function WhatChanged({ onComplete }: WCProps) {
+  const { t, language } = useTranslation()
   const capsule = useMemoryCapsule()
   const { seedDemo } = capsule
   useEffect(() => { seedDemo() }, [seedDemo])
@@ -150,11 +157,11 @@ export default function WhatChanged({ onComplete }: WCProps) {
     startedAt.current = Date.now()
     qStart.current = Date.now()
     setPhase('study')
-    speakText('Look at this room carefully. You will see it again in a moment.')
+    speakText(t('Look at this room carefully. You will see it again in a moment.'), language)
     setTimeout(() => {
       setPhase('compare')
       qStart.current = Date.now()
-      speakText('Something has changed. What changed?')
+      speakText(t('Something has changed. What changed?'), language)
     }, 9000)
   }
 
@@ -169,7 +176,7 @@ export default function WhatChanged({ onComplete }: WCProps) {
     setAnswers(a => [...a, { correct, time }])
     if (correct) playMatchChime()
     setPhase('feedback')
-    speakText(correct ? 'You spotted it.' : current.explanation)
+    speakText(correct ? t('You spotted it.') : t(current.explanation, { thing: t(current.changedThing || current.answerLabel), other: t(current.changedOther || '') }), language)
 
     setTimeout(() => {
       setSelected(null)
@@ -177,7 +184,7 @@ export default function WhatChanged({ onComplete }: WCProps) {
         setRoundIdx(i => i + 1)
         qStart.current = Date.now()
         setPhase('study')
-        speakText('A new room. Look carefully.')
+        speakText(t('A new room. Look carefully.'), language)
         setTimeout(() => { setPhase('compare'); qStart.current = Date.now() }, 9000)
       } else {
         finish()
@@ -215,21 +222,21 @@ export default function WhatChanged({ onComplete }: WCProps) {
       <div className="animate-fade-in max-w-lg mx-auto">
         <div className="text-center mb-8">
           <Search size={44} className="mx-auto text-orange-500 mb-2" />
-          <h3 className="text-2xl font-bold text-stone-800">Sharp Eyes!</h3>
+          <h3 className="text-2xl font-bold text-stone-800">{t('Sharp Eyes!')}</h3>
         </div>
         <div className="grid grid-cols-3 gap-3 mb-6 text-center">
-          <div className="bg-orange-50 rounded-2xl p-4"><p className="text-3xl font-bold text-orange-600">{accuracy}%</p><p className="text-xs text-stone-500">Detection</p></div>
-          <div className="bg-orange-50 rounded-2xl p-4"><p className="text-3xl font-bold text-orange-600">{avgTime}s</p><p className="text-xs text-stone-500">Response Time</p></div>
-          <div className="bg-orange-50 rounded-2xl p-4"><p className="text-3xl font-bold text-orange-600">{correct}/{answers.length}</p><p className="text-xs text-stone-500">Spotted</p></div>
+          <div className="bg-orange-50 rounded-2xl p-4"><p className="text-3xl font-bold text-orange-600">{accuracy}%</p><p className="text-xs text-stone-500">{t('Detection')}</p></div>
+          <div className="bg-orange-50 rounded-2xl p-4"><p className="text-3xl font-bold text-orange-600">{avgTime}s</p><p className="text-xs text-stone-500">{t('Response Time')}</p></div>
+          <div className="bg-orange-50 rounded-2xl p-4"><p className="text-3xl font-bold text-orange-600">{correct}/{answers.length}</p><p className="text-xs text-stone-500">{t('Spotted')}</p></div>
         </div>
         <div className="bg-orange-50 border border-orange-200 rounded-2xl p-5 text-center">
-          <p className="text-xs font-semibold text-orange-700 uppercase tracking-widest mb-2">AURA Insight</p>
+          <p className="text-xs font-semibold text-orange-700 uppercase tracking-widest mb-2">{t('AURA Insight')}</p>
           <p className="text-stone-700 text-lg" style={{ fontFamily: 'Georgia, serif' }}>
             "{accuracy >= 70
-              ? 'Nothing escapes your notice. Your eye for detail is wonderful.'
-              : 'Every look sharpens the eye a little more. Familiar rooms are the best place to practice.'}"
+              ? t('Nothing escapes your notice. Your eye for detail is wonderful.')
+              : t('Every look sharpens the eye a little more. Familiar rooms are the best place to practice.')}"
           </p>
-          <p className="text-xs text-stone-400 mt-3">A performance insight — not a medical assessment.</p>
+          <p className="text-xs text-stone-400 mt-3">{t('A performance insight — not a medical assessment.')}</p>
         </div>
       </div>
     )
@@ -242,8 +249,8 @@ export default function WhatChanged({ onComplete }: WCProps) {
       <div className="animate-fade-in max-w-2xl mx-auto text-center">
         <div className={`rounded-3xl p-6 border-2 ${wasCorrect ? 'bg-green-50 border-green-200' : 'bg-amber-50 border-amber-200'}`}>
           {wasCorrect ? <CheckCircle2 size={40} className="mx-auto text-green-500 mb-3" /> : <XCircle size={40} className="mx-auto text-amber-500 mb-3" />}
-          <p className="text-xl font-bold text-stone-800 mb-2">{wasCorrect ? 'Well spotted!' : 'Here is the change'}</p>
-          <p className="text-stone-600">{current.explanation}</p>
+          <p className="text-xl font-bold text-stone-800 mb-2">{wasCorrect ? t('Well spotted!') : t('Here is the change')}</p>
+          <p className="text-stone-600">{t(current.explanation, { thing: t(current.changedThing || current.answerLabel), other: t(current.changedOther || '') })}</p>
         </div>
       </div>
     )
@@ -256,18 +263,18 @@ export default function WhatChanged({ onComplete }: WCProps) {
         <div className="grid md:grid-cols-2 gap-6 mb-6">
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-stone-400 mb-2 flex items-center gap-1.5">
-              <ArrowLeftRight size={12} /> Before
+              <ArrowLeftRight size={12} /> {t('Before')}
             </p>
             <SceneGrid objects={current.before} />
           </div>
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-orange-500 mb-2 flex items-center gap-1.5">
-              <Eye size={12} /> After
+              <Eye size={12} /> {t('After')}
             </p>
             <SceneGrid objects={current.after} />
           </div>
         </div>
-        <p className="text-center text-xl font-bold text-stone-800 mb-5" style={{ fontFamily: 'Georgia, serif' }}>What changed?</p>
+        <p className="text-center text-xl font-bold text-stone-800 mb-5" style={{ fontFamily: 'Georgia, serif' }}>{t('What changed?')}</p>
         <div className="grid grid-cols-2 gap-3">
           {current.options.map(opt => {
             const reveal = selected !== null
@@ -284,7 +291,7 @@ export default function WhatChanged({ onComplete }: WCProps) {
                   : 'bg-white border-stone-200 text-stone-700 hover:border-orange-300 hover:bg-orange-50'
                 }`}
               >
-                {opt}
+                {t(opt)}
               </button>
             )
           })}
@@ -297,10 +304,10 @@ export default function WhatChanged({ onComplete }: WCProps) {
   if (phase === 'study') {
     return (
       <div className="animate-fade-in max-w-md mx-auto">
-        <p className="text-center text-stone-500 mb-4">Remember this room...</p>
+        <p className="text-center text-stone-500 mb-4">{t('Remember this room...')}</p>
         <SceneGrid objects={current.before} />
         <div className="flex items-center justify-center gap-2 mt-5 text-stone-400 text-sm">
-          <ArrowRight size={15} /> Something will change
+          <ArrowRight size={15} /> {t('Something will change')}
         </div>
       </div>
     )
@@ -312,13 +319,12 @@ export default function WhatChanged({ onComplete }: WCProps) {
       <div className="w-20 h-20 mx-auto rounded-full bg-orange-50 border border-orange-100 flex items-center justify-center mb-5">
         <Search size={34} className="text-orange-500" />
       </div>
-      <h3 className="text-2xl font-bold text-stone-800 mb-3">What Changed?</h3>
+      <h3 className="text-2xl font-bold text-stone-800 mb-3">{t('What Changed?')}</h3>
       <p className="text-stone-500 max-w-md mx-auto mb-8 leading-relaxed">
-        I will show you a familiar room. Look at it carefully — then something small will change.
-        Removed, moved, replaced, or brand new: can you tell what changed?
+        {t('I will show you a familiar room. Look at it carefully — then something small will change. Removed, moved, replaced, or brand new: can you tell what changed?')}
       </p>
       <button onClick={start} className="px-10 py-4 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white text-lg font-semibold transition-all hover:-translate-y-0.5 shadow-lg shadow-orange-200">
-        Show Me the Room
+        {t('Show Me the Room')}
       </button>
     </div>
   )

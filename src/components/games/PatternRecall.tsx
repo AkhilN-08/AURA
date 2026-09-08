@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { Square, RotateCcw, CheckCircle2, XCircle, TrendingUp } from 'lucide-react'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { playMatchChime, playWinChime, playTapSound, speakText } from '../../utils/audio'
+import { useTranslation } from '../../hooks/useTranslation'
 import type { GameSession } from '../../data/models'
 
 // ── Identity: minimal and distraction-free ──────────────────────
@@ -20,6 +21,7 @@ interface PRProps {
 }
 
 export default function PatternRecall({ onComplete }: PRProps) {
+  const { t, language } = useTranslation()
   const { getAverageAccuracy, addSession } = useGameProgress()
 
   // Adaptive level: start from history, then adjust within the session
@@ -69,7 +71,7 @@ export default function PatternRecall({ onComplete }: PRProps) {
     playTapSound()
     startedAt.current = Date.now()
     setPhase('showing')
-    speakText('Watch the colors light up. Then repeat the pattern.')
+    speakText(t('Watch the colors light up. Then repeat the pattern.'), language)
     // slight delay before first round so speech starts cleanly
     setTimeout(initRound, 300)
   }
@@ -94,11 +96,11 @@ export default function PatternRecall({ onComplete }: PRProps) {
       setTimeout(() => {
         if (last.length === 2 && last.every(r => r.correct) && level < 5) {
           setLevel(l => Math.min(5, l + 1))
-          setAdjusted(`AURA adjusted your difficulty based on your previous performance — now Level ${Math.min(5, level + 1)}.`)
-          speakText('You are doing wonderfully. The pattern grows a little.')
+          setAdjusted(t('AURA adjusted your difficulty based on your previous performance — now Level {n}.', { n: Math.min(5, level + 1) }))
+          speakText(t('You are doing wonderfully. The pattern grows a little.'), language)
         } else if (last.length === 2 && last.every(r => !r.correct) && level > 1) {
           setLevel(l => Math.max(1, l - 1))
-          setAdjusted(`AURA adjusted your difficulty based on your previous performance — a calmer pace for now.`)
+          setAdjusted(t('AURA adjusted your difficulty based on your previous performance — a calmer pace for now.'))
         }
       }, 100)
 
@@ -150,15 +152,15 @@ export default function PatternRecall({ onComplete }: PRProps) {
         <div className="w-20 h-20 mx-auto rounded-3xl bg-slate-50 border border-slate-200 flex items-center justify-center mb-4">
           <TrendingUp size={36} className="text-slate-600" />
         </div>
-        <h3 className="text-2xl font-bold text-slate-800 mb-2">Pattern Session Complete</h3>
+        <h3 className="text-2xl font-bold text-slate-800 mb-2">{t('Pattern Session Complete')}</h3>
         <div className="grid grid-cols-3 gap-3 my-6">
-          <div className="bg-slate-50 rounded-2xl p-4"><p className="text-2xl font-bold text-slate-700">{accuracy}%</p><p className="text-xs text-stone-500">Accuracy</p></div>
-          <div className="bg-slate-50 rounded-2xl p-4"><p className="text-2xl font-bold text-slate-700">L{level}</p><p className="text-xs text-stone-500">Final Level</p></div>
-          <div className="bg-slate-50 rounded-2xl p-4"><p className="text-2xl font-bold text-slate-700">{correct}/{rounds.length}</p><p className="text-xs text-stone-500">Patterns</p></div>
+          <div className="bg-slate-50 rounded-2xl p-4"><p className="text-2xl font-bold text-slate-700">{accuracy}%</p><p className="text-xs text-stone-500">{t('Accuracy')}</p></div>
+          <div className="bg-slate-50 rounded-2xl p-4"><p className="text-2xl font-bold text-slate-700">L{level}</p><p className="text-xs text-stone-500">{t('Final Level')}</p></div>
+          <div className="bg-slate-50 rounded-2xl p-4"><p className="text-2xl font-bold text-slate-700">{correct}/{rounds.length}</p><p className="text-xs text-stone-500">{t('Patterns')}</p></div>
         </div>
         <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4">
           <p className="text-sm text-slate-600">
-            {adjusted ?? `You worked at Level ${level} — ${seqLength} colors in each pattern.`}
+            {adjusted ?? t('You worked at Level {n} — {m} colors in each pattern.', { n: level, m: seqLength })}
           </p>
         </div>
       </div>
@@ -174,18 +176,17 @@ export default function PatternRecall({ onComplete }: PRProps) {
             <span key={c.name} className="w-8 h-8 rounded-xl" style={{ backgroundColor: c.value }} />
           ))}
         </div>
-        <h3 className="text-2xl font-bold text-slate-800 mb-3">Pattern Recall</h3>
+        <h3 className="text-2xl font-bold text-slate-800 mb-3">{t('Pattern Recall')}</h3>
         <p className="text-stone-500 max-w-md mx-auto mb-6 leading-relaxed">
-          A calm and quiet pattern game. Colors light up one by one — watch closely,
-          then repeat them in the same order.
+          {t('A calm and quiet pattern game. Colors light up one by one — watch closely, then repeat them in the same order.')}
         </p>
         <div className="inline-flex items-center gap-2 bg-slate-100 rounded-full px-5 py-2 mb-8">
           <Square size={13} className="text-slate-500" />
-          <span className="text-sm font-semibold text-slate-600">Level {level} · {seqLength} colors</span>
+          <span className="text-sm font-semibold text-slate-600">{t('Level')} {level} · {t('{n} colors', { n: seqLength })}</span>
         </div>
         <br />
         <button onClick={start} className="px-10 py-4 rounded-2xl bg-slate-700 hover:bg-slate-800 text-white text-lg font-semibold transition-all hover:-translate-y-0.5 shadow-lg">
-          Begin
+          {t('Begin')}
         </button>
       </div>
     )
@@ -196,8 +197,8 @@ export default function PatternRecall({ onComplete }: PRProps) {
   return (
     <div className="max-w-lg mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <span className="text-sm font-medium text-slate-500">Round {rounds.length + 1} of 4</span>
-        <span className="text-sm font-semibold text-slate-600 bg-slate-100 rounded-full px-3 py-1">Level {level}</span>
+        <span className="text-sm font-medium text-slate-500">{t('Round {n} of {total}', { n: rounds.length + 1, total: 4 })}</span>
+        <span className="text-sm font-semibold text-slate-600 bg-slate-100 rounded-full px-3 py-1">{t('Level')} {level}</span>
       </div>
 
       {adjusted && (
@@ -207,15 +208,15 @@ export default function PatternRecall({ onComplete }: PRProps) {
       )}
 
       {phase === 'showing' && (
-        <p className="text-center text-slate-500 mb-6 animate-pulse">Watch the pattern...</p>
+        <p className="text-center text-slate-500 mb-6 animate-pulse">{t('Watch the pattern...')}</p>
       )}
       {phase === 'input' && (
-        <p className="text-center text-slate-700 font-medium mb-6">Your turn — repeat the pattern</p>
+        <p className="text-center text-slate-700 font-medium mb-6">{t('Your turn — repeat the pattern')}</p>
       )}
       {phase === 'result' && lastRound && (
         <div className={`text-center mb-6 flex items-center justify-center gap-2 ${lastRound.correct ? 'text-green-600' : 'text-amber-600'}`}>
           {lastRound.correct ? <CheckCircle2 size={22} /> : <XCircle size={22} />}
-          <span className="font-semibold">{lastRound.correct ? 'Perfect pattern!' : 'Almost — watch again'}</span>
+          <span className="font-semibold">{lastRound.correct ? t('Perfect pattern!') : t('Almost — watch again')}</span>
         </div>
       )}
 
@@ -240,7 +241,7 @@ export default function PatternRecall({ onComplete }: PRProps) {
             key={c.name}
             onClick={() => handleColorTap(i)}
             disabled={phase !== 'input'}
-            aria-label={c.name}
+            aria-label={t(c.name)}
             className={`aspect-square rounded-3xl transition-all duration-200 ${phase === 'input' ? 'hover:scale-105 active:scale-95 cursor-pointer' : 'opacity-60'}`}
             style={{
               backgroundColor: c.value,
@@ -255,7 +256,7 @@ export default function PatternRecall({ onComplete }: PRProps) {
 
       {phase === 'result' && (
         <button onClick={nextRound} className="w-full mt-8 min-h-[56px] rounded-2xl bg-slate-700 hover:bg-slate-800 text-white text-lg font-semibold transition-all flex items-center justify-center gap-2 mx-auto max-w-xs">
-          <RotateCcw size={18} /> Next Pattern
+          <RotateCcw size={18} /> {t('Next Pattern')}
         </button>
       )}
     </div>

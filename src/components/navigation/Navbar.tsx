@@ -102,7 +102,7 @@ export default function Navbar() {
             <button
               className="md:hidden relative w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/40 backdrop-blur-sm transition-all duration-300"
               onClick={() => setMobileOpen(!mobileOpen)}
-              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+              aria-label={mobileOpen ? t('Close menu') : t('Open menu')}
               aria-expanded={mobileOpen}
             >
               <div className="w-5 h-4 relative flex flex-col justify-between">

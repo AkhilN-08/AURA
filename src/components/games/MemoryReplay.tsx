@@ -3,6 +3,7 @@ import { Camera, Clock, Play, ArrowRight, CheckCircle2, XCircle } from 'lucide-r
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { useMemoryCapsule } from '../../hooks/useMemoryCapsule'
 import { playMatchChime, playWinChime, playTapSound, speakText } from '../../utils/audio'
+import { useTranslation } from '../../hooks/useTranslation'
 import type { GameSession } from '../../data/models'
 
 // ── Warm, photographic, storytelling identity ──────────────────
@@ -27,7 +28,7 @@ function buildMoments(
   const place = places[0]
   const moments: MemoryMoment[] = [
     {
-      scene: `Morning at the ${place ? place.name.toLowerCase() : 'garden'}`,
+      scene: 'Morning at the {place}',
       items: [
         { label: place ? place.name : 'Garden', emoji: place ? place.emoji : '🌿' },
         { label: person ? person.name : 'Ananya', emoji: person ? person.emoji : '👧' },
@@ -46,10 +47,10 @@ function buildMoments(
   ]
   const p = person ? person.name : 'Ananya'
   const questions: RecallQuestion[] = [
-    { q: `Where did the morning happen?`, answer: place ? place.name : 'Garden', type: 'place' },
-    { q: `Who was there in the morning?`, answer: p, type: 'person' },
-    { q: `What did they see among the plants?`, answer: 'Roses', type: 'object' },
-    { q: `What was shared on the porch in the evening?`, answer: 'Radio', type: 'object' },
+    { q: 'Where did the morning happen?', answer: place ? place.name : 'Garden', type: 'place' },
+    { q: 'Who was there in the morning?', answer: p, type: 'person' },
+    { q: 'What did they see among the plants?', answer: 'Roses', type: 'object' },
+    { q: 'What was shared on the porch in the evening?', answer: 'Radio', type: 'object' },
   ]
   return { moments, questions }
 }
@@ -62,6 +63,7 @@ interface MemoryReplayProps {
 }
 
 export default function MemoryReplay({ onComplete }: MemoryReplayProps) {
+  const { t, language } = useTranslation()
   const { getAverageAccuracy } = useGameProgress()
   const capsule = useMemoryCapsule()
   const { seedDemo } = capsule
@@ -90,22 +92,22 @@ export default function MemoryReplay({ onComplete }: MemoryReplayProps) {
     setPhase('showing')
     setMomentIdx(0)
     setSeqShownAt(Date.now())
-    speakText('Let us look through a small memory album. Take your time.')
+    speakText(t('Let us look through a small memory album. Take your time.'), language)
   }, [])
 
   // Auto-advance through album pages
   useEffect(() => {
     if (phase !== 'showing') return
-    const t = setTimeout(() => {
+    const timer = setTimeout(() => {
       if (momentIdx < moments.length - 1) {
         setMomentIdx(i => i + 1)
       } else {
         setPhase('questions')
         questionStart.current = Date.now()
-        speakText('Now, a few gentle questions about the album.')
+        speakText(t('Now, a few gentle questions about the album.'), language)
       }
     }, momentIdx === 0 ? 7000 : 6000)
-    return () => clearTimeout(t)
+    return () => clearTimeout(timer)
   }, [phase, momentIdx, moments.length])
 
   const finish = useCallback((finalAnswers: { correct: boolean; time: number }[]) => {
@@ -140,7 +142,7 @@ export default function MemoryReplay({ onComplete }: MemoryReplayProps) {
     const next = [...answers, { correct, time }]
     setAnswers(next)
     if (correct) playMatchChime()
-    speakText(correct ? 'That is right.' : `It was the ${questions[qIdx].answer}.`)
+    speakText(correct ? t('That is right.') : t('It was the {answer}.', { answer: t(questions[qIdx].answer) }), language)
 
     setTimeout(() => {
       setSelected(null)
@@ -172,24 +174,24 @@ export default function MemoryReplay({ onComplete }: MemoryReplayProps) {
     const peopleCorrect = answers.filter((a, i) => a.correct && questions[i].type === 'person').length
     const peopleTotal = questions.filter(q => q.type === 'person').length
     const insight = peopleTotal > 0 && peopleCorrect === peopleTotal
-      ? 'You remembered familiar people and places beautifully.'
+      ? t('You remembered familiar people and places beautifully.')
       : accuracy >= 70
-        ? 'You recalled the album well. Every replay keeps memories warm.'
-        : 'Familiar faces came back first. Listening to the story again helps the rest follow.'
+        ? t('You recalled the album well. Every replay keeps memories warm.')
+        : t('Familiar faces came back first. Listening to the story again helps the rest follow.')
 
     return (
       <div className="animate-fade-in" style={{ background: 'linear-gradient(160deg, #FFFBF5 0%, #FFF4E6 100%)', borderRadius: '1.5rem', padding: '2rem' }}>
         <div className="text-center">
           <Camera size={44} className="mx-auto text-amber-500 mb-3" />
           <h3 className="text-2xl font-bold text-stone-800 mb-6 tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>
-            MEMORY REPLAY RESULT
+            {t('MEMORY REPLAY RESULT')}
           </h3>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
           {[
-            { label: 'Recall Accuracy', value: `${accuracy}%` },
-            { label: 'Sequence Accuracy', value: `${Math.max(0, accuracy - 8)}%` },
-            { label: 'Response Time', value: `${(Math.round(avgTime * 10) / 10).toFixed(1)}s` },
+            { label: t('Recall Accuracy'), value: `${accuracy}%` },
+            { label: t('Sequence Accuracy'), value: `${Math.max(0, accuracy - 8)}%` },
+            { label: t('Response Time'), value: `${(Math.round(avgTime * 10) / 10).toFixed(1)}s` },
           ].map(stat => (
             <div key={stat.label} className="bg-white/80 rounded-2xl p-4 text-center border border-amber-100">
               <p className="text-3xl font-bold text-amber-600">{stat.value}</p>
@@ -198,11 +200,11 @@ export default function MemoryReplay({ onComplete }: MemoryReplayProps) {
           ))}
         </div>
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
-          <p className="text-xs font-semibold text-amber-700 uppercase tracking-widest mb-2">AURA Insight</p>
+          <p className="text-xs font-semibold text-amber-700 uppercase tracking-widest mb-2">{t('AURA Insight')}</p>
           <p className="text-stone-700 text-lg leading-relaxed" style={{ fontFamily: 'Georgia, serif' }}>
             "{insight}"
           </p>
-          <p className="text-xs text-stone-400 mt-3">A performance insight — not a medical assessment.</p>
+          <p className="text-xs text-stone-400 mt-3">{t('A performance insight — not a medical assessment.')}</p>
         </div>
       </div>
     )
@@ -214,7 +216,7 @@ export default function MemoryReplay({ onComplete }: MemoryReplayProps) {
     return (
       <div className="animate-fade-in">
         <div className="flex items-center justify-between mb-6">
-          <span className="text-sm text-stone-500">Question {qIdx + 1} of {questions.length}</span>
+          <span className="text-sm text-stone-500">{t('Question {n} of {total}', { n: qIdx + 1, total: questions.length })}</span>
           <div className="flex gap-1">
             {questions.map((_, i) => (
               <span key={i} className={`h-2 rounded-full transition-all ${i < qIdx ? 'w-6 bg-amber-400' : i === qIdx ? 'w-6 bg-amber-500' : 'w-2 bg-stone-200'}`} />
@@ -222,7 +224,7 @@ export default function MemoryReplay({ onComplete }: MemoryReplayProps) {
           </div>
         </div>
         <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl p-8 border border-amber-100 text-center mb-6">
-          <p className="text-2xl font-semibold text-stone-800 mb-2" style={{ fontFamily: 'Georgia, serif' }}>{q.q}</p>
+          <p className="text-2xl font-semibold text-stone-800 mb-2" style={{ fontFamily: 'Georgia, serif' }}>{t(q.q)}</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {choices.map(c => {
@@ -242,7 +244,7 @@ export default function MemoryReplay({ onComplete }: MemoryReplayProps) {
               >
                 {reveal && isRight && <CheckCircle2 size={22} className="text-green-600 flex-shrink-0" />}
                 {reveal && isPicked && !isRight && <XCircle size={22} className="text-red-500 flex-shrink-0" />}
-                {c}
+                {t(c)}
               </button>
             )
           })}
@@ -257,14 +259,14 @@ export default function MemoryReplay({ onComplete }: MemoryReplayProps) {
     return (
       <div className="animate-fade-in">
         <div className="text-center mb-6">
-          <p className="text-sm text-stone-400 uppercase tracking-widest mb-1">Memory Album</p>
-          <p className="text-stone-500">Look at each page slowly. It will be hidden in a moment.</p>
+          <p className="text-sm text-stone-400 uppercase tracking-widest mb-1">{t('Memory Album')}</p>
+          <p className="text-stone-500">{t('Look at each page slowly. It will be hidden in a moment.')}</p>
         </div>
         <div className="mx-auto max-w-md rounded-3xl overflow-hidden border-8 border-white shadow-[0_12px_40px_rgba(120,80,20,0.15)] bg-white"
              style={{ transform: `rotate(${momentIdx % 2 === 0 ? '-0.6deg' : '0.6deg'})` }}>
           <div className="bg-gradient-to-br from-amber-100 to-orange-100 px-6 py-8 text-center">
             <span className="text-6xl">{m.items[0].emoji}</span>
-            <h3 className="text-xl font-bold text-stone-700 mt-3" style={{ fontFamily: 'Georgia, serif' }}>{m.scene}</h3>
+            <h3 className="text-xl font-bold text-stone-700 mt-3" style={{ fontFamily: 'Georgia, serif' }}>{t(m.scene, { place: t((m.items[0].label)) })}</h3>
           </div>
           <div className="p-6 flex items-center justify-center gap-4 flex-wrap">
             {m.items.map(it => (
@@ -272,7 +274,7 @@ export default function MemoryReplay({ onComplete }: MemoryReplayProps) {
                 <div className="w-16 h-16 rounded-full bg-amber-50 border-2 border-amber-200 flex items-center justify-center text-3xl mx-auto">
                   {it.emoji}
                 </div>
-                <p className="text-sm text-stone-600 mt-2 font-medium">{it.label}</p>
+                <p className="text-sm text-stone-600 mt-2 font-medium">{t(it.label)}</p>
               </div>
             ))}
           </div>
@@ -292,17 +294,16 @@ export default function MemoryReplay({ onComplete }: MemoryReplayProps) {
       <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center mb-5">
         <Camera size={36} className="text-amber-600" />
       </div>
-      <h3 className="text-2xl font-bold text-stone-800 mb-3" style={{ fontFamily: 'Georgia, serif' }}>Memory Replay</h3>
+      <h3 className="text-2xl font-bold text-stone-800 mb-3" style={{ fontFamily: 'Georgia, serif' }}>{t('Memory Replay')}</h3>
       <p className="text-stone-500 max-w-md mx-auto mb-8 leading-relaxed">
-        We will look through a small album of familiar moments together. Then I will ask
-        what you remember. There are no wrong answers — only gentle practice.
+        {t('We will look through a small album of familiar moments together. Then I will ask what you remember. There are no wrong answers — only gentle practice.')}
       </p>
       <div className="flex items-center justify-center gap-6 text-sm text-stone-400 mb-8">
-        <span className="flex items-center gap-1.5"><Play size={14} /> 5 minutes</span>
-        <span className="flex items-center gap-1.5"><Clock size={14} /> {questions.length} questions</span>
+        <span className="flex items-center gap-1.5"><Play size={14} /> {t('{n} minutes', { n: 5 })}</span>
+        <span className="flex items-center gap-1.5"><Clock size={14} /> {t('{n} questions', { n: questions.length })}</span>
       </div>
       <button onClick={start} className="px-10 py-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white text-lg font-semibold transition-all hover:-translate-y-0.5 shadow-lg shadow-amber-200">
-        Open the Album
+        {t('Open the Album')}
         <ArrowRight size={18} className="inline ml-2" />
       </button>
     </div>

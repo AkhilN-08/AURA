@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth, type AssessmentResult } from '../hooks/useAuth'
+import { useTranslation } from '../hooks/useTranslation'
 import gsap from 'gsap'
 import {
   Brain, Eye, Hash, Sparkles, Clock, CheckCircle2,
@@ -93,6 +94,7 @@ function pick<T>(arr: T[], n: number): T[] {
 /* ------------------------------------------------------------------ */
 
 function StepObjectRecall({ onComplete }: { onComplete: (score: number) => void }) {
+  const { t } = useTranslation()
   const [phase, setPhase] = useState<'show' | 'hide' | 'answer' | 'done'>('show')
   const [showIdx] = useState(() => Math.floor(Math.random() * OBJECT_SETS.length))
   const [objects] = useState(() => OBJECT_SETS[showIdx])
@@ -136,13 +138,13 @@ function StepObjectRecall({ onComplete }: { onComplete: (score: number) => void 
     <div className="text-center">
       <div className="flex items-center justify-center gap-2 mb-2">
         <Eye size={20} className="text-sage-500" />
-        <h3 className="text-lg font-semibold text-charcoal-800">Step 1 · Object Recall</h3>
+        <h3 className="text-lg font-semibold text-charcoal-800">{t('Step 1 · Object Recall')}</h3>
       </div>
       <p className="text-charcoal-400 text-sm mb-8">
-        {phase === 'show' && 'Study these objects carefully...'}
-        {phase === 'hide' && 'Get ready...'}
-        {phase === 'answer' && 'Which objects did you see? Select all that apply.'}
-        {phase === 'done' && 'Great job!'}
+        {phase === 'show' && t('Study these objects carefully...')}
+        {phase === 'hide' && t('Get ready...')}
+        {phase === 'answer' && t('Which objects did you see? Select all that apply.')}
+        {phase === 'done' && t('Great job!')}
       </p>
 
       {phase === 'show' && (
@@ -182,7 +184,7 @@ function StepObjectRecall({ onComplete }: { onComplete: (score: number) => void 
             onClick={submit}
             className="btn-primary inline-flex items-center gap-2"
           >
-            Confirm <ArrowRight size={16} />
+            {t('Confirm')} <ArrowRight size={16} />
           </button>
         </>
       )}
@@ -199,6 +201,7 @@ function StepObjectRecall({ onComplete }: { onComplete: (score: number) => void 
 /* ------------------------------------------------------------------ */
 
 function StepSequence({ onComplete }: { onComplete: (score: number) => void }) {
+  const { t } = useTranslation()
   const [phase, setPhase] = useState<'show' | 'input' | 'done'>('show')
   const [seqIdx] = useState(() => Math.floor(Math.random() * SEQUENCES.length))
   const [sequence] = useState(() => SEQUENCES[seqIdx])
@@ -241,12 +244,12 @@ function StepSequence({ onComplete }: { onComplete: (score: number) => void }) {
     <div className="text-center">
       <div className="flex items-center justify-center gap-2 mb-2">
         <Hash size={20} className="text-amber-500" />
-        <h3 className="text-lg font-semibold text-charcoal-800">Step 2 · Sequence Memory</h3>
+        <h3 className="text-lg font-semibold text-charcoal-800">{t('Step 2 · Sequence Memory')}</h3>
       </div>
       <p className="text-charcoal-400 text-sm mb-8">
-        {phase === 'show' && 'Memorize this sequence...'}
-        {phase === 'input' && `Tap the ${sequence.length} numbers you saw, in order`}
-        {phase === 'done' && 'Well done!'}
+        {phase === 'show' && t('Memorize this sequence...')}
+        {phase === 'input' && t('Tap the {n} numbers you saw, in order', { n: sequence.length })}
+        {phase === 'done' && t('Well done!')}
       </p>
 
       {phase === 'show' && (
@@ -311,6 +314,7 @@ function StepSequence({ onComplete }: { onComplete: (score: number) => void }) {
 /* ------------------------------------------------------------------ */
 
 function StepFocus({ onComplete }: { onComplete: (score: number) => void }) {
+  const { t } = useTranslation()
   const [current, setCurrent] = useState(0)
   const [score, setScore] = useState(0)
   const [clicked, setClicked] = useState(false)
@@ -342,13 +346,13 @@ function StepFocus({ onComplete }: { onComplete: (score: number) => void }) {
     <div className="text-center">
       <div className="flex items-center justify-center gap-2 mb-2">
         <Sparkles size={20} className="text-sage-500" />
-        <h3 className="text-lg font-semibold text-charcoal-800">Step 3 · Focus Test</h3>
+        <h3 className="text-lg font-semibold text-charcoal-800">{t('Step 3 · Focus Test')}</h3>
       </div>
       <p className="text-charcoal-400 text-sm mb-2">
-        Find the different item in the grid as quickly as you can.
+        {t('Find the different item in the grid as quickly as you can.')}
       </p>
       <p className="text-charcoal-300 text-xs mb-8">
-        Round {current + 1} of {FOCUS_GRIDS.length}
+        {t('Round {n} of {total}', { n: current + 1, total: FOCUS_GRIDS.length })}
       </p>
 
       <div className="flex justify-center gap-2 mb-8">
@@ -383,6 +387,7 @@ function StepFocus({ onComplete }: { onComplete: (score: number) => void }) {
 /* ------------------------------------------------------------------ */
 
 function StepWordRecall({ onComplete }: { onComplete: (score: number) => void }) {
+  const { t } = useTranslation()
   const [phase, setPhase] = useState<'show' | 'input' | 'done'>('show')
   const [setIdx] = useState(() => Math.floor(Math.random() * WORD_SETS.length))
   const [words] = useState(() => WORD_SETS[setIdx])
@@ -423,12 +428,12 @@ function StepWordRecall({ onComplete }: { onComplete: (score: number) => void })
     <div className="text-center">
       <div className="flex items-center justify-center gap-2 mb-2">
         <Brain size={20} className="text-sage-500" />
-        <h3 className="text-lg font-semibold text-charcoal-800">Step 4 · Word Recall</h3>
+        <h3 className="text-lg font-semibold text-charcoal-800">{t('Step 4 · Word Recall')}</h3>
       </div>
       <p className="text-charcoal-400 text-sm mb-8">
-        {phase === 'show' && 'Remember these words...'}
-        {phase === 'input' && 'Tap the words you remember'}
-        {phase === 'done' && 'Well done!'}
+        {phase === 'show' && t('Remember these words...')}
+        {phase === 'input' && t('Tap the words you remember')}
+        {phase === 'done' && t('Well done!')}
       </p>
 
       {phase === 'show' && (
@@ -460,7 +465,7 @@ function StepWordRecall({ onComplete }: { onComplete: (score: number) => void })
             disabled={selected.size === 0}
             className="btn-primary inline-flex items-center gap-2 disabled:opacity-40"
           >
-            Confirm <ArrowRight size={16} />
+            {t('Confirm')} <ArrowRight size={16} />
           </button>
         </>
       )}
@@ -477,6 +482,7 @@ function StepWordRecall({ onComplete }: { onComplete: (score: number) => void })
 /* ------------------------------------------------------------------ */
 
 function StepReaction({ onComplete }: { onComplete: (score: number) => void }) {
+  const { t } = useTranslation()
   const [phase, setPhase] = useState<'wait' | 'ready' | 'go' | 'done'>('wait')
   const [result, setResult] = useState(0)
   const goTime = useRef(0)
@@ -515,13 +521,13 @@ function StepReaction({ onComplete }: { onComplete: (score: number) => void }) {
     <div className="text-center">
       <div className="flex items-center justify-center gap-2 mb-2">
         <Clock size={20} className="text-amber-500" />
-        <h3 className="text-lg font-semibold text-charcoal-800">Step 5 · Reaction Time</h3>
+        <h3 className="text-lg font-semibold text-charcoal-800">{t('Step 5 · Reaction Time')}</h3>
       </div>
       <p className="text-charcoal-400 text-sm mb-8">
-        {phase === 'wait' && 'Click below to start, then click again as fast as you can when it turns green!'}
-        {phase === 'ready' && 'Wait for green...'}
-        {phase === 'go' && 'Click NOW!'}
-        {phase === 'done' && (result > 0 ? `Your time: ${result}ms` : 'Too early! Try to wait for green.')}
+        {phase === 'wait' && t('Click below to start, then click again as fast as you can when it turns green!')}
+        {phase === 'ready' && t('Wait for green...')}
+        {phase === 'go' && t('Click NOW!')}
+        {phase === 'done' && (result > 0 ? t('Your time: {ms}ms', { ms: result }) : t('Too early! Try to wait for green.'))}
       </p>
 
       <button
@@ -533,9 +539,9 @@ function StepReaction({ onComplete }: { onComplete: (score: number) => void }) {
           ${phase === 'done' ? 'bg-sage-400 text-white' : ''}
         `}
       >
-        {phase === 'wait' && 'Start'}
-        {phase === 'ready' && 'Wait...'}
-        {phase === 'go' && 'Click!'}
+        {phase === 'wait' && t('Start')}
+        {phase === 'ready' && t('Wait...')}
+        {phase === 'go' && t('Click!')}
         {phase === 'done' && <CheckCircle2 size={40} />}
       </button>
     </div>
@@ -547,6 +553,7 @@ function StepReaction({ onComplete }: { onComplete: (score: number) => void }) {
 /* ------------------------------------------------------------------ */
 
 export default function Assessment() {
+  const { t } = useTranslation()
   const [step, setStep] = useState(0)
   const [scores, setScores] = useState<number[]>([])
   const [transitioning, setTransitioning] = useState(false)
@@ -625,17 +632,16 @@ export default function Assessment() {
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center mx-auto mb-4 shadow-lg">
             <Brain size={32} className="text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-charcoal-800 mb-2">Let's get to know you</h1>
+          <h1 className="text-2xl font-bold text-charcoal-800 mb-2">{t("Let's get to know you")}</h1>
           <p className="text-charcoal-400 text-sm max-w-md mx-auto">
-            A few gentle questions help us suggest the right games for you.
-            Take your time — there's no right or wrong here.
+            {t("A few gentle questions help us suggest the right games for you. Take your time — there's no right or wrong here.")}
           </p>
         </div>
 
         {/* Progress bar */}
         <div className="mb-10">
           <div className="text-xs text-charcoal-400 text-center mb-2">
-            {step === 0 ? 'Starting with a few simple taps' : step < TOTAL_STEPS - 1 ? 'Almost there - just one more moment' : 'Just one more, then you are done'}
+            {step === 0 ? t('Starting with a few simple taps') : step < TOTAL_STEPS - 1 ? t('Almost there - just one more moment') : t('Just one more, then you are done')}
           </div>
           <div className="w-full h-2 bg-charcoal-100 rounded-full overflow-hidden">
             <div
@@ -662,26 +668,26 @@ export default function Assessment() {
             <div className="w-16 h-16 rounded-full bg-sage-100 flex items-center justify-center mx-auto mb-4">
               <CheckCircle2 size={36} className="text-sage-500" />
             </div>
-            <h2 className="text-xl font-bold text-charcoal-800 mb-2">You're all set!</h2>
+            <h2 className="text-xl font-bold text-charcoal-800 mb-2">{t("You're all set!")}</h2>
             <p className="text-charcoal-400 text-sm mb-6">
-              Thank you — we've saved your preferences and will suggest games that suit you.
+              {t("Thank you — we've saved your preferences and will suggest games that suit you.")}
             </p>
             <div className="flex justify-center gap-3 mb-6">
               {[...Array(5)].map((_, i) => (
                 <span key={i} className="text-3xl" style={{ animationDelay: `${i * 200}ms` }}>{i < Math.round(scores.reduce((a, s) => a + s, 0) / scores.length / 20) ? '🌸' : '🌿'}</span>
               ))}
             </div>
-            <p className="text-charcoal-500 text-sm italic">"Every small step makes a big difference!"</p>
+            <p className="text-charcoal-500 text-sm italic">{t('"Every small step makes a big difference!"')}</p>
             <div className="animate-pulse text-charcoal-400 text-sm flex items-center justify-center gap-2">
               <Sparkles size={14} />
-              Setting up your personalized experience...
+              {t('Setting up your personalized experience...')}
             </div>
           </div>
         )}
 
         {/* Disclaimer */}
         <p className="text-center text-charcoal-300 text-xs mt-6 flex items-center justify-center gap-1">
-          <Heart size={10} /> This is a prototype assessment, not a clinical diagnosis.
+          <Heart size={10} /> {t('This is a prototype assessment, not a clinical diagnosis.')}
         </p>
       </div>
     </div>

@@ -15,7 +15,7 @@ import Navbar from './components/navigation/Navbar'
 import AssistantButton from './components/assistant/AssistantButton'
 import CustomCursor from './components/ui/CustomCursor'
 import AmbientBackground from './components/ui/AmbientBackground'
-import { TranslationProvider } from './hooks/useTranslation'
+import { TranslationProvider, useTranslation } from './hooks/useTranslation'
 import { useGenderTheme } from './hooks/useGenderTheme'
 import { useElderMode } from './hooks/useElderMode'
 import { useDemoData } from './hooks/useDemoData'
@@ -48,6 +48,7 @@ function CaregiverGate({ children }: { children: ReactNode }) {
 }
 
 function SOSButton() {
+  const { t } = useTranslation()
   const handleClick = () => {
     playTapSound()
     if ('vibrate' in navigator) navigator.vibrate([200, 100, 200, 200, 100, 200])
@@ -57,8 +58,8 @@ function SOSButton() {
     <button
       onClick={handleClick}
       className="fixed bottom-28 right-6 z-50 w-12 h-12 rounded-full flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300 shadow-lg"
-      aria-label="Call for help"
-      title="Call for help"
+      aria-label={t('Call for help')}
+      title={t('Call for help')}
     >
       <Phone size={20} style={{ color: '#ef4444' }} />
     </button>
@@ -66,6 +67,7 @@ function SOSButton() {
 }
 
 function AuthenticatedLayout({ children, hideNav }: { children: ReactNode; hideNav?: boolean }) {
+  const { t } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()
   const isGamesPage = location.pathname.startsWith('/games')
@@ -91,7 +93,7 @@ function AuthenticatedLayout({ children, hideNav }: { children: ReactNode; hideN
             border: '1px solid rgba(134,239,172,0.3)',
             boxShadow: '0 4px 16px rgba(134,239,172,0.15), inset 0 1px 0 rgba(255,255,255,0.3)',
           }}
-          aria-label="Go Home"
+          aria-label={t('Go Home')}
         >
           <Home size={18} style={{ color: '#22c55e' }} />
         </button>
@@ -100,7 +102,7 @@ function AuthenticatedLayout({ children, hideNav }: { children: ReactNode; hideN
       {isHome && (
         <div className="fixed bottom-6 left-6 z-40 flex items-center gap-2 text-xs text-charcoal-400 dark:text-white/50 bg-white/40 dark:bg-white/5 backdrop-blur-sm rounded-full px-3 py-1.5 border border-white/40 dark:border-white/10">
           <span className="inline-block w-1.5 h-1.5 rounded-full bg-sage-400 animate-pulse" />
-          You're home
+          {t("You're home")}
         </div>
       )}
     </div>

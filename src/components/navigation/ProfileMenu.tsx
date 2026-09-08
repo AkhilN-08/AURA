@@ -121,7 +121,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                 <div className="flex-1 min-w-0">
                   <p className="text-[17px] font-semibold text-charcoal-900 dark:text-white/95 truncate">{user?.name || 'User'}</p>
                   <p className="text-[13px] text-charcoal-600 dark:text-white/60 truncate flex items-center gap-1.5 mt-0.5">
-                    <Mail size={12} /> {user?.email || 'No email'}
+                    <Mail size={12} /> {user?.email || t('No email')}
                   </p>
                 </div>
               </div>
@@ -363,7 +363,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                 {[
                   { icon: Gamepad2, text: '7 cognitive games' },
                   { icon: Mic, text: 'Voice AI assistant' },
-                  { icon: BarChart3, text: 'Caregiver insights' },
+                  { icon: BarChart3, text: t('Caregiver insights') },
                   { icon: Brain, text: 'AI personalization' },
                 ].map((f, i) => (
                   <div key={i} className="flex items-center gap-2.5 text-[13px] text-charcoal-700 dark:text-white/60">

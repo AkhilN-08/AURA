@@ -3,6 +3,7 @@ import { RotateCcw, Trophy, Clock, Hash } from 'lucide-react'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { calculateDifficulty, getDifficultyConfig } from '../../utils/adaptiveDifficulty'
 import { playMatchChime, playWinChime } from '../../utils/audio'
+import { useTranslation } from '../../hooks/useTranslation'
 import type { GameSession } from '../../data/models'
 
 const ENCOURAGEMENTS = [
@@ -27,6 +28,7 @@ interface SequenceRecallProps {
 }
 
 export default function SequenceRecall({ onComplete }: SequenceRecallProps) {
+  const { t } = useTranslation()
   const { getAverageAccuracy } = useGameProgress()
   const lastAccuracy = useRef(getAverageAccuracy('sequence-recall'))
   const difficulty = calculateDifficulty(lastAccuracy.current || 75)
@@ -93,7 +95,7 @@ export default function SequenceRecall({ onComplete }: SequenceRecallProps) {
       setTotalScore(newTotal)
       setPhase('result')
       playMatchChime()
-      setEncouragement(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)])
+      setEncouragement(t(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)]))
       setTimeout(() => setEncouragement(''), 2000)
 
       if (newRounds >= 3) {
@@ -123,7 +125,7 @@ export default function SequenceRecall({ onComplete }: SequenceRecallProps) {
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2 text-charcoal-500">
             <Hash size={18} />
-            <span className="font-medium">Round {rounds + 1}/3</span>
+            <span className="font-medium">{t('Round {n} of {total}', { n: rounds + 1, total: 3 })}</span>
           </div>
           <div className="flex items-center gap-2 text-charcoal-500">
             <Clock size={18} />
@@ -131,7 +133,7 @@ export default function SequenceRecall({ onComplete }: SequenceRecallProps) {
           </div>
         </div>
         <div className="bg-sage-50 px-4 py-2 rounded-xl">
-          <span className="text-sm font-medium text-sage-600">{difficulty} mode</span>
+          <span className="text-sm font-medium text-sage-600">{t(difficulty)} {t('mode')}</span>
         </div>
       </div>
 
@@ -144,12 +146,12 @@ export default function SequenceRecall({ onComplete }: SequenceRecallProps) {
       {phase === 'ready' && (
         <div className="text-center py-16">
           <div className="text-6xl mb-6">🔢</div>
-          <h3 className="text-2xl font-bold text-charcoal-800 mb-3">Sequence Recall</h3>
+          <h3 className="text-2xl font-bold text-charcoal-800 mb-3">{t('Sequence Recall')}</h3>
           <p className="text-charcoal-400 mb-8 max-w-md mx-auto">
-            Watch the sequence of {config.sequenceLength} items, then reproduce it from memory.
+            {t('Watch the sequence of {n} items, then reproduce it from memory.', { n: config.sequenceLength })}
           </p>
           <button onClick={startGame} className="btn-primary">
-            Start Round 1
+            {t('Start Round 1')}
           </button>
         </div>
       )}
@@ -157,7 +159,7 @@ export default function SequenceRecall({ onComplete }: SequenceRecallProps) {
       {phase === 'showing' && (
         <div className="text-center">
           <p className="text-lg font-medium text-sage-600 mb-8 animate-pulse">
-            Watch the sequence carefully...
+            {t('Watch the sequence carefully...')}
           </p>
           <div className="flex items-center justify-center gap-3 mb-8 flex-wrap">
             {sequence.map((item, i) => (
@@ -181,10 +183,10 @@ export default function SequenceRecall({ onComplete }: SequenceRecallProps) {
       {phase === 'input' && (
         <div className="text-center">
           <p className="text-lg font-medium text-charcoal-700 mb-2">
-            Your turn! Reproduce the sequence.
+            {t('Your turn! Reproduce the sequence.')}
           </p>
           <p className="text-sm text-charcoal-400 mb-6">
-            Select {sequence.length} items in order
+            {t('Select {n} items in order', { n: sequence.length })}
           </p>
 
           {/* User's sequence */}
@@ -205,7 +207,7 @@ export default function SequenceRecall({ onComplete }: SequenceRecallProps) {
 
           {userSequence.length > 0 && (
             <button onClick={handleClear} className="btn-ghost text-sm mb-6">
-              <RotateCcw size={14} className="inline mr-1" /> Clear
+              <RotateCcw size={14} className="inline mr-1" /> {t('Clear')}
             </button>
           )}
 
@@ -227,10 +229,10 @@ export default function SequenceRecall({ onComplete }: SequenceRecallProps) {
       {phase === 'result' && (
         <div className="text-center">
           <div className="card bg-cream-50 mb-8">
-            <p className="text-sm text-charcoal-400 mb-4">Your sequence vs correct sequence:</p>
+            <p className="text-sm text-charcoal-400 mb-4">{t('Your sequence vs correct sequence:')}</p>
             <div className="flex items-center justify-center gap-4 flex-wrap mb-4">
               <div>
-                <p className="text-xs text-charcoal-400 mb-2">Your answer:</p>
+                <p className="text-xs text-charcoal-400 mb-2">{t('Your answer')}:</p>
                 <div className="flex gap-1">
                   {userSequence.map((item, i) => (
                     <div
@@ -246,7 +248,7 @@ export default function SequenceRecall({ onComplete }: SequenceRecallProps) {
             </div>
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <div>
-                <p className="text-xs text-charcoal-400 mb-2">Correct:</p>
+                <p className="text-xs text-charcoal-400 mb-2">{t('Correct answer')}:</p>
                 <div className="flex gap-1">
                   {sequence.map((item, i) => (
                     <div key={i} className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl border border-forest-200 bg-sage-50">
@@ -257,19 +259,19 @@ export default function SequenceRecall({ onComplete }: SequenceRecallProps) {
               </div>
             </div>
             <p className="text-charcoal-600 mt-4">
-              <strong>{correctCount}</strong> of <strong>{sequence.length}</strong> items correct
+              {t('{a} of {b} items correct', { a: correctCount, b: sequence.length })}
             </p>
           </div>
 
           {rounds < 3 ? (
             <button onClick={initRound} className="btn-primary">
-              Next Round ({rounds + 2}/3)
+              {t('Next Round')} ({rounds + 2}/3)
             </button>
           ) : (
             <div className="card bg-sage-50">
               <Trophy className="mx-auto text-amber-500 mb-4" size={48} />
-              <h3 className="text-2xl font-bold text-charcoal-800 mb-2">Game Complete!</h3>
-              <p className="text-charcoal-400">Average accuracy: {Math.round(totalScore / 3)}%</p>
+              <h3 className="text-2xl font-bold text-charcoal-800 mb-2">{t('Game Complete!')}</h3>
+              <p className="text-charcoal-400">{t('Average accuracy')}: {Math.round(totalScore / 3)}%</p>
             </div>
           )}
         </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { Gamepad2, Mic, Users, Pill, Clock, ChevronRight, Volume2, Heart, Sparkles, Brain, Eye, Hash, BookOpen, Grid3X3, Palette, BookMarked, Smile, PauseCircle, Sun, X } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { Gamepad2, Mic, Users, Pill, Clock, ChevronRight, Volume2, Heart, Sparkles, Smile, X } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 import { useTranslation } from '../hooks/useTranslation'
 import { useGameProgress } from '../hooks/useGameProgress'
@@ -147,6 +147,7 @@ function AnalogClock() {
     </div>
   )
 }
+
 function getDailyEncouragement() {
   const d = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000)
   return ENCOURAGEMENTS[d % ENCOURAGEMENTS.length]
@@ -154,13 +155,13 @@ function getDailyEncouragement() {
 
 export default function PatientHome() {
   const { user } = useAuth()
-  const { t } = useTranslation()
+  const { t, language } = useTranslation()
   const navigate = useNavigate()
   const { sessions } = useGameProgress()
-  const [reminders, setReminders] = useLocalStorage<Reminder[]>('aura-reminders', generateDemoReminders())
+  const [reminders] = useLocalStorage<Reminder[]>('aura-reminders', generateDemoReminders())
   const [lastActivity] = useLocalStorage<string | null>('aura-last-activity', null)
-  const [messages, setMessages] = useLocalStorage<FamilyMessage[]>('aura-family-messages', generateDemoMessages())
-  const [photoMessages, setPhotoMessages] = useLocalStorage<FamilyPhotoMessage[]>('aura-family-photos', [])
+  const [messages] = useLocalStorage<FamilyMessage[]>('aura-family-messages', generateDemoMessages())
+  const [photoMessages] = useLocalStorage<FamilyPhotoMessage[]>('aura-family-photos', [])
   const [mood, setMood] = useLocalStorage<{ mood: string; ts: string } | null>('aura-mood', null)
   const [moodOpen, setMoodOpen] = useState(false)
   const [moodChoice, setMoodChoice] = useState('')
@@ -181,7 +182,7 @@ export default function PatientHome() {
   const unreadMessages = useMemo(() => messages.filter(m => !m.read), [messages])
   const unreadPhotos = useMemo(() => photoMessages.filter(m => !m.read), [photoMessages])
   const gamesPlayed = sessions.length
-  const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+  const dateStr = new Date().toLocaleDateString(language === 'hi' ? 'hi-IN' : 'en-US', { weekday: 'long', month: 'long', day: 'numeric' })
 
   // Suggested game grounded in real history, not just weekday rotation
   const suggestedGame = useCallback(() => {
@@ -217,14 +218,16 @@ export default function PatientHome() {
     return { id: pickId, name: picked.label, icon: picked.icon, color: 'from-amber-400 to-amber-600', tip: tips[pickId] || '' }
   }, [sessions])
 
+  const moodLabel = (m: string) => t(m === 'great' ? 'great' : m === 'okay' ? 'okay' : m === 'tired' ? 'tired' : 'confused')
+
   return (
     <div className="min-h-screen px-4 pt-20 pb-8 max-w-2xl mx-auto">
       <div className="home-anim text-center mb-8 pt-4">
         <div className="text-5xl mb-3">{greeting.emoji}</div>
         <h1 className="text-3xl md:text-4xl font-bold text-charcoal-800 dark:text-white mb-1">
-          {greeting.text}, {user?.name || 'Friend'}!
+          {t(greeting.text)}, {user?.name || t('Friend')}!
         </h1>
-        <p className="text-charcoal-400 dark:text-charcoal-500 text-lg">{greeting.sub}</p>
+        <p className="text-charcoal-400 dark:text-charcoal-500 text-lg">{t(greeting.sub)}</p>
         {/* Analog Clock */}
         <div className="flex justify-center mt-4 mb-2">
           <AnalogClock />
@@ -238,40 +241,40 @@ export default function PatientHome() {
       </div>
 
       <div className="home-anim grid grid-cols-1 gap-4 mb-8">
-        <Link to="/games" onClick={() => playTapSound()} className="group flex items-center gap-5 p-6 rounded-3xl bg-gradient-to-br from-sage-50 to-sage-100/80 dark:from-sage-900/30 dark:to-sage-800/20 border border-sage-200/60 dark:border-sage-700/30 hover:shadow-[0_8px_30px_rgba(132,204,22,0.15)] hover:-translate-y-0.5 transition-all duration-500">
+        <button onClick={() => { playTapSound(); navigate('/games') }} className="group flex items-center gap-5 p-6 rounded-3xl bg-gradient-to-br from-sage-50 to-sage-100/80 dark:from-sage-900/30 dark:to-sage-800/20 border border-sage-200/60 dark:border-sage-700/30 hover:shadow-[0_8px_30px_rgba(132,204,22,0.15)] hover:-translate-y-0.5 transition-all duration-500 text-left">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center flex-shrink-0 shadow-[0_4px_20px_rgba(132,204,22,0.3)] group-hover:scale-110 transition-transform duration-300">
             <Gamepad2 size={32} className="text-white" />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-charcoal-800 dark:text-white mb-1">Play a Game</h2>
+            <h2 className="text-xl font-bold text-charcoal-800 dark:text-white mb-1">{t('Play a Game')}</h2>
             <p className="text-charcoal-400 dark:text-charcoal-500 text-sm">
-              {gamesPlayed > 0 ? "You're doing great! Let's play again!" : 'Start with a fun memory game!'}
+              {gamesPlayed > 0 ? t("You're doing great! Let's play again!") : t('Start with a fun memory game!')}
             </p>
           </div>
           <ChevronRight size={24} className="text-sage-400 group-hover:translate-x-1 transition-transform" />
-        </Link>
+        </button>
 
-        <Link to="/assistant" onClick={() => playTapSound()} className="group flex items-center gap-5 p-6 rounded-3xl bg-gradient-to-br from-sky-50 to-blue-100/80 dark:from-sky-900/30 dark:to-blue-800/20 border border-sky-200/60 dark:border-sky-700/30 hover:shadow-[0_8px_30px_rgba(59,130,246,0.15)] hover:-translate-y-0.5 transition-all duration-500">
+        <button onClick={() => { playTapSound(); navigate('/assistant') }} className="group flex items-center gap-5 p-6 rounded-3xl bg-gradient-to-br from-sky-50 to-blue-100/80 dark:from-sky-900/30 dark:to-blue-800/20 border border-sky-200/60 dark:border-sky-700/30 hover:shadow-[0_8px_30px_rgba(59,130,246,0.15)] hover:-translate-y-0.5 transition-all duration-500 text-left">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center flex-shrink-0 shadow-[0_4px_20px_rgba(59,130,246,0.3)] group-hover:scale-110 transition-transform duration-300">
             <Mic size={32} className="text-white" />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-charcoal-800 dark:text-white mb-1">Talk to Me</h2>
-            <p className="text-charcoal-400 dark:text-charcoal-500 text-sm">Ask me anything - set reminders, check the date, or just chat.</p>
+            <h2 className="text-xl font-bold text-charcoal-800 dark:text-white mb-1">{t('Talk to Me')}</h2>
+            <p className="text-charcoal-400 dark:text-charcoal-500 text-sm">{t('Ask me anything - set reminders, check the date, or just chat.')}</p>
           </div>
           <ChevronRight size={24} className="text-sky-400 group-hover:translate-x-1 transition-transform" />
-        </Link>
+        </button>
 
-        <Link to="/family" onClick={() => playTapSound()} className="group flex items-center gap-5 p-6 rounded-3xl bg-gradient-to-br from-rose-50 to-pink-100/80 dark:from-rose-900/30 dark:to-pink-800/20 border border-rose-200/60 dark:border-rose-700/30 hover:shadow-[0_8px_30px_rgba(244,114,182,0.15)] hover:-translate-y-0.5 transition-all duration-500">
+        <button onClick={() => { playTapSound(); navigate('/family') }} className="group flex items-center gap-5 p-6 rounded-3xl bg-gradient-to-br from-rose-50 to-pink-100/80 dark:from-rose-900/30 dark:to-pink-800/20 border border-rose-200/60 dark:border-rose-700/30 hover:shadow-[0_8px_30px_rgba(244,114,182,0.15)] hover:-translate-y-0.5 transition-all duration-500 text-left">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-rose-400 to-pink-600 flex items-center justify-center flex-shrink-0 shadow-[0_4px_20px_rgba(244,114,182,0.3)] group-hover:scale-110 transition-transform duration-300">
             <Users size={32} className="text-white" />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-charcoal-800 dark:text-white mb-1">My Family</h2>
-            <p className="text-charcoal-400 dark:text-charcoal-500 text-sm">See photos and messages from your loved ones.</p>
+            <h2 className="text-xl font-bold text-charcoal-800 dark:text-white mb-1">{t('My Family')}</h2>
+            <p className="text-charcoal-400 dark:text-charcoal-500 text-sm">{t('See photos and messages from your loved ones.')}</p>
           </div>
           <ChevronRight size={24} className="text-rose-400 group-hover:translate-x-1 transition-transform" />
-        </Link>
+        </button>
       </div>
 
       {/* Suggested for you */}
@@ -279,15 +282,15 @@ export default function PatientHome() {
         <button onClick={() => { playTapSound(); navigate('/games') }} className="group block w-full p-5 rounded-3xl bg-gradient-to-br from-white/70 to-white/40 dark:from-white/10 dark:to-white/5 backdrop-blur-xl border border-white/50 dark:border-white/10 hover:shadow-[0_8px_30px_rgba(132,204,22,0.15)] hover:-translate-y-0.5 transition-all duration-500">
           <div className="flex items-center gap-2 mb-3">
             <Sparkles size={14} className="text-amber-500" />
-            <span className="text-xs font-semibold text-amber-600 uppercase tracking-wider">Suggested for you</span>
+            <span className="text-xs font-semibold text-amber-600 uppercase tracking-wider">{t('Suggested for you')}</span>
           </div>
           <div className="flex items-center gap-4">
             <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${suggestedGame().color} flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
               <span className="text-2xl" role="img" aria-label={suggestedGame().name}>{suggestedGame().icon}</span>
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-bold text-charcoal-800 dark:text-white">{suggestedGame().name}</h3>
-              <p className="text-sm text-charcoal-400 dark:text-charcoal-500">{suggestedGame().tip}</p>
+              <h3 className="text-lg font-bold text-charcoal-800 dark:text-white">{t(suggestedGame().name)}</h3>
+              <p className="text-sm text-charcoal-400 dark:text-charcoal-500">{t(suggestedGame().tip)}</p>
             </div>
             <ChevronRight size={22} className="text-sage-400 group-hover:translate-x-1 transition-transform" />
           </div>
@@ -301,39 +304,33 @@ export default function PatientHome() {
               <Volume2 size={20} className="text-amber-500" />
             </div>
             <div>
-              <p className="text-sm font-medium text-charcoal-800 dark:text-white">Continue where you left off</p>
-              <p className="text-xs text-charcoal-400 dark:text-charcoal-500">Pick up right where you stopped</p>
+              <p className="text-sm font-medium text-charcoal-800 dark:text-white">{t('Continue where you left off')}</p>
+              <p className="text-xs text-charcoal-400 dark:text-charcoal-500">{t('Pick up right where you stopped')}</p>
             </div>
           </button>
         </div>
       )}
 
       {pendingReminders.length > 0 && (
-        <div className="home-anim mb-6">              <h3 className="text-sm font-semibold text-charcoal-500 dark:text-charcoal-400 mb-3 uppercase tracking-wider">Reminders</h3>
+        <div className="home-anim mb-6">
+          <h3 className="text-sm font-semibold text-charcoal-500 dark:text-charcoal-400 mb-3 uppercase tracking-wider">{t('Reminders')}</h3>
           <div className="space-y-2">
             {pendingReminders.map(r => (
               <div key={r.id} className="flex items-center gap-3 p-3 rounded-xl bg-white/50 dark:bg-white/5 backdrop-blur-sm border border-white/40 dark:border-white/10">
                 <Pill size={18} className="text-rose-400 flex-shrink-0" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-charcoal-800 dark:text-white">{r.title}</p>
+                  <p className="text-sm font-medium text-charcoal-800 dark:text-white">{t(r.title)}</p>
                   {r.time && <p className="text-xs text-charcoal-400">{r.time}</p>}
                 </div>
               </div>
-            ))}      </div>
-
-      <div className="home-anim text-center mt-8 p-6 rounded-2xl bg-white/30 dark:bg-white/5 backdrop-blur-sm border border-white/30 dark:border-white/10">
-        <Heart size={24} className="text-rose-300 mx-auto mb-2" />
-        <p className="text-charcoal-500 dark:text-charcoal-400 text-sm italic">"{getDailyEncouragement()}"</p>
-      </div>
-    </div>
-  )
-}
-
-
+            ))}
+          </div>
+        </div>
+      )}
 
       {unreadMessages.length > 0 && (
         <div className="home-anim mb-6">
-          <h3 className="text-sm font-semibold text-charcoal-500 dark:text-charcoal-400 mb-3 uppercase tracking-wider">Messages from Family</h3>
+          <h3 className="text-sm font-semibold text-charcoal-500 dark:text-charcoal-400 mb-3 uppercase tracking-wider">{t('Messages from Family')}</h3>
           <div className="space-y-2">
             {unreadMessages.map(msg => (
               <div key={msg.id} className="flex items-center gap-3 p-3 rounded-xl bg-white/50 dark:bg-white/5 backdrop-blur-sm border border-white/40 dark:border-white/10">
@@ -342,25 +339,18 @@ export default function PatientHome() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-charcoal-800 dark:text-white">{msg.from}</p>
-                  <p className="text-xs text-charcoal-400 truncate">{msg.text}</p>
+                  <p className="text-xs text-charcoal-400 truncate">{t(msg.text)}</p>
                 </div>
                 <div className="w-2 h-2 rounded-full bg-rose-400 flex-shrink-0" />
               </div>
-            ))}      </div>
-
-      <div className="home-anim text-center mt-8 p-6 rounded-2xl bg-white/30 dark:bg-white/5 backdrop-blur-sm border border-white/30 dark:border-white/10">
-        <Heart size={24} className="text-rose-300 mx-auto mb-2" />
-        <p className="text-charcoal-500 dark:text-charcoal-400 text-sm italic">"{getDailyEncouragement()}"</p>
-      </div>
-    </div>
-  )
-}
-
-
+            ))}
+          </div>
+        </div>
+      )}
 
       {unreadPhotos.length > 0 && (
         <div className="home-anim mb-6">
-          <h3 className="text-sm font-semibold text-charcoal-500 dark:text-charcoal-400 mb-3 uppercase tracking-wider">Photos from Family</h3>
+          <h3 className="text-sm font-semibold text-charcoal-500 dark:text-charcoal-400 mb-3 uppercase tracking-wider">{t('Photos from Family')}</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {unreadPhotos.map((m) => (
               <div key={m.id} className="group rounded-2xl overflow-hidden bg-white/60 dark:bg-white/5 border border-white/40 dark:border-white/10">
@@ -369,30 +359,23 @@ export default function PatientHome() {
                 </div>
                 <div className="px-3 py-2 border-t border-white/40 dark:border-white/10">
                   <p className="text-xs font-medium text-charcoal-700 dark:text-white truncate">{m.from}</p>
-                  <p className="text-[11px] text-charcoal-400 truncate">{m.caption}</p>
+                  <p className="text-[11px] text-charcoal-400 truncate">{t(m.caption)}</p>
                 </div>
               </div>
-            ))}      </div>
-
-      <div className="home-anim text-center mt-8 p-6 rounded-2xl bg-white/30 dark:bg-white/5 backdrop-blur-sm border border-white/30 dark:border-white/10">
-        <Heart size={24} className="text-rose-300 mx-auto mb-2" />
-        <p className="text-charcoal-500 dark:text-charcoal-400 text-sm italic">"{getDailyEncouragement()}"</p>
-      </div>
-    </div>
-  )
-}
-
-
+            ))}
+          </div>
+        </div>
+      )}
 
       {sessions.length > 0 && (
         <div className="home-anim mb-6 p-4 rounded-2xl bg-white/50 dark:bg-white/5 backdrop-blur-sm border border-white/40 dark:border-white/10">
-          <h3 className="text-sm font-semibold text-charcoal-500 dark:text-charcoal-400 mb-3 uppercase tracking-wider">Your Memory Garden</h3>
+          <h3 className="text-sm font-semibold text-charcoal-500 dark:text-charcoal-400 mb-3 uppercase tracking-wider">{t('Your Memory Garden')}</h3>
           <div className="flex items-center justify-center gap-1">
             {Array.from({ length: Math.min(sessions.length, 7) }).map((_, i) => (
               <span key={i} className="text-2xl">🌸</span>
             ))}
           </div>
-          <p className="text-xs text-charcoal-400 mt-2 text-center">{sessions.length} games played. You're doing great!</p>
+          <p className="text-xs text-charcoal-400 mt-2 text-center">{t('{n} games played. You\'re doing great!', { n: sessions.length })}</p>
         </div>
       )}
 
@@ -403,8 +386,8 @@ export default function PatientHome() {
               <Smile size={22} className="text-sage-500" />
             </div>
             <div>
-              <p className="text-sm font-medium text-charcoal-800 dark:text-white">How are you feeling today?</p>
-              <p className="text-xs text-charcoal-400">A quick check-in to start the day</p>
+              <p className="text-sm font-medium text-charcoal-800 dark:text-white">{t('How are you feeling today?')}</p>
+              <p className="text-xs text-charcoal-400">{t('A quick check-in to start the day')}</p>
             </div>
           </button>
         </div>
@@ -413,8 +396,8 @@ export default function PatientHome() {
       {moodOpen && (
         <div className="home-anim mb-6 p-5 rounded-2xl bg-white/80 dark:bg-white/10 backdrop-blur-xl border border-white/60 dark:border-white/10">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-semibold text-charcoal-700 dark:text-white">How are you feeling today?</h3>
-            <button onClick={() => { setMoodOpen(false); setMoodChoice('') }} className="p-1 rounded-full hover:bg-white/60 text-charcoal-400">
+            <h3 className="text-sm font-semibold text-charcoal-700 dark:text-white">{t('How are you feeling today?')}</h3>
+            <button onClick={() => { setMoodOpen(false); setMoodChoice('') }} className="p-1 rounded-full hover:bg-white/60 text-charcoal-400" aria-label={t('Close')}>
               <X size={16} />
             </button>
           </div>
@@ -426,20 +409,24 @@ export default function PatientHome() {
                   setMood({ mood: m, ts: new Date().toISOString() })
                   setMoodOpen(false)
                   setMoodChoice('')
-                  speakText('Feeling ' + m)
+                  speakText(t('Feeling {m}', { m: moodLabel(m) }), language)
                 }}
                 className={`py-3 rounded-xl border-2 text-sm font-medium capitalize transition-all ${moodChoice === m ? 'bg-sage-100 border-sage-500 scale-105' : 'bg-white/70 border-white/50 hover:bg-white hover:border-sage-300'}`}
               >
-                {m === 'great' ? '😊' : m === 'okay' ? '🙂' : m === 'tired' ? '😴' : '🤔'} {m}
+                {m === 'great' ? '😊' : m === 'okay' ? '🙂' : m === 'tired' ? '😴' : '🤔'} {moodLabel(m)}
               </button>
             ))}
           </div>
-            {mood && (
-            <p className="text-xs text-charcoal-400 mt-3 text-center">We've noted how you're feeling today.</p>
+          {mood && (
+            <p className="text-xs text-charcoal-400 mt-3 text-center">{t("We've noted how you're feeling today.")}</p>
           )}
         </div>
       )}
+
+      <div className="home-anim text-center mt-8 p-6 rounded-2xl bg-white/30 dark:bg-white/5 backdrop-blur-sm border border-white/30 dark:border-white/10">
+        <Heart size={24} className="text-rose-300 mx-auto mb-2" />
+        <p className="text-charcoal-500 dark:text-charcoal-400 text-sm italic">"{t(getDailyEncouragement())}"</p>
+      </div>
     </div>
   )
 }
-

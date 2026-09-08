@@ -3,6 +3,7 @@ import { Clock, CheckCircle2, XCircle, ShieldCheck, Info } from 'lucide-react'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { useMemoryCapsule } from '../../hooks/useMemoryCapsule'
 import { playMatchChime, playWinChime, playTapSound, speakText } from '../../utils/audio'
+import { useTranslation } from '../../hooks/useTranslation'
 import type { GameSession } from '../../data/models'
 
 // ── Identity: timeline / routine visual ─────────────────────────
@@ -43,6 +44,7 @@ interface RDProps {
 }
 
 export default function RoutineDeviation({ onComplete }: RDProps) {
+  const { t, language } = useTranslation()
   const capsule = useMemoryCapsule()
   const { seedDemo } = capsule
   useEffect(() => { seedDemo() }, [seedDemo])
@@ -94,11 +96,11 @@ export default function RoutineDeviation({ onComplete }: RDProps) {
     startedAt.current = Date.now()
     roundStart.current = Date.now()
     setPhase('show')
-    speakText('Here is a normal day. Look at it slowly.')
+    speakText(t('Here is a normal day. Look at it slowly.'), language)
     setTimeout(() => {
       setPhase('question')
       roundStart.current = Date.now()
-      speakText('Now, what is different today?')
+      speakText(t('Now, what is different today?'), language)
     }, 8000)
   }
 
@@ -119,7 +121,7 @@ export default function RoutineDeviation({ onComplete }: RDProps) {
         setRoundIdx(i => i + 1)
         roundStart.current = Date.now()
         setPhase('show')
-        speakText('Here is another day.')
+        speakText(t('Here is another day.'), language)
         setTimeout(() => { setPhase('question'); roundStart.current = Date.now() }, 8000)
       } else {
         finish(next)
@@ -134,27 +136,25 @@ export default function RoutineDeviation({ onComplete }: RDProps) {
         <div className="w-20 h-20 mx-auto rounded-full bg-violet-50 border border-violet-100 flex items-center justify-center mb-5">
           <ShieldCheck size={34} className="text-violet-600" />
         </div>
-        <h3 className="text-2xl font-bold text-stone-800 mb-2">Routine Awareness</h3>
+        <h3 className="text-2xl font-bold text-stone-800 mb-2">{t('Routine Awareness')}</h3>
         <p className="text-stone-500 mb-2 leading-relaxed">
-          This activity uses your saved daily routine to play a gentle "spot the difference" game.
-          Nothing is shared or monitored — it stays on this device.
+          {t('This activity uses your saved daily routine to play a gentle "spot the difference" game. Nothing is shared or monitored — it stays on this device.')}
         </p>
         <p className="text-xs text-stone-400 mb-8">
-          You can switch Routine Awareness off at any time, and this activity will use a friendly
-          demo routine instead.
+          {t('You can switch Routine Awareness off at any time, and this activity will use a friendly demo routine instead.')}
         </p>
         <div className="flex items-center justify-center gap-3">
           <button
             onClick={() => { playTapSound(); setConsent(true); startGame() }}
             className="px-8 py-4 rounded-2xl bg-violet-600 hover:bg-violet-700 text-white font-semibold transition-all hover:-translate-y-0.5 shadow-lg shadow-violet-200"
           >
-            Use My Routine
+            {t('Use My Routine')}
           </button>
           <button
             onClick={() => { playTapSound(); setConsent(false); startGame() }}
             className="px-8 py-4 rounded-2xl border-2 border-stone-200 text-stone-600 font-semibold hover:bg-stone-50 transition-all"
           >
-            Use Demo Routine
+            {t('Use Demo Routine')}
           </button>
         </div>
       </div>
@@ -170,23 +170,23 @@ export default function RoutineDeviation({ onComplete }: RDProps) {
       <div className="animate-fade-in max-w-lg mx-auto">
         <div className="text-center mb-8">
           <Clock size={44} className="mx-auto text-violet-500 mb-2" />
-          <h3 className="text-2xl font-bold text-stone-800">Well Spotted!</h3>
+          <h3 className="text-2xl font-bold text-stone-800">{t('Well Spotted!')}</h3>
         </div>
         <div className="grid grid-cols-3 gap-3 mb-6 text-center">
-          <div className="bg-violet-50 rounded-2xl p-4"><p className="text-3xl font-bold text-violet-600">{accuracy}%</p><p className="text-xs text-stone-500">Deviation Detection</p></div>
-          <div className="bg-violet-50 rounded-2xl p-4"><p className="text-3xl font-bold text-violet-600">{avgTime}s</p><p className="text-xs text-stone-500">Response Time</p></div>
-          <div className="bg-violet-50 rounded-2xl p-4"><p className="text-3xl font-bold text-violet-600">{correct}/{answers.length}</p><p className="text-xs text-stone-500">Routine Recall</p></div>
+          <div className="bg-violet-50 rounded-2xl p-4"><p className="text-3xl font-bold text-violet-600">{accuracy}%</p><p className="text-xs text-stone-500">{t('Deviation Detection')}</p></div>
+          <div className="bg-violet-50 rounded-2xl p-4"><p className="text-3xl font-bold text-violet-600">{avgTime}s</p><p className="text-xs text-stone-500">{t('Response Time')}</p></div>
+          <div className="bg-violet-50 rounded-2xl p-4"><p className="text-3xl font-bold text-violet-600">{correct}/{answers.length}</p><p className="text-xs text-stone-500">{t('Routine Recall')}</p></div>
         </div>
         <div className="bg-violet-50 border border-violet-200 rounded-2xl p-5 text-center">
-          <p className="text-xs font-semibold text-violet-700 uppercase tracking-widest mb-2">AURA Insight</p>
+          <p className="text-xs font-semibold text-violet-700 uppercase tracking-widest mb-2">{t('AURA Insight')}</p>
           <p className="text-stone-700 text-lg" style={{ fontFamily: 'Georgia, serif' }}>
             "{accuracy >= 70
-              ? 'You noticed the small changes in your day right away — your routine is familiar and strong.'
-              : 'AURA noticed a difference from the saved routine. Looking at your day together, one step at a time, keeps it familiar.'}"
+              ? t('You noticed the small changes in your day right away — your routine is familiar and strong.')
+              : t('AURA noticed a difference from the saved routine. Looking at your day together, one step at a time, keeps it familiar.')}"
           </p>
           <p className="text-xs text-stone-400 mt-3">
             <Info size={12} className="inline mr-1" />
-            Routine support only — this is not a medical monitoring or assessment system.
+            {t('Routine support only — this is not a medical monitoring or assessment system.')}
           </p>
         </div>
       </div>
@@ -203,8 +203,8 @@ export default function RoutineDeviation({ onComplete }: RDProps) {
           {wasCorrect
             ? <CheckCircle2 size={40} className="mx-auto text-green-500 mb-3" />
             : <XCircle size={40} className="mx-auto text-amber-500 mb-3" />}
-          <p className="text-xl font-bold text-stone-800 mb-2">{wasCorrect ? 'You spotted it!' : 'Here is what changed'}</p>
-          <p className="text-stone-600">{r.changed}</p>
+          <p className="text-xl font-bold text-stone-800 mb-2">{wasCorrect ? t('You spotted it!') : t('Here is what changed')}</p>
+          <p className="text-stone-600">{t(r.changed)}</p>
         </div>
       </div>
     )
@@ -224,8 +224,8 @@ export default function RoutineDeviation({ onComplete }: RDProps) {
     const shuffled = [...options].sort(() => Math.random() - 0.4)
     return (
       <div className="animate-fade-in max-w-2xl mx-auto">
-        <p className="text-center text-xl font-bold text-stone-800 mb-2" style={{ fontFamily: 'Georgia, serif' }}>What is different today?</p>
-        <p className="text-center text-stone-500 text-sm mb-6">Tap the part of the day that changed.</p>
+        <p className="text-center text-xl font-bold text-stone-800 mb-2" style={{ fontFamily: 'Georgia, serif' }}>{t('What is different today?')}</p>
+        <p className="text-center text-stone-500 text-sm mb-6">{t('Tap the part of the day that changed.')}</p>
         <div className="space-y-3">
           {shuffled.map(({ step, isChanged }) => {
             const reveal = selected !== null
@@ -243,7 +243,7 @@ export default function RoutineDeviation({ onComplete }: RDProps) {
               >
                 <span className="text-3xl">{step.emoji}</span>
                 <div className="flex-1">
-                  <p className="font-semibold text-stone-800 text-lg">{step.label}</p>
+                  <p className="font-semibold text-stone-800 text-lg">{t(step.label)}</p>
                   {step.time && <p className="text-sm text-stone-400">{step.time}</p>}
                 </div>
                 {reveal && isChanged && <CheckCircle2 size={22} className="text-violet-500" />}
@@ -259,11 +259,11 @@ export default function RoutineDeviation({ onComplete }: RDProps) {
   // ── Show phase: normal vs today timelines side by side ──
   return (
     <div className="animate-fade-in max-w-3xl mx-auto">
-      <p className="text-center text-stone-500 mb-6">Study the normal day. "Today" hides one small change.</p>
+      <p className="text-center text-stone-500 mb-6">{t('Study the normal day. "Today" hides one small change.')}</p>
       <div className="grid md:grid-cols-2 gap-6">
         <div className="bg-white border-2 border-stone-200 rounded-3xl p-5">
           <p className="text-xs font-bold uppercase tracking-widest text-stone-400 mb-4 flex items-center gap-2">
-            <Clock size={13} /> Normal Day
+            <Clock size={13} /> {t('Normal Day')}
           </p>
           <div className="space-y-0">
             {r.normal.map((step, i) => (
@@ -275,7 +275,7 @@ export default function RoutineDeviation({ onComplete }: RDProps) {
                 <div className="flex items-center gap-3 py-1.5">
                   <span className="text-2xl">{step.emoji}</span>
                   <div>
-                    <p className="font-semibold text-stone-700">{step.label}</p>
+                    <p className="font-semibold text-stone-700">{t(step.label)}</p>
                     {step.time && <p className="text-xs text-stone-400">{step.time}</p>}
                   </div>
                 </div>
@@ -285,7 +285,7 @@ export default function RoutineDeviation({ onComplete }: RDProps) {
         </div>
         <div className="bg-violet-50/50 border-2 border-violet-200 rounded-3xl p-5">
           <p className="text-xs font-bold uppercase tracking-widest text-violet-500 mb-4 flex items-center gap-2">
-            <Clock size={13} /> Today
+            <Clock size={13} /> {t('Today')}
           </p>
           <div className="space-y-0">
             {r.today.map((step, i) => (
@@ -297,7 +297,7 @@ export default function RoutineDeviation({ onComplete }: RDProps) {
                 <div className="flex items-center gap-3 py-1.5">
                   <span className="text-2xl">{step.emoji}</span>
                   <div>
-                    <p className="font-semibold text-stone-700">{step.label}</p>
+                    <p className="font-semibold text-stone-700">{t(step.label)}</p>
                     {step.time && <p className="text-xs text-stone-400">{step.time}</p>}
                   </div>
                 </div>

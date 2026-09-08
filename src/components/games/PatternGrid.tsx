@@ -3,6 +3,7 @@ import { RotateCcw, Trophy, Clock, Grid3X3 } from 'lucide-react'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { calculateDifficulty, getDifficultyConfig } from '../../utils/adaptiveDifficulty'
 import { playMatchChime, playWinChime } from '../../utils/audio'
+import { useTranslation } from '../../hooks/useTranslation'
 import type { GameSession } from '../../data/models'
 
 const ENCOURAGEMENTS = [
@@ -24,6 +25,7 @@ interface PatternGridProps {
 }
 
 export default function PatternGrid({ onComplete }: PatternGridProps) {
+  const { t } = useTranslation()
   const { getAverageAccuracy } = useGameProgress()
   const lastAccuracy = useRef(getAverageAccuracy('pattern-grid'))
   const difficulty = calculateDifficulty(lastAccuracy.current || 75)
@@ -80,7 +82,7 @@ export default function PatternGrid({ onComplete }: PatternGridProps) {
     const accuracy = Math.round((correct / numHighlights) * 100)
     setPhase('result')
     playMatchChime()
-    setEncouragement(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)])
+    setEncouragement(t(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)]))
     setTimeout(() => setEncouragement(''), 2000)
 
     const newTotal = totalScore + accuracy
@@ -113,11 +115,11 @@ export default function PatternGrid({ onComplete }: PatternGridProps) {
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2 text-charcoal-500">
             <Grid3X3 size={18} />
-            <span className="font-medium">Round {rounds + 1}/3</span>
+            <span className="font-medium">{t('Round {n} of {total}', { n: rounds + 1, total: 3 })}</span>
           </div>
           <div className="flex items-center gap-2 text-charcoal-500">
             <RotateCcw size={18} />
-            <span className="font-medium">{userSelected.size}/{numHighlights} selected</span>
+            <span className="font-medium">{t('{a} of {b} selected', { a: userSelected.size, b: numHighlights })}</span>
           </div>
           <div className="flex items-center gap-2 text-charcoal-500">
             <Clock size={18} />
@@ -125,7 +127,7 @@ export default function PatternGrid({ onComplete }: PatternGridProps) {
           </div>
         </div>
         <div className="bg-purple-50 px-4 py-2 rounded-xl">
-          <span className="text-sm font-medium text-purple-600">{difficulty} mode</span>
+          <span className="text-sm font-medium text-purple-600">{t(difficulty)} {t('mode')}</span>
         </div>
       </div>
 
@@ -138,18 +140,18 @@ export default function PatternGrid({ onComplete }: PatternGridProps) {
       {phase === 'ready' && (
         <div className="text-center py-16">
           <div className="text-6xl mb-6">🔲</div>
-          <h3 className="text-2xl font-bold text-charcoal-800 mb-3">Pattern Grid</h3>
+          <h3 className="text-2xl font-bold text-charcoal-800 mb-3">{t('Pattern Grid')}</h3>
           <p className="text-charcoal-400 mb-8 max-w-md mx-auto">
-            Watch as {numHighlights} cells light up in sequence. Then tap them from memory!
+            {t('Watch as {n} cells light up in sequence. Then tap them from memory!', { n: numHighlights })}
           </p>
-          <button onClick={startGame} className="btn-primary">Start Round 1</button>
+          <button onClick={startGame} className="btn-primary">{t('Start Round 1')}</button>
         </div>
       )}
 
       {phase === 'showing' && (
         <div className="text-center">
           <p className="text-lg font-medium text-purple-600 mb-8 animate-pulse">
-            Watch the pattern... {showIndex + 1}/{numHighlights}
+            {t('Watch the pattern...')} {showIndex + 1}/{numHighlights}
           </p>
           <div
             className="grid gap-3 max-w-sm mx-auto"
@@ -177,7 +179,7 @@ export default function PatternGrid({ onComplete }: PatternGridProps) {
       {(phase === 'input' || phase === 'result') && (
         <div className="text-center">
           <p className="text-lg font-medium text-charcoal-700 mb-8">
-            {phase === 'input' ? `Tap the ${numHighlights} cells you remember` : 'Checking your pattern...'}
+            {phase === 'input' ? t('Tap the {n} cells you remember', { n: numHighlights }) : t('Checking your pattern...')}
           </p>
           <div
             className="grid gap-3 max-w-sm mx-auto"
@@ -211,13 +213,13 @@ export default function PatternGrid({ onComplete }: PatternGridProps) {
               disabled={userSelected.size < numHighlights}
               className="btn-primary mt-8 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Check Pattern
+              {t('Check Pattern')}
             </button>
           )}
           {phase === 'result' && (
             <div className="mt-6">
               <p className="text-charcoal-600">
-                You found <strong>{correctCount}</strong> of <strong>{numHighlights}</strong> cells correctly!
+                {t('You found {a} of {b} cells correctly!', { a: correctCount, b: numHighlights })}
               </p>
             </div>
           )}
@@ -226,7 +228,7 @@ export default function PatternGrid({ onComplete }: PatternGridProps) {
 
       {phase === 'result' && rounds < 3 && (
         <div className="text-center mt-6">
-          <button onClick={initRound} className="btn-primary">Next Round ({rounds + 2}/3)</button>
+          <button onClick={initRound} className="btn-primary">{t('Next Round')} ({rounds + 2}/3)</button>
         </div>
       )}
 
@@ -234,9 +236,9 @@ export default function PatternGrid({ onComplete }: PatternGridProps) {
         <div className="text-center mt-8 animate-fade-in">
           <div className="card bg-purple-50 border-purple-200">
             <Trophy className="mx-auto text-amber-500 mb-4" size={48} />
-            <h3 className="text-2xl font-bold text-charcoal-800 mb-2">Great Pattern Memory!</h3>
-            <p className="text-charcoal-400 mb-4">Average accuracy: {Math.round(totalScore / 3)}%</p>
-            <p className="text-sm text-charcoal-400">Pattern recognition strengthens visual-spatial working memory.</p>
+            <h3 className="text-2xl font-bold text-charcoal-800 mb-2">{t('Great Pattern Memory!')}</h3>
+            <p className="text-charcoal-400 mb-4">{t('Average accuracy')}: {Math.round(totalScore / 3)}%</p>
+            <p className="text-sm text-charcoal-400">{t('Pattern recognition strengthens visual-spatial working memory.')}</p>
           </div>
         </div>
       )}

@@ -206,7 +206,7 @@ export default function Login() {
                   <label className="text-sm font-medium text-charcoal-700 dark:text-charcoal-200 mb-1.5 block">Your Name</label>
                   <div className="relative">
                     <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-charcoal-300 dark:text-charcoal-500" />
-                    <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="What should we call you?"
+                    <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder={t('What should we call you?')}
                       className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white/60 dark:bg-white/10 backdrop-blur-xl border border-white/50 dark:border-white/10 text-charcoal-800 dark:text-white placeholder-charcoal-300 dark:placeholder-charcoal-600 focus:outline-none focus:ring-2 focus:ring-sage-400 focus:border-transparent transition-all shadow-[0_2px_12px_rgba(0,0,0,0.04)]" required />
                   </div>
                 </div>

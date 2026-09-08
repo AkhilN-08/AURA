@@ -3,6 +3,7 @@ import { Trophy, RotateCcw, Volume2 } from 'lucide-react'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { calculateDifficulty, getDifficultyConfig } from '../../utils/adaptiveDifficulty'
 import { playMatchChime, playWinChime, playTapSound, speakText } from '../../utils/audio'
+import { useTranslation } from '../../hooks/useTranslation'
 import type { GameSession } from '../../data/models'
 
 interface Card {
@@ -30,6 +31,7 @@ interface MemoryMatchProps {
 }
 
 export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
+  const { t, language } = useTranslation()
   const { getAverageAccuracy } = useGameProgress()
   const lastAccuracy = useRef(getAverageAccuracy('memory-match'))
   const difficulty = calculateDifficulty(lastAccuracy.current || 75)
@@ -65,7 +67,7 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
     initGame()
     localStorage.setItem("aura-last-activity", "/games")
     // Read instructions aloud
-    speakText('Find matching pairs of cards. Tap a card to flip it over, then find its match!')
+    speakText(t('Find matching pairs of cards. Tap a card to flip it over, then find its match!'), language)
   }, [initGame])
 
   useEffect(() => {
@@ -111,7 +113,7 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
           ))
           setMatches(m => m + 1)
           playMatchChime()
-          setEncouragement(MATCH_MESSAGES[Math.floor(Math.random() * MATCH_MESSAGES.length)])
+          setEncouragement(t(MATCH_MESSAGES[Math.floor(Math.random() * MATCH_MESSAGES.length)]))
           setTimeout(() => setEncouragement(''), 1200)
           setFlippedIds([])
           setLockBoard(false)
@@ -136,7 +138,7 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
           <p className="text-xl font-bold text-sage-600 animate-bounce">{encouragement}</p>
         )}
         {!gameOver && !encouragement && (
-          <p className="text-charcoal-400 text-sm">Tap a card to find a pair!</p>
+          <p className="text-charcoal-400 text-sm">{t('Tap a card to find a pair!')}</p>
         )}
       </div>
 
@@ -171,9 +173,9 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
         <div className="mt-8 text-center animate-fade-in">
           <div className="card bg-sage-50 border-forest-200">
             <Trophy className="mx-auto text-amber-500 mb-4" size={48} />
-            <h3 className="text-2xl font-bold text-charcoal-800 mb-2">Beautiful! Your memory is wonderful today! 🌸</h3>
+            <h3 className="text-2xl font-bold text-charcoal-800 mb-2">{t('Beautiful! Your memory is wonderful today!')} 🌸</h3>
             <p className="text-charcoal-400 mb-6">
-              You found all {config.pairs} pairs! Keep it up — your mind is getting stronger every day.
+              {t('You found all {n} pairs! Keep it up — your mind is getting stronger every day.', { n: config.pairs })}
             </p>
             <div className="flex items-center justify-center gap-3 mb-6">
               {[...Array(3)].map((_, i) => (
@@ -181,7 +183,7 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
               ))}
             </div>
             <button onClick={() => { playTapSound(); initGame() }} className="btn-primary flex items-center gap-2 mx-auto">
-              <RotateCcw size={20} /> Play Again
+              <RotateCcw size={20} /> {t('Play Again')}
             </button>
           </div>
         </div>

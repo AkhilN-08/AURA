@@ -4,6 +4,7 @@ import { GAME_OBJECTS } from '../../data/games'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { calculateDifficulty, getDifficultyConfig } from '../../utils/adaptiveDifficulty'
 import { playMatchChime, playWinChime, playTapSound, speakText } from '../../utils/audio'
+import { useTranslation } from '../../hooks/useTranslation'
 import type { GameSession } from '../../data/models'
 
 const ENCOURAGEMENTS = [
@@ -26,6 +27,7 @@ interface ObjectRecallProps {
 }
 
 export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
+  const { t, language } = useTranslation()
   const { getAverageAccuracy } = useGameProgress()
   const lastAccuracy = useRef(getAverageAccuracy('object-recall'))
   const difficulty = calculateDifficulty(lastAccuracy.current || 75)
@@ -63,7 +65,7 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
     setTotalScore(0)
     setElapsed(0)
     initRound()
-    speakText('Study these objects carefully. Remember as many as you can!')
+    speakText(t('Study these objects carefully. Remember as many as you can!'), language)
   }
 
   useEffect(() => {
@@ -90,9 +92,7 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
     setCorrectIds([...correct, ...missed.map(m => m.id)])
     setPhase('result')
     playMatchChime()
-    setEncouragement(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)])
-    setTimeout(() => setEncouragement(''), 2000)
-    setEncouragement(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)])
+    setEncouragement(t(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)]))
     setTimeout(() => setEncouragement(''), 2000)
 
     const accuracy = Math.round((correct.length / targetObjects.length) * 100)
@@ -122,7 +122,7 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2 text-charcoal-500">
             <Eye size={18} />
-            <span className="font-medium">Round {rounds + 1}/3</span>
+            <span className="font-medium">{t('Round {n} of {total}', { n: rounds + 1, total: 3 })}</span>
           </div>
           <div className="flex items-center gap-2 text-charcoal-500">
             <Clock size={18} />
@@ -130,7 +130,7 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
           </div>
         </div>
         <div className="bg-sage-50 px-4 py-2 rounded-xl">
-          <span className="text-sm font-medium text-sage-600">{difficulty} mode</span>
+          <span className="text-sm font-medium text-sage-600">{t(difficulty)} {t('mode')}</span>
         </div>
       </div>
 
@@ -140,28 +140,19 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
           <p className="text-xl font-bold text-sage-600 animate-bounce">{encouragement}</p>
         )}
         {!encouragement && phase !== 'ready' && phase !== 'result' && (
-          <p className="text-charcoal-400 text-sm">You're doing great!</p>
-        )}
-      </div>
-
-      <div className="text-center mb-6 h-8">
-        {encouragement && (
-          <p className="text-xl font-bold text-sage-600 animate-bounce">{encouragement}</p>
-        )}
-        {!encouragement && phase !== 'ready' && phase !== 'result' && (
-          <p className="text-charcoal-400 text-sm">You're doing great!</p>
+          <p className="text-charcoal-400 text-sm">{t("You're doing great!")}</p>
         )}
       </div>
 
       {phase === 'ready' && (
         <div className="text-center py-16">
           <div className="text-6xl mb-6">👁️</div>
-          <h3 className="text-2xl font-bold text-charcoal-800 mb-3">Remember the Objects</h3>
+          <h3 className="text-2xl font-bold text-charcoal-800 mb-3">{t('Remember the Objects')}</h3>
           <p className="text-charcoal-400 mb-8 max-w-md mx-auto">
-            You'll see {config.objects} objects for a moment. Then tell us which ones you remember.
+            {t("You'll see {n} objects for a moment. Then tell us which ones you remember.", { n: config.objects })}
           </p>
           <button onClick={() => { playTapSound(); startGame() }} className="btn-primary">
-            Start Round 1
+            {t('Start Round 1')}
           </button>
         </div>
       )}
@@ -169,13 +160,13 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
       {phase === 'showing' && (
         <div className="text-center">
           <p className="text-lg font-medium text-sage-600 mb-8 animate-pulse">
-            Remember these objects...
+            {t('Remember these objects...')}
           </p>
           <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
             {targetObjects.map((obj) => (
               <div key={obj.id} className="card text-center py-6 animate-fade-in">
                 <div className="text-4xl mb-2">{obj.emoji}</div>
-                <p className="text-sm text-charcoal-500">{obj.label}</p>
+                <p className="text-sm text-charcoal-500">{t(obj.label)}</p>
               </div>
             ))}
           </div>
@@ -185,10 +176,10 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
       {phase === 'recall' && (
         <div className="text-center">
           <p className="text-lg font-medium text-charcoal-700 mb-2">
-            Which objects did you see?
+            {t('Which objects did you see?')}
           </p>
           <p className="text-sm text-charcoal-400 mb-8">
-            Select {config.objects} objects you remember
+            {t('Select {n} objects you remember', { n: config.objects })}
           </p>
           <div className="grid grid-cols-3 md:grid-cols-4 gap-4 mb-8">
             {allObjects.map((obj) => {
@@ -202,7 +193,7 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-400`}
                 >
                   <div className="text-4xl mb-2">{obj.emoji}</div>
-                  <p className="text-sm text-charcoal-500">{obj.label}</p>
+                  <p className="text-sm text-charcoal-500">{t(obj.label)}</p>
                 </button>
               )
             })}
@@ -212,14 +203,14 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
             disabled={selectedIds.length === 0}
             className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Check My Answer
+            {t('Check My Answer')}
           </button>
         </div>
       )}
 
       {phase === 'result' && (
         <div className="text-center">
-          <p className="text-lg font-medium text-charcoal-700 mb-8">Here's what you remembered:</p>
+          <p className="text-lg font-medium text-charcoal-700 mb-8">{t("Here's what you remembered:")}</p>
           <div className="grid grid-cols-3 md:grid-cols-4 gap-4 mb-8">
             {allObjects.map((obj) => {
               const wasTarget = targetObjects.find(t => t.id === obj.id)
@@ -232,29 +223,28 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
               return (
                 <div key={obj.id} className={`card text-center py-6 border-2 ${borderColor}`}>
                   <div className="text-4xl mb-2">{obj.emoji}</div>
-                  <p className="text-sm text-charcoal-500">{obj.label}</p>
-                  {wasTarget && wasSelected && <p className="text-xs text-green-600 mt-1">✓ Correct</p>}
-                  {wasTarget && !wasSelected && <p className="text-xs text-amber-600 mt-1">Missed</p>}
-                  {!wasTarget && wasSelected && <p className="text-xs text-red-500 mt-1">Not shown</p>}
+                  <p className="text-sm text-charcoal-500">{t(obj.label)}</p>
+                  {wasTarget && wasSelected && <p className="text-xs text-green-600 mt-1">✓ {t('Correct')}</p>}
+                  {wasTarget && !wasSelected && <p className="text-xs text-amber-600 mt-1">{t('Missed')}</p>}
+                  {!wasTarget && wasSelected && <p className="text-xs text-red-500 mt-1">{t('Not shown')}</p>}
                 </div>
               )
             })}
           </div>
           <div className="card bg-cream-50 mb-8">
             <p className="text-charcoal-600">
-              You recalled <strong>{targetObjects.filter(t => selectedIds.includes(t.id)).length}</strong> of{' '}
-              <strong>{targetObjects.length}</strong> objects correctly.
+              {t('You recalled {a} of {b} objects correctly.', { a: targetObjects.filter(tt => selectedIds.includes(tt.id)).length, b: targetObjects.length })}
             </p>
           </div>
           {rounds < 3 ? (
             <button onClick={initRound} className="btn-primary">
-              Next Round ({rounds + 2}/3)
+              {t('Next Round')} ({rounds + 2}/3)
             </button>
           ) : (
             <div className="card bg-sage-50">
               <Trophy className="mx-auto text-amber-500 mb-4" size={48} />
-              <h3 className="text-2xl font-bold text-charcoal-800 mb-2">Game Complete!</h3>
-              <p className="text-charcoal-400">Average accuracy: {Math.round(totalScore / 3)}%</p>
+              <h3 className="text-2xl font-bold text-charcoal-800 mb-2">{t('Game Complete!')}</h3>
+              <p className="text-charcoal-400">{t('Average accuracy')}: {Math.round(totalScore / 3)}%</p>
             </div>
           )}
         </div>

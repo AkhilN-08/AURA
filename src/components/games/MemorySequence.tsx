@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { Volume2, Eye, Ear, Bell, Hand, Music, Drum, RotateCcw, CheckCircle2, XCircle } from 'lucide-react'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { playMatchChime, playWinChime, playTapSound, speakText } from '../../utils/audio'
+import { useTranslation } from '../../hooks/useTranslation'
 import type { GameSession } from '../../data/models'
 
 // ── Identity: large interactive controls, extremely simple ──────
@@ -41,6 +42,7 @@ interface MSProps {
 }
 
 export default function MemorySequence({ onComplete }: MSProps) {
+  const { t, language } = useTranslation()
   const { addSession } = useGameProgress()
   const startedAt = useRef(Date.now())
   const [mode, setMode] = useState<Mode | null>(null)
@@ -60,7 +62,7 @@ export default function MemorySequence({ onComplete }: MSProps) {
     setMode(m)
     startedAt.current = Date.now()
     setPhase('ready')
-    speakText(m === 'sound' ? 'Listen to the sounds. Then tap them back in order.' : 'Watch and listen. Then tap the sequence back.')
+    speakText(m === 'sound' ? t('Listen to the sounds. Then tap them back in order.') : t('Watch and listen. Then tap the sequence back.'), language)
   }
 
   const initRound = useCallback(() => {
@@ -150,25 +152,25 @@ export default function MemorySequence({ onComplete }: MSProps) {
   if (phase === 'done') {
     const correct = rounds.filter(r => r.correct).length
     const accuracy = Math.round((correct / rounds.length) * 100)
-    const modeLabel = mode === 'sound' ? 'Sound' : mode === 'visual' ? 'Visual' : 'Combined'
+    const modeLabel = mode === 'sound' ? t('Sound') : mode === 'visual' ? t('Visual') : t('Combined')
     return (
       <div className="animate-fade-in max-w-md mx-auto text-center">
         <Ear size={44} className="mx-auto text-sky-500 mb-3" />
-        <h3 className="text-2xl font-bold text-stone-800 mb-1">Listening Complete</h3>
-        <p className="text-stone-500 mb-6">{modeLabel} mode</p>
+        <h3 className="text-2xl font-bold text-stone-800 mb-1">{t('Listening Complete')}</h3>
+        <p className="text-stone-500 mb-6">{modeLabel} {t('mode')}</p>
         <div className="grid grid-cols-3 gap-3 mb-6">
-          <div className="bg-sky-50 rounded-2xl p-4"><p className="text-2xl font-bold text-sky-600">{accuracy}%</p><p className="text-xs text-stone-500">Sequence Accuracy</p></div>
-          <div className="bg-sky-50 rounded-2xl p-4"><p className="text-2xl font-bold text-sky-600">{longest}</p><p className="text-xs text-stone-500">Longest Sequence</p></div>
-          <div className="bg-sky-50 rounded-2xl p-4"><p className="text-2xl font-bold text-sky-600">{correct}/{rounds.length}</p><p className="text-xs text-stone-500">Rounds Won</p></div>
+          <div className="bg-sky-50 rounded-2xl p-4"><p className="text-2xl font-bold text-sky-600">{accuracy}%</p><p className="text-xs text-stone-500">{t('Sequence Accuracy')}</p></div>
+          <div className="bg-sky-50 rounded-2xl p-4"><p className="text-2xl font-bold text-sky-600">{longest}</p><p className="text-xs text-stone-500">{t('Longest Sequence')}</p></div>
+          <div className="bg-sky-50 rounded-2xl p-4"><p className="text-2xl font-bold text-sky-600">{correct}/{rounds.length}</p><p className="text-xs text-stone-500">{t('Rounds Won')}</p></div>
         </div>
         <div className="bg-sky-50 border border-sky-200 rounded-2xl p-5 text-center">
-          <p className="text-xs font-semibold text-sky-700 uppercase tracking-widest mb-2">AURA Insight</p>
+          <p className="text-xs font-semibold text-sky-700 uppercase tracking-widest mb-2">{t('AURA Insight')}</p>
           <p className="text-stone-700 text-lg" style={{ fontFamily: 'Georgia, serif' }}>
             "{longest >= 4
-              ? 'Your ears and eyes worked beautifully together.'
-              : 'Each sound you repeat keeps your listening strong and steady.'}"
+              ? t('Your ears and eyes worked beautifully together.')
+              : t('Each sound you repeat keeps your listening strong and steady.')}"
           </p>
-          <p className="text-xs text-stone-400 mt-3">A performance insight — not a medical assessment.</p>
+          <p className="text-xs text-stone-400 mt-3">{t('A performance insight — not a medical assessment.')}</p>
         </div>
       </div>
     )
@@ -177,15 +179,15 @@ export default function MemorySequence({ onComplete }: MSProps) {
   // ── Mode picker ──
   if (phase === 'mode') {
     const modes: { id: Mode; label: string; desc: string; icon: typeof Eye }[] = [
-      { id: 'visual', label: 'Watch', desc: 'See the lights only', icon: Eye },
-      { id: 'sound', label: 'Listen', desc: 'Hear the sounds only', icon: Volume2 },
-      { id: 'combined', label: 'Watch & Listen', desc: 'Both together', icon: Ear },
+      { id: 'visual', label: t('Watch'), desc: t('See the lights only'), icon: Eye },
+      { id: 'sound', label: t('Listen'), desc: t('Hear the sounds only'), icon: Volume2 },
+      { id: 'combined', label: t('Watch & Listen'), desc: t('Both together'), icon: Ear },
     ]
     return (
       <div className="text-center py-8">
-        <h3 className="text-2xl font-bold text-stone-800 mb-2">Memory Sequence</h3>
+        <h3 className="text-2xl font-bold text-stone-800 mb-2">{t('Memory Sequence')}</h3>
         <p className="text-stone-500 max-w-md mx-auto mb-8">
-          A gentle listening game. How would you like to play?
+          {t('A gentle listening game. How would you like to play?')}
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-lg mx-auto">
           {modes.map(m => (
@@ -211,10 +213,10 @@ export default function MemorySequence({ onComplete }: MSProps) {
     return (
       <div className="text-center py-12">
         <div className="text-6xl mb-5">🔔</div>
-        <p className="text-xl font-semibold text-stone-700 mb-2">Round 1 — {seqLength} sounds</p>
-        <p className="text-stone-500 mb-8">Get comfortable. The sequence will play once.</p>
+        <p className="text-xl font-semibold text-stone-700 mb-2">{t('Round {n} — {m} sounds', { n: 1, m: seqLength })}</p>
+        <p className="text-stone-500 mb-8">{t('Get comfortable. The sequence will play once.')}</p>
         <button onClick={beginRound} className="px-10 py-4 rounded-2xl bg-sky-500 hover:bg-sky-600 text-white text-lg font-semibold transition-all hover:-translate-y-0.5 shadow-lg shadow-sky-200">
-          Play the Sequence
+          {t('Play the Sequence')}
         </button>
       </div>
     )
@@ -227,16 +229,16 @@ export default function MemorySequence({ onComplete }: MSProps) {
   return (
     <div className="max-w-lg mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <span className="text-sm font-medium text-stone-500">Round {rounds.length + 1} of 5</span>
-        <span className="text-sm font-semibold text-stone-600 bg-stone-100 rounded-full px-3 py-1">{seqLength} in sequence</span>
+        <span className="text-sm font-medium text-stone-500">{t('Round {n} of {total}', { n: rounds.length + 1, total: 5 })}</span>
+        <span className="text-sm font-semibold text-stone-600 bg-stone-100 rounded-full px-3 py-1">{t('{n} in sequence', { n: seqLength })}</span>
       </div>
 
-      {phase === 'showing' && <p className="text-center text-lg text-sky-600 font-medium mb-6 animate-pulse">Listen carefully...</p>}
-      {phase === 'input' && <p className="text-center text-lg text-stone-700 font-semibold mb-6">Your turn — tap it back</p>}
+      {phase === 'showing' && <p className="text-center text-lg text-sky-600 font-medium mb-6 animate-pulse">{t('Listen carefully...')}</p>}
+      {phase === 'input' && <p className="text-center text-lg text-stone-700 font-semibold mb-6">{t('Your turn — tap it back')}</p>}
       {phase === 'result' && lastRound && (
         <div className={`text-center mb-6 flex items-center justify-center gap-2 ${lastRound.correct ? 'text-green-600' : 'text-amber-600'}`}>
           {lastRound.correct ? <CheckCircle2 size={24} /> : <XCircle size={24} />}
-          <span className="font-bold text-lg">{lastRound.correct ? `Beautiful! ${seqLength} in a row!` : 'Almost — one more try'}</span>
+          <span className="font-bold text-lg">{lastRound.correct ? t('Beautiful! {n} in a row!', { n: seqLength }) : t('Almost — one more try')}</span>
         </div>
       )}
 
@@ -261,7 +263,7 @@ export default function MemorySequence({ onComplete }: MSProps) {
             key={s.id}
             onClick={() => handleTap(s.id)}
             disabled={phase !== 'input'}
-            aria-label={s.label}
+            aria-label={t(s.label)}
             className={`rounded-3xl py-10 flex flex-col items-center gap-3 transition-all border-4 ${
               phase === 'input' ? 'cursor-pointer hover:-translate-y-1 active:scale-95' : 'opacity-50'
             }`}
@@ -272,14 +274,14 @@ export default function MemorySequence({ onComplete }: MSProps) {
             }}
           >
             <s.icon size={52} style={{ color: activeSym === s.id ? '#fff' : s.color }} />
-            <span className="text-lg font-bold" style={{ color: activeSym === s.id ? '#fff' : '#44403c' }}>{s.label}</span>
+            <span className="text-lg font-bold" style={{ color: activeSym === s.id ? '#fff' : '#44403c' }}>{t(s.label)}</span>
           </button>
         ))}
       </div>
 
       {phase === 'result' && (
         <button onClick={() => { playTapSound(); initRound() }} className="w-full mt-8 min-h-[56px] rounded-2xl bg-sky-500 hover:bg-sky-600 text-white text-lg font-semibold transition-all flex items-center justify-center gap-2">
-          <RotateCcw size={18} /> Next Round
+          <RotateCcw size={18} /> {t('Next Round')}
         </button>
       )}
     </div>

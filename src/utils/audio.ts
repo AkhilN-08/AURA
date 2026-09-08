@@ -77,17 +77,22 @@ export function playTapSound() {
 }
 
 /** Speak text aloud using the browser's speech synthesis */
-export function speakText(text: string) {
+export function speakText(text: string, lang: 'en' | 'hi' = 'en') {
   if (!('speechSynthesis' in window)) return
   window.speechSynthesis.cancel()
   const utterance = new SpeechSynthesisUtterance(text)
   utterance.rate = 0.85
   utterance.pitch = 1.0
   utterance.volume = 1.0
-  // Try to pick a natural English voice
+  utterance.lang = lang === 'hi' ? 'hi-IN' : 'en-US'
+  // Prefer a natural voice matching the requested language
   const voices = window.speechSynthesis.getVoices()
-  const preferred = voices.find(v => v.lang.startsWith('en') && v.name.includes('Google'))
-    || voices.find(v => v.lang.startsWith('en'))
+  const preferred = lang === 'hi'
+    ? voices.find(v => v.lang.startsWith('hi'))
+      || voices.find(v => v.lang.startsWith('en') && v.name.includes('Google'))
+      || voices.find(v => v.lang.startsWith('en'))
+    : voices.find(v => v.lang.startsWith('en') && v.name.includes('Google'))
+      || voices.find(v => v.lang.startsWith('en'))
   if (preferred) utterance.voice = preferred
   window.speechSynthesis.speak(utterance)
 }

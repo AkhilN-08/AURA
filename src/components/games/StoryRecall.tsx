@@ -3,6 +3,7 @@ import { RotateCcw, Trophy, Clock, BookOpen, Check, X } from 'lucide-react'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { calculateDifficulty, getDifficultyConfig } from '../../utils/adaptiveDifficulty'
 import { playMatchChime, playWinChime } from '../../utils/audio'
+import { useTranslation } from '../../hooks/useTranslation'
 import type { GameSession } from '../../data/models'
 
 const ENCOURAGEMENTS = [
@@ -75,6 +76,7 @@ interface StoryRecallProps {
 }
 
 export default function StoryRecall({ onComplete }: StoryRecallProps) {
+  const { t } = useTranslation()
   const { getAverageAccuracy } = useGameProgress()
   const lastAccuracy = useRef(getAverageAccuracy('story-recall'))
   const difficulty = calculateDifficulty(lastAccuracy.current || 75)
@@ -137,7 +139,7 @@ export default function StoryRecall({ onComplete }: StoryRecallProps) {
     const newAnswers = [...answers, selectedAnswer]
     setAnswers(newAnswers)
     playMatchChime()
-    setEncouragement(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)])
+    setEncouragement(t(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)]))
     setTimeout(() => setEncouragement(''), 2000)
 
     setTimeout(() => {
@@ -181,7 +183,7 @@ export default function StoryRecall({ onComplete }: StoryRecallProps) {
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2 text-charcoal-500">
             <BookOpen size={18} />
-            <span className="font-medium">Round {rounds + 1}/3</span>
+            <span className="font-medium">{t('Round {n} of {total}', { n: rounds + 1, total: 3 })}</span>
           </div>
           <div className="flex items-center gap-2 text-charcoal-500">
             <Clock size={18} />
@@ -189,7 +191,7 @@ export default function StoryRecall({ onComplete }: StoryRecallProps) {
           </div>
         </div>
         <div className="bg-amber-50 px-4 py-2 rounded-xl">
-          <span className="text-sm font-medium text-amber-600">{difficulty} mode</span>
+          <span className="text-sm font-medium text-amber-600">{t(difficulty)} {t('mode')}</span>
         </div>
       </div>
 
@@ -202,17 +204,17 @@ export default function StoryRecall({ onComplete }: StoryRecallProps) {
       {phase === 'ready' && (
         <div className="text-center py-16">
           <div className="text-6xl mb-6">📚</div>
-          <h3 className="text-2xl font-bold text-charcoal-800 mb-3">Story Recall</h3>
+          <h3 className="text-2xl font-bold text-charcoal-800 mb-3">{t('Story Recall')}</h3>
           <p className="text-charcoal-400 mb-8 max-w-md mx-auto">
-            Read a short story paragraph by paragraph, then answer questions about what you remember.
+            {t('Read a short story paragraph by paragraph, then answer questions about what you remember.')}
           </p>
-          <button onClick={startGame} className="btn-primary">Start Round 1</button>
+          <button onClick={startGame} className="btn-primary">{t('Start Round 1')}</button>
         </div>
       )}
 
       {phase === 'reading' && (
         <div className="text-center">
-          <h3 className="text-xl font-bold text-charcoal-800 mb-2">{story.title}</h3>
+          <h3 className="text-xl font-bold text-charcoal-800 mb-2">{t(story.title)}</h3>
           <div className="flex items-center justify-center gap-1 mb-6">
             {story.paragraphs.map((_, i) => (
               <div key={i} className={`w-2 h-2 rounded-full transition-colors ${i <= currentParagraph ? 'bg-amber-400' : 'bg-cream-200'}`} />
@@ -220,7 +222,7 @@ export default function StoryRecall({ onComplete }: StoryRecallProps) {
           </div>
           <div className="card p-6 md:p-8 mb-6 text-left max-w-lg mx-auto">
             <p className="text-charcoal-700 leading-relaxed text-base">
-              {story.paragraphs[currentParagraph]}
+              {t(story.paragraphs[currentParagraph])}
             </p>
           </div>
           <div className="flex items-center justify-center gap-4">
@@ -229,13 +231,13 @@ export default function StoryRecall({ onComplete }: StoryRecallProps) {
               disabled={currentParagraph === 0}
               className="btn-ghost disabled:opacity-30"
             >
-              ← Previous
+              {t('← Previous')}
             </button>
             <span className="text-sm text-charcoal-400">
-              {currentParagraph + 1} of {story.paragraphs.length}
+              {t('{n} of {total}', { n: currentParagraph + 1, total: story.paragraphs.length })}
             </span>
             <button onClick={handleNextParagraph} className="btn-primary !px-6">
-              {currentParagraph < story.paragraphs.length - 1 ? 'Next →' : 'Answer Questions →'}
+              {currentParagraph < story.paragraphs.length - 1 ? t('Next →') : t('Answer Questions →')}
             </button>
           </div>
         </div>
@@ -251,9 +253,9 @@ export default function StoryRecall({ onComplete }: StoryRecallProps) {
               }`} />
             ))}
           </div>
-          <p className="text-sm text-charcoal-400 mb-2">Question {questionIndex + 1} of {questionsToShow.length}</p>
+          <p className="text-sm text-charcoal-400 mb-2">{t('Question {n} of {total}', { n: questionIndex + 1, total: questionsToShow.length })}</p>
           <div className="card p-6 mb-6 max-w-lg mx-auto">
-            <p className="text-lg font-semibold text-charcoal-800 mb-6">{currentQuestion.question}</p>
+            <p className="text-lg font-semibold text-charcoal-800 mb-6">{t(currentQuestion.question)}</p>
             <div className="space-y-3">
               {currentQuestion.options.map((option, i) => {
                 let optionClass = 'bg-white border-cream-200 hover:border-amber-300 hover:bg-amber-50/50 cursor-pointer'
@@ -277,7 +279,7 @@ export default function StoryRecall({ onComplete }: StoryRecallProps) {
                          showFeedback && i === selectedAnswer ? <X size={14} /> :
                          String.fromCharCode(65 + i)}
                       </span>
-                      <span>{option}</span>
+                      <span>{t(option)}</span>
                     </div>
                   </button>
                 )
@@ -290,7 +292,7 @@ export default function StoryRecall({ onComplete }: StoryRecallProps) {
               disabled={selectedAnswer === null}
               className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Submit Answer
+              {t('Submit Answer')}
             </button>
           )}
         </div>
@@ -300,11 +302,11 @@ export default function StoryRecall({ onComplete }: StoryRecallProps) {
         <div className="text-center">
           <div className="card bg-amber-50 border-amber-200 mb-6">
             <p className="text-charcoal-700">
-              You got <strong>{correctInRound}</strong> of <strong>{questionsToShow.length}</strong> questions correct!
+              {t('You got {a} of {b} questions correct!', { a: correctInRound, b: questionsToShow.length })}
             </p>
           </div>
           {rounds < 3 && (
-            <button onClick={initRound} className="btn-primary">Next Round ({rounds + 2}/3)</button>
+            <button onClick={initRound} className="btn-primary">{t('Next Round')} ({rounds + 2}/3)</button>
           )}
         </div>
       )}
@@ -313,9 +315,9 @@ export default function StoryRecall({ onComplete }: StoryRecallProps) {
         <div className="text-center mt-8 animate-fade-in">
           <div className="card bg-amber-50 border-amber-200">
             <Trophy className="mx-auto text-amber-500 mb-4" size={48} />
-            <h3 className="text-2xl font-bold text-charcoal-800 mb-2">Wonderful Recall!</h3>
-            <p className="text-charcoal-400 mb-4">Average accuracy: {Math.round(totalScore / 3)}%</p>
-            <p className="text-sm text-charcoal-400">Story recall strengthens episodic memory and comprehension.</p>
+            <h3 className="text-2xl font-bold text-charcoal-800 mb-2">{t('Wonderful Recall!')}</h3>
+            <p className="text-charcoal-400 mb-4">{t('Average accuracy')}: {Math.round(totalScore / 3)}%</p>
+            <p className="text-sm text-charcoal-400">{t('Story recall strengthens episodic memory and comprehension.')}</p>
           </div>
         </div>
       )}

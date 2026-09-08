@@ -3,6 +3,7 @@ import { MapPin, CheckCircle2, XCircle, Compass, Home } from 'lucide-react'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { useMemoryCapsule } from '../../hooks/useMemoryCapsule'
 import { playMatchChime, playWinChime, playTapSound, speakText } from '../../utils/audio'
+import { useTranslation } from '../../hooks/useTranslation'
 import type { GameSession } from '../../data/models'
 
 // ── Identity: map / place / photo-inspired interface ────────────
@@ -29,6 +30,7 @@ interface MPMProps {
 }
 
 export default function MyPlaceMemories({ onComplete }: MPMProps) {
+  const { t, language } = useTranslation()
   const capsule = useMemoryCapsule()
   const { seedDemo } = capsule
   useEffect(() => { seedDemo() }, [seedDemo])
@@ -63,7 +65,7 @@ export default function MyPlaceMemories({ onComplete }: MPMProps) {
     startedAt.current = Date.now()
     qStart.current = Date.now()
     setPhase('quiz')
-    speakText('I will show you a place you know. Where is this?')
+    speakText(t('I will show you a place you know. Where is this?'), language)
   }, [capsule.places])
 
   const current = quizzes[qIdx]
@@ -77,7 +79,7 @@ export default function MyPlaceMemories({ onComplete }: MPMProps) {
     setAnswers(a => [...a, { correct, time }])
     if (correct) playMatchChime()
     setPhase('reveal')
-    speakText(`This is the ${current.place.name}. ${current.place.memory}`)
+    speakText(t('This is the {name}. {memory}', { name: t(current.place.name), memory: t(current.place.memory) }), language)
   }
 
   const next = () => {
@@ -122,22 +124,22 @@ export default function MyPlaceMemories({ onComplete }: MPMProps) {
       <div className="animate-fade-in max-w-lg mx-auto">
         <div className="text-center mb-8">
           <Compass size={44} className="mx-auto text-teal-600 mb-2" />
-          <h3 className="text-2xl font-bold text-stone-800">Journey Complete</h3>
-          <p className="text-stone-500">You visited {quizzes.length} familiar places.</p>
+          <h3 className="text-2xl font-bold text-stone-800">{t('Journey Complete')}</h3>
+          <p className="text-stone-500">{t('You visited {n} familiar places.', { n: quizzes.length })}</p>
         </div>
         <div className="grid grid-cols-3 gap-3 mb-6 text-center">
-          <div className="bg-teal-50 rounded-2xl p-4"><p className="text-3xl font-bold text-teal-700">{accuracy}%</p><p className="text-xs text-stone-500">Place Recognition</p></div>
-          <div className="bg-teal-50 rounded-2xl p-4"><p className="text-3xl font-bold text-teal-700">{avgTime}s</p><p className="text-xs text-stone-500">Response Time</p></div>
-          <div className="bg-teal-50 rounded-2xl p-4"><p className="text-3xl font-bold text-teal-700">{correct}/{answers.length}</p><p className="text-xs text-stone-500">Memories Found</p></div>
+          <div className="bg-teal-50 rounded-2xl p-4"><p className="text-3xl font-bold text-teal-700">{accuracy}%</p><p className="text-xs text-stone-500">{t('Place Recognition')}</p></div>
+          <div className="bg-teal-50 rounded-2xl p-4"><p className="text-3xl font-bold text-teal-700">{avgTime}s</p><p className="text-xs text-stone-500">{t('Response Time')}</p></div>
+          <div className="bg-teal-50 rounded-2xl p-4"><p className="text-3xl font-bold text-teal-700">{correct}/{answers.length}</p><p className="text-xs text-stone-500">{t('Memories Found')}</p></div>
         </div>
         <div className="bg-teal-50 border border-teal-200 rounded-2xl p-5 text-center">
-          <p className="text-xs font-semibold text-teal-700 uppercase tracking-widest mb-2">AURA Memory</p>
+          <p className="text-xs font-semibold text-teal-700 uppercase tracking-widest mb-2">{t('AURA Memory')}</p>
           <p className="text-stone-700 text-lg" style={{ fontFamily: 'Georgia, serif' }}>
             "{accuracy >= 70
-              ? 'The places you love are right where you keep them. Every visit made them a little brighter.'
-              : 'Each place shared its story with you again. The garden remembers, even when names wander.'}"
+              ? t('The places you love are right where you keep them. Every visit made them a little brighter.')
+              : t('Each place shared its story with you again. The garden remembers, even when names wander.')}"
           </p>
-          <p className="text-xs text-stone-400 mt-3">A memory exercise — not a medical assessment.</p>
+          <p className="text-xs text-stone-400 mt-3">{t('A memory exercise — not a medical assessment.')}</p>
         </div>
       </div>
     )
@@ -156,26 +158,26 @@ export default function MyPlaceMemories({ onComplete }: MPMProps) {
             </div>
           </div>
           <div className="bg-white p-6">
-            <p className="text-xs font-semibold text-teal-700 uppercase tracking-widest mb-2">AURA Memory</p>
-            <h3 className="text-xl font-bold text-stone-800 mb-2">This is the {current.place.name}.</h3>
+            <p className="text-xs font-semibold text-teal-700 uppercase tracking-widest mb-2">{t('AURA Memory')}</p>
+            <h3 className="text-xl font-bold text-stone-800 mb-2">{t('This is the {name}.', { name: t(current.place.name) })}</h3>
             <p className="text-stone-600 leading-relaxed" style={{ fontFamily: 'Georgia, serif' }}>
-              {current.place.memory}
+              {t(current.place.memory)}
             </p>
             {current.place.people.length > 0 && (
               <div className="flex items-center gap-2 mt-4">
                 {current.place.people.map(p => (
-                  <span key={p} className="text-sm bg-teal-50 text-teal-700 rounded-full px-3 py-1 font-medium">{p}</span>
+                  <span key={p} className="text-sm bg-teal-50 text-teal-700 rounded-full px-3 py-1 font-medium">{t(p)}</span>
                 ))}
               </div>
             )}
             <div className={`mt-5 flex items-center gap-2 text-sm font-medium ${wasCorrect ? 'text-green-600' : 'text-amber-600'}`}>
               {wasCorrect ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
-              {wasCorrect ? 'You knew this place' : 'Now you know it again'}
+              {wasCorrect ? t('You knew this place') : t('Now you know it again')}
             </div>
           </div>
         </div>
         <button onClick={next} className="w-full mt-5 min-h-[56px] rounded-2xl bg-teal-600 hover:bg-teal-700 text-white text-lg font-semibold transition-all flex items-center justify-center gap-2">
-          {qIdx < quizzes.length - 1 ? 'Next Place' : 'See My Journey'} <Home size={18} />
+          {qIdx < quizzes.length - 1 ? t('Next Place') : t('See My Journey')} <Home size={18} />
         </button>
       </div>
     )
@@ -186,7 +188,7 @@ export default function MyPlaceMemories({ onComplete }: MPMProps) {
     return (
       <div className="animate-fade-in max-w-lg mx-auto">
         <div className="flex items-center justify-between mb-4">
-          <span className="text-sm text-stone-500">Place {qIdx + 1} of {quizzes.length}</span>
+          <span className="text-sm text-stone-500">{t('Place {n} of {total}', { n: qIdx + 1, total: quizzes.length })}</span>
           <div className="flex gap-1">
             {quizzes.map((_, i) => (
               <span key={i} className={`h-2 rounded-full transition-all ${i <= qIdx ? 'w-6 bg-teal-500' : 'w-2 bg-stone-200'}`} />
@@ -199,7 +201,7 @@ export default function MyPlaceMemories({ onComplete }: MPMProps) {
             <span className="text-8xl drop-shadow-md">{current.place.emoji}</span>
           </div>
         </div>
-        <p className="text-center text-xl font-bold text-stone-800 mb-5" style={{ fontFamily: 'Georgia, serif' }}>Where is this?</p>
+        <p className="text-center text-xl font-bold text-stone-800 mb-5" style={{ fontFamily: 'Georgia, serif' }}>{t('Where is this?')}</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {current.options.map(opt => {
             const reveal = selected !== null
@@ -218,7 +220,7 @@ export default function MyPlaceMemories({ onComplete }: MPMProps) {
               >
                 {reveal && isRight && <CheckCircle2 size={20} className="text-teal-600 flex-shrink-0" />}
                 {reveal && isPicked && !isRight && <XCircle size={20} className="text-amber-500 flex-shrink-0" />}
-                {opt}
+                {t(opt)}
               </button>
             )
           })}
@@ -233,13 +235,12 @@ export default function MyPlaceMemories({ onComplete }: MPMProps) {
       <div className="w-20 h-20 mx-auto rounded-full bg-teal-50 border border-teal-100 flex items-center justify-center mb-5">
         <MapPin size={34} className="text-teal-600" />
       </div>
-      <h3 className="text-2xl font-bold text-stone-800 mb-3">My Place, My Memories</h3>
+      <h3 className="text-2xl font-bold text-stone-800 mb-3">{t('My Place, My Memories')}</h3>
       <p className="text-stone-500 max-w-md mx-auto mb-8 leading-relaxed">
-        A little journey through the places that shaped your days. I will show you a spot —
-        you tell me where it is, and the place will share its memory with you.
+        {t('A little journey through the places that shaped your days. I will show you a spot — you tell me where it is, and the place will share its memory with you.')}
       </p>
       <button onClick={start} className="px-10 py-4 rounded-2xl bg-teal-600 hover:bg-teal-700 text-white text-lg font-semibold transition-all hover:-translate-y-0.5 shadow-lg shadow-teal-200">
-        Begin the Journey
+        {t('Begin the Journey')}
       </button>
     </div>
   )

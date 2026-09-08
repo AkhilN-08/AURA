@@ -11,6 +11,7 @@ import { useTranslation } from '../hooks/useTranslation'
 const getToday = () => new Date().toISOString().split('T')[0]
 
 export default function Assistant() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [reminders, setReminders] = useLocalStorage<Reminder[]>('aura-reminders', [])
   const [showNewForm, setShowNewForm] = useState(false)
@@ -24,7 +25,6 @@ export default function Assistant() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const voice = useVoiceAgent()
-  const { t } = useTranslation()
 
   // Scroll to bottom of messages
   useEffect(() => {
@@ -164,10 +164,10 @@ export default function Assistant() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="section-heading mb-4">
-            Voice <span className="text-gradient">Assistant</span>
+            {t('Voice')} <span className="text-gradient">{t('Assistant')}</span>
           </h1>
           <p className="section-subheading mx-auto">
-            Speak naturally — I'll set reminders, make calls, and help with your daily routine.
+            {t("Speak naturally — I'll set reminders, make calls, and help with your daily routine.")}
           </p>
         </div>
 
@@ -183,17 +183,17 @@ export default function Assistant() {
                     <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-pink-100 flex items-center justify-center mb-4">
                       <span className="text-4xl">🎙️</span>
                     </div>
-                    <p className="text-charcoal-600 font-medium mb-2">Hi! I'm your voice assistant</p>
+                    <p className="text-charcoal-600 font-medium mb-2">{t("Hi! I'm your voice assistant")}</p>
                     <p className="text-charcoal-400 text-sm max-w-xs">
-                      Tap the microphone and speak naturally. Try saying:
+                      {t('Tap the microphone and speak naturally. Try saying:')}
                     </p>
                     <div className="mt-3 space-y-2">
                       {[
-                        '"Remind me to take medicine at 8 AM"',
-                        '"Call mom"',
-                        '"Set an alarm for 7:00"',
-                        '"Let\'s play a memory game"',
-                        '"What time is it?"',
+                        t('"Remind me to take medicine at 8 AM"'),
+                        t('"Call mom"'),
+                        t('"Set an alarm for 7:00"'),
+                        t('"Let\'s play a memory game"'),
+                        t('"What time is it?"'),
                       ].map((example, i) => (
                         <button
                           key={i}
@@ -231,14 +231,14 @@ export default function Assistant() {
                           {formatTime(msg.timestamp)}
                         </span>
                         {msg.action?.type === 'reminder' && (
-                          <span className="text-[10px] bg-green-100 text-green-600 px-1.5 py-0.5 rounded-full">✓ Reminder saved</span>
+                          <span className="text-[10px] bg-green-100 text-green-600 px-1.5 py-0.5 rounded-full">✓ {t('Reminder saved')}</span>
                         )}
                         {msg.action?.type === 'call' && (
-                          <span className="text-[10px] bg-sage-100 text-sage-600 px-1.5 py-0.5 rounded-full">📞 Calling...</span>
+                          <span className="text-[10px] bg-sage-100 text-sage-600 px-1.5 py-0.5 rounded-full">📞 {t('Calling...')}</span>
                         )}
                         {msg.action?.type === 'navigate' && (
                           <span className="text-[10px] bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded-full">
-                            <Navigation size={8} className="inline" /> Navigating...
+                            <Navigation size={8} className="inline" /> {t('Navigating...')}
                           </span>
                         )}
                       </div>
@@ -255,7 +255,7 @@ export default function Assistant() {
                           <span className="w-1.5 h-1.5 bg-sage-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
                           <span className="w-1.5 h-1.5 bg-sage-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                         </div>
-                        <span className="text-xs text-charcoal-400">Thinking...</span>
+                        <span className="text-xs text-charcoal-400">{t('Thinking...')}</span>
                       </div>
                     </div>
                   </div>
@@ -267,7 +267,7 @@ export default function Assistant() {
               {/* Live Transcript */}
               {voice.isListening && voice.transcript && (
                 <div className="px-4 py-2 bg-sage-50/50 border-t border-sage-100">
-                  <p className="text-xs text-sage-400 mb-0.5">Listening...</p>
+                  <p className="text-xs text-sage-400 mb-0.5">{t('Listening...')}</p>
                   <p className="text-sm text-charcoal-600 italic">{voice.transcript}</p>
                 </div>
               )}
@@ -293,7 +293,7 @@ export default function Assistant() {
                       ? 'bg-gradient-to-br from-red-400 to-pink-500 text-white shadow-lg shadow-red-200 animate-pulse'
                       : 'bg-gradient-to-br from-sage-400 to-sage-600 text-white shadow-md shadow-sage-200 hover:shadow-lg hover:scale-105'
                   } ${!voice.isSupported ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  aria-label={voice.isListening ? 'Stop listening' : 'Start voice input'}
+                  aria-label={voice.isListening ? t('Stop listening') : t('Start voice input')}
                 >
                   {voice.isListening ? <MicOff size={20} /> : <Mic size={20} />}
                   {voice.isListening && (
@@ -308,7 +308,7 @@ export default function Assistant() {
                     value={textInput}
                     onChange={e => setTextInput(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleTextSend()}
-                    placeholder={voice.isListening ? "Listening..." : "Type a message or tap mic to speak..."}
+                    placeholder={voice.isListening ? t('Listening...') : t('Type a message or tap mic to speak...')}
                     className="w-full px-4 py-2.5 rounded-xl bg-cream-50 border border-cream-200 focus:outline-none focus:ring-2 focus:ring-sage-300 text-sm text-charcoal-700 placeholder:text-charcoal-300"
                     disabled={voice.isListening}
                   />
@@ -330,7 +330,7 @@ export default function Assistant() {
                   className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
                     voiceEnabled ? 'text-sage-500 hover:bg-sage-50' : 'text-charcoal-300 hover:bg-cream-100'
                   }`}
-                  title={voiceEnabled ? 'Voice output on' : 'Voice output off'}
+                  title={voiceEnabled ? t('Voice output on') : t('Voice output off')}
                 >
                   {voiceEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
                 </button>
@@ -340,7 +340,7 @@ export default function Assistant() {
                   <button
                     onClick={voice.clearMessages}
                     className="flex-shrink-0 w-10 h-10 rounded-full text-charcoal-300 hover:text-red-400 hover:bg-red-50 flex items-center justify-center transition-colors"
-                    title="Clear conversation"
+                    title={t('Clear conversation')}
                   >
                     <RotateCcw size={16} />
                   </button>
@@ -381,13 +381,13 @@ export default function Assistant() {
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-sm font-semibold text-charcoal-800 flex items-center gap-2">
                   <ListChecks size={16} className="text-sage-500" />
-                  Today's Tasks
+                  {t("Today's Tasks")}
                   {pendingTasks.length > 0 && (
                     <span className="text-[10px] bg-sage-100 text-sage-600 px-1.5 py-0.5 rounded-full">{pendingTasks.length}</span>
                   )}
                 </h2>
                 {todayTasks.length > 0 && (
-                  <span className="text-[10px] text-charcoal-300">{completedTasks.length}/{todayTasks.length} done</span>
+                  <span className="text-[10px] text-charcoal-300">{t('{a} of {b} done', { a: completedTasks.length, b: todayTasks.length })}</span>
                 )}
               </div>
 
@@ -398,7 +398,7 @@ export default function Assistant() {
                   value={newTaskTitle}
                   onChange={e => setNewTaskTitle(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && addTask()}
-                  placeholder="Add a task for today..."
+                  placeholder={t('Add a task for today...')}
                   className="flex-1 px-3 py-2 rounded-lg bg-cream-50 border border-cream-200 text-sm focus:outline-none focus:ring-2 focus:ring-sage-300 placeholder:text-charcoal-300"
                 />
                 <button
@@ -453,7 +453,7 @@ export default function Assistant() {
               )}
 
               {todayTasks.length === 0 && (
-                <p className="text-xs text-charcoal-300 text-center py-2">No tasks yet. Add one above!</p>
+                <p className="text-xs text-charcoal-300 text-center py-2">{t('No tasks yet. Add one above!')}</p>
               )}
             </div>
 
@@ -461,7 +461,7 @@ export default function Assistant() {
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-charcoal-800 flex items-center gap-2">
                 <Bell size={18} />
-                Reminders
+                {t('Reminders')}
                 {pending.length > 0 && (
                   <span className="text-xs bg-sage-100 text-sage-600 px-2 py-0.5 rounded-full">{pending.length}</span>
                 )}
@@ -470,7 +470,7 @@ export default function Assistant() {
                 onClick={() => setShowNewForm(true)}
                 className="text-xs bg-sage-500 text-white px-3 py-1.5 rounded-lg hover:bg-sage-600 transition-colors inline-flex items-center gap-1"
               >
-                <Plus size={12} /> New
+                <Plus size={12} /> {t('New')}
               </button>
             </div>
 
@@ -491,7 +491,7 @@ export default function Assistant() {
                         <p className="font-medium text-charcoal-800 text-sm truncate">{reminder.title}</p>
                         <div className="flex items-center gap-2 mt-0.5">
                           <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${typeInfo.color}`}>
-                            {typeInfo.label}
+                            {t(typeInfo.label)}
                           </span>
                           {reminder.time && (
                             <span className="text-[10px] text-charcoal-400 flex items-center gap-0.5">
@@ -515,7 +515,7 @@ export default function Assistant() {
             {/* Completed */}
             {completed.length > 0 && (
               <div>
-                <h3 className="text-xs font-medium text-charcoal-400 mb-2">Completed ({completed.length})</h3>
+                <h3 className="text-xs font-medium text-charcoal-400 mb-2">{t('Completed')} ({completed.length})</h3>
                 <div className="space-y-1.5">
                   {completed.slice(0, 5).map(reminder => (
                     <div key={reminder.id} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-cream-50/50">
@@ -539,38 +539,38 @@ export default function Assistant() {
             {reminders.length === 0 && (
               <div className="card text-center py-8">
                 <Bell className="mx-auto text-charcoal-200 mb-2" size={32} />
-                <p className="text-charcoal-400 text-sm">No reminders yet</p>
-                <p className="text-charcoal-300 text-xs mt-1">Say "Remind me to..." to create one</p>
+                <p className="text-charcoal-400 text-sm">{t('No reminders yet')}</p>
+                <p className="text-charcoal-300 text-xs mt-1">{t('Say "Remind me to..." to create one')}</p>
               </div>
             )}
 
             {/* Tips Card */}
             <div className="card bg-gradient-to-br from-sage-50 to-cream-100 border-sage-100">
-              <h3 className="text-sm font-semibold text-charcoal-700 mb-2">💡 Try saying:</h3>
+              <h3 className="text-sm font-semibold text-charcoal-700 mb-2">💡 {t('Try saying:')}</h3>
               <ul className="space-y-1.5 text-xs text-charcoal-500">
-                <li>• <strong>"Remind me to take medicine"</strong></li>
-                <li>• <strong>"Call mom"</strong></li>
-                <li>• <strong>"What time is it?"</strong></li>
+                <li>• <strong>{t('"Remind me to take medicine"')}</strong></li>
+                <li>• <strong>{t('"Call mom"')}</strong></li>
+                <li>• <strong>{t('"What time is it?"')}</strong></li>
               </ul>
             </div>
           </div>
         </div>
 
         {/* New Reminder Modal */}
-        <Modal isOpen={showNewForm} onClose={() => setShowNewForm(false)} title="New Reminder">
+        <Modal isOpen={showNewForm} onClose={() => setShowNewForm(false)} title={t('New Reminder')}>
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-charcoal-700 mb-1 block">What should I remind you about?</label>
+              <label className="text-sm font-medium text-charcoal-700 mb-1 block">{t('What should I remind you about?')}</label>
               <input
                 type="text"
                 value={newTitle}
                 onChange={e => setNewTitle(e.target.value)}
-                placeholder="e.g., Take medicine"
+                placeholder={t('e.g., Take medicine')}
                 className="w-full px-4 py-3 rounded-xl border border-cream-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-charcoal-700 mb-1 block">Time</label>
+              <label className="text-sm font-medium text-charcoal-700 mb-1 block">{t('Time')}</label>
               <input
                 type="time"
                 value={newTime}
@@ -579,19 +579,19 @@ export default function Assistant() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-charcoal-700 mb-1 block">Type</label>
+              <label className="text-sm font-medium text-charcoal-700 mb-1 block">{t('Type')}</label>
               <select
                 value={newType}
                 onChange={e => setNewType(e.target.value as Reminder['type'])}
                 className="w-full px-4 py-3 rounded-xl border border-cream-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
               >
                 {Object.entries(REMINDER_TYPES).map(([key, val]) => (
-                  <option key={key} value={key}>{val.label}</option>
+                  <option key={key} value={key}>{t(val.label)}</option>
                 ))}
               </select>
             </div>
             <button onClick={handleAdd} className="btn-primary w-full" disabled={!newTitle.trim()}>
-              Save Reminder
+              {t('Save Reminder')}
             </button>
           </div>
         </Modal>

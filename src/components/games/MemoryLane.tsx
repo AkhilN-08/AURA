@@ -3,6 +3,7 @@ import { Trophy, RotateCcw, Volume2 } from 'lucide-react'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { calculateDifficulty, getDifficultyConfig } from '../../utils/adaptiveDifficulty'
 import { playMatchChime, playWinChime, playTapSound, speakText } from '../../utils/audio'
+import { useTranslation } from '../../hooks/useTranslation'
 import type { GameSession, MemoryLanePrompt } from '../../data/models'
 
 const FALLBACK_PROMPTS: MemoryLanePrompt[] = [
@@ -69,6 +70,7 @@ interface MemoryLaneProps {
 }
 
 export default function MemoryLane({ onComplete }: MemoryLaneProps) {
+  const { t, language } = useTranslation()
   const { getAverageAccuracy } = useGameProgress()
   const lastAccuracy = useRef(getAverageAccuracy('memory-lane'))
   const difficulty = calculateDifficulty(lastAccuracy.current || 75)
@@ -120,7 +122,7 @@ export default function MemoryLane({ onComplete }: MemoryLaneProps) {
   useEffect(() => {
     if (phase !== 'prompt') return
     if (!prompt || spoken) return
-    speakText(prompt.prompt)
+    speakText(t(prompt.prompt), language)
     setSpoken(true)
   }, [phase, prompt, spoken])
 
@@ -129,7 +131,7 @@ export default function MemoryLane({ onComplete }: MemoryLaneProps) {
     if (!prompt) return
     timerRef.current = setTimeout(() => {
       setPhase('hint')
-      if (prompt) speakText('Here is a little hint.')
+      if (prompt) speakText(t('Here is a little hint.'), language)
     }, 4000)
     return () => clearTimeout(timerRef.current)
   }, [phase, prompt])
@@ -141,10 +143,10 @@ export default function MemoryLane({ onComplete }: MemoryLaneProps) {
     if (prompt && answer === prompt.answer) {
       playMatchChime()
       const msg = prompt.category === 'family'
-        ? 'That is right — family is important.'
+        ? t('That is right — family is important.')
         : prompt.category === 'place'
-          ? 'Yes, that place feels familiar, doesn\'t it?'
-          : 'That is right — a lovely little detail you remembered.'
+          ? t("Yes, that place feels familiar, doesn't it?")
+          : t('That is right — a lovely little detail you remembered.')
       setEncouragement(msg)
       setTimeout(() => setEncouragement(''), 2200)
     }
@@ -162,7 +164,7 @@ export default function MemoryLane({ onComplete }: MemoryLaneProps) {
     if (correct) {
       playMatchChime()
     } else {
-      speakText('That is okay. We remember things differently, and that is fine.')
+      speakText(t('That is okay. We remember things differently, and that is fine.'), language)
     }
     setTimeout(() => setPhase('prompt'), 2000)
   }
@@ -201,7 +203,7 @@ export default function MemoryLane({ onComplete }: MemoryLaneProps) {
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2 text-charcoal-500">
             <Volume2 size={18} />
-            <span className="font-medium">Round {round + 1}/3</span>
+            <span className="font-medium">{t('Round {n} of {total}', { n: round + 1, total: 3 })}</span>
           </div>
           <div className="flex items-center gap-2 text-charcoal-500">
             <span className="font-medium">{elapsed}s</span>
@@ -218,12 +220,12 @@ export default function MemoryLane({ onComplete }: MemoryLaneProps) {
       {phase === 'ready' && (
         <div className="text-center py-16">
           <div className="text-6xl mb-6">🪷</div>
-          <h3 className="text-2xl font-bold text-charcoal-800 mb-3">Memory Lane</h3>
+          <h3 className="text-2xl font-bold text-charcoal-800 mb-3">{t('Memory Lane')}</h3>
           <p className="text-charcoal-400 mb-8 max-w-md mx-auto">
-            Remember little moments from your life — people, places, foods, and warm routines.
+            {t('Remember little moments from your life — people, places, foods, and warm routines.')}
           </p>
           <button onClick={() => { playTapSound(); startGame() }} className="btn-primary">
-            Begin
+            {t('Begin')}
           </button>
         </div>
       )}
@@ -231,20 +233,20 @@ export default function MemoryLane({ onComplete }: MemoryLaneProps) {
       {phase === 'prompt' && prompt && (
         <div className="text-center">
           <p className="text-lg font-medium text-sage-600 mb-6 animate-pulse">
-            Listen, and remember...
+            {t('Listen, and remember...')}
           </p>
           <div className="card text-left p-6 mb-8">
             <p className="text-xl font-semibold text-charcoal-800 leading-relaxed">
-              &ldquo;{prompt.prompt}&rdquo;
+              &ldquo;{t(prompt.prompt)}&rdquo;
             </p>
           </div>
           {elapsed >= 4 && (
             <div className="text-center mb-6">
               <button
-                onClick={() => { playTapSound(); speakText(prompt.hint); setPhase('hint') }}
+                onClick={() => { playTapSound(); speakText(t(prompt.hint), language); setPhase('hint') }}
                 className="btn-ghost inline-flex items-center gap-2"
               >
-                <Volume2 size={16} /> Hear a hint
+                <Volume2 size={16} /> {t('Hear a hint')}
               </button>
             </div>
           )}
@@ -259,14 +261,14 @@ export default function MemoryLane({ onComplete }: MemoryLaneProps) {
                     : 'bg-white/70 border-white/50 hover:bg-white hover:border-sage-300'
                   }`}
               >
-                {choice}
+                {t(choice)}
               </button>
             ))}
           </div>
           {selected && (
             <div className="mt-6">
               <button onClick={submit} className="btn-primary inline-flex items-center gap-2">
-                Tell me <Volume2 size={16} />
+                {t('Tell me')} <Volume2 size={16} />
               </button>
             </div>
           )}
@@ -276,20 +278,20 @@ export default function MemoryLane({ onComplete }: MemoryLaneProps) {
       {phase === 'result' && prompt && (
         <div className="text-center">
           <div className="card mb-8 p-6">
-            <p className="text-lg font-medium text-charcoal-700 mb-4">Here is what you remembered:</p>
+            <p className="text-lg font-medium text-charcoal-700 mb-4">{t("Here's what you remembered:")}</p>
             <p className="text-xl font-semibold text-charcoal-800">
-              &ldquo;{prompt.prompt}&rdquo;
+              &ldquo;{t(prompt.prompt)}&rdquo;
             </p>
             {selected === prompt.answer ? (
-              <p className="text-sage-600 mt-3">That is exactly right.</p>
+              <p className="text-sage-600 mt-3">{t('That is exactly right.')}</p>
             ) : (
               <p className="text-amber-600 mt-3">
-                You said &ldquo;{selected}&rdquo; — the answer was &ldquo;{prompt.answer}&rdquo;.
+                {t('You said "{said}" — the answer was "{answer}".', { said: t(selected || ''), answer: t(prompt.answer) })}
               </p>
             )}
           </div>
           <button onClick={nextRound} className="btn-primary inline-flex items-center gap-2">
-            {round >= 2 ? 'See my result' : 'Next moment'}
+            {round >= 2 ? t('See my result') : t('Next moment')}
           </button>
         </div>
       )}
@@ -298,16 +300,16 @@ export default function MemoryLane({ onComplete }: MemoryLaneProps) {
         <div className="text-center mt-8 animate-fade-in">
           <div className="card bg-sage-50 border-sage-200">
             <Trophy className="mx-auto text-amber-500 mb-4" size={48} />
-            <h3 className="text-2xl font-bold text-charcoal-800 mb-2">Beautiful memories</h3>
+            <h3 className="text-2xl font-bold text-charcoal-800 mb-2">{t('Beautiful memories')}</h3>
             <p className="text-charcoal-400 mb-2">
-              You remembered {totalScore}/3 moments today.
+              {t('You remembered {n} of 3 moments today.', { n: Math.round(totalScore / 100) })}
             </p>
             <p className="text-sm text-charcoal-400">
-              Family, places, food, and little routines — the things that matter most.
+              {t('Family, places, food, and little routines — the things that matter most.')}
             </p>
           </div>
           <button onClick={startNext} className="btn-primary inline-flex items-center gap-2 mt-6">
-            <RotateCcw size={18} /> Remember more
+            <RotateCcw size={18} /> {t('Remember more')}
           </button>
         </div>
       )}

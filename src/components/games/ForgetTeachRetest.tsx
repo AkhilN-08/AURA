@@ -3,6 +3,7 @@ import { Sprout, Eye, BookOpen, RefreshCw, CheckCircle2, XCircle, ArrowRight } f
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { useMemoryCapsule } from '../../hooks/useMemoryCapsule'
 import { playMatchChime, playWinChime, playTapSound, speakText } from '../../utils/audio'
+import { useTranslation } from '../../hooks/useTranslation'
 import type { GameSession } from '../../data/models'
 
 // ── Identity: clear three-stage progression (recall → teach → retest) ──
@@ -62,6 +63,7 @@ interface FTRProps {
 }
 
 export default function ForgetTeachRetest({ onComplete }: FTRProps) {
+  const { t, language } = useTranslation()
   const capsule = useMemoryCapsule()
   const { seedDemo } = capsule
   useEffect(() => { seedDemo() }, [seedDemo])
@@ -92,7 +94,7 @@ export default function ForgetTeachRetest({ onComplete }: FTRProps) {
     startedAt.current = Date.now()
     stageStart.current = Date.now()
     setPhase('recall')
-    speakText('Let us meet some familiar things. If something slips away, I will gently teach it again.')
+    speakText(t('Let us meet some familiar things. If something slips away, I will gently teach it again.'), language)
   }
 
   function shuffle<T>(arr: T[]): T[] {
@@ -116,10 +118,10 @@ export default function ForgetTeachRetest({ onComplete }: FTRProps) {
     setRounds(r => [...r, { ...current, firstCorrect: correct }])
     if (correct) {
       playMatchChime()
-      speakText(`Yes, this is ${current.subject.name}.`)
+      speakText(t('Yes, this is {name}.', { name: t(current.subject.name) }), language)
       setTimeout(() => advance('skipped-teach'), 1200)
     } else {
-      speakText('That is alright. Let me show you again.')
+      speakText(t('That is alright. Let me show you again.'), language)
       setTimeout(() => { setSelected(null); setPhase('teach') }, 1200)
     }
   }
@@ -130,16 +132,16 @@ export default function ForgetTeachRetest({ onComplete }: FTRProps) {
     stageStart.current = Date.now()
     setPhase('retest')
     if (mode === 'taught') {
-      speakText(`Now, after a moment — who is this?`)
+      speakText(t('Now, after a moment — who is this?'), language)
     }
   }
 
   // ── Stage 2: TEACH (only after incorrect) ──
   useEffect(() => {
     if (phase !== 'teach') return
-    speakText(`This is ${current.subject.name}. ${current.subject.name} is ${current.subject.relationship}. ${current.subject.description}`)
-    const t = setTimeout(() => setPhase('absorb'), 5200)
-    return () => clearTimeout(t)
+    speakText(t('This is {name}. {name} is {rel}. {desc}', { name: t(current.subject.name), rel: t(current.subject.relationship), desc: t(current.subject.description) }), language)
+    const timer = setTimeout(() => setPhase('absorb'), 5200)
+    return () => clearTimeout(timer)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
 
@@ -168,7 +170,7 @@ export default function ForgetTeachRetest({ onComplete }: FTRProps) {
       return next
     })
     if (correct) playMatchChime()
-    speakText(correct ? `Beautiful. You remembered ${current.subject.name}.` : `It is ${current.subject.name}. We will meet again soon.`)
+    speakText(correct ? t('Beautiful. You remembered {name}.', { name: t(current.subject.name) }) : t('It is {name}. We will meet again soon.', { name: t(current.subject.name) }), language)
 
     setTimeout(() => {
       setSelected(null)
@@ -208,9 +210,9 @@ export default function ForgetTeachRetest({ onComplete }: FTRProps) {
   const stageHeader = (
     <div className="flex items-center justify-center gap-2 mb-8">
       {[
-        { key: 'recall', label: 'Recall', icon: Eye },
-        { key: 'teach', label: 'Teach', icon: BookOpen },
-        { key: 'retest', label: 'Retest', icon: RefreshCw },
+        { key: 'recall', label: t('Recall'), icon: Eye },
+        { key: 'teach', label: t('Teach'), icon: BookOpen },
+        { key: 'retest', label: t('Retest'), icon: RefreshCw },
       ].map((s, i) => {
         const order = ['recall', 'teach', 'absorb', 'retest']
         const active = s.key === phase || (s.key === 'teach' && phase === 'absorb')
@@ -242,8 +244,8 @@ export default function ForgetTeachRetest({ onComplete }: FTRProps) {
       <div className="animate-fade-in max-w-lg mx-auto">
         <div className="text-center mb-8">
           <Sprout size={44} className="mx-auto text-emerald-600 mb-2" />
-          <h3 className="text-2xl font-bold text-stone-800">Learning Cycle Complete</h3>
-          <p className="text-stone-500 mt-1">Here is how the remembering went.</p>
+          <h3 className="text-2xl font-bold text-stone-800">{t('Learning Cycle Complete')}</h3>
+          <p className="text-stone-500 mt-1">{t('Here is how the remembering went.')}</p>
         </div>
 
         <div className="space-y-4 mb-6">
@@ -255,44 +257,44 @@ export default function ForgetTeachRetest({ onComplete }: FTRProps) {
                 </div>
                 <div className="flex-1 grid grid-cols-3 gap-2 text-center">
                   <div>
-                    <p className="text-[10px] uppercase tracking-wider text-stone-400 font-semibold mb-1">Before</p>
+                    <p className="text-[10px] uppercase tracking-wider text-stone-400 font-semibold mb-1">{t('Before')}</p>
                     {r.firstCorrect
-                      ? <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600"><CheckCircle2 size={13} /> Known</span>
-                      : <span className="inline-flex items-center gap-1 text-xs font-semibold text-amber-600"><XCircle size={13} /> Slipped</span>}
+                      ? <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600"><CheckCircle2 size={13} /> {t('Known')}</span>
+                      : <span className="inline-flex items-center gap-1 text-xs font-semibold text-amber-600"><XCircle size={13} /> {t('Slipped')}</span>}
                   </div>
                   <div>
-                    <p className="text-[10px] uppercase tracking-wider text-stone-400 font-semibold mb-1">Teach</p>
-                    <span className="text-xs text-stone-500">AURA reintroduced</span>
+                    <p className="text-[10px] uppercase tracking-wider text-stone-400 font-semibold mb-1">{t('Teach')}</p>
+                    <span className="text-xs text-stone-500">{t('AURA reintroduced')}</span>
                   </div>
                   <div>
-                    <p className="text-[10px] uppercase tracking-wider text-stone-400 font-semibold mb-1">After</p>
+                    <p className="text-[10px] uppercase tracking-wider text-stone-400 font-semibold mb-1">{t('After')}</p>
                     {r.retestCorrect
-                      ? <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600"><CheckCircle2 size={13} /> Recalled</span>
-                      : <span className="inline-flex items-center gap-1 text-xs font-semibold text-stone-500"><RefreshCw size={13} /> Growing</span>}
+                      ? <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600"><CheckCircle2 size={13} /> {t('Recalled')}</span>
+                      : <span className="inline-flex items-center gap-1 text-xs font-semibold text-stone-500"><RefreshCw size={13} /> {t('Growing')}</span>}
                   </div>
                 </div>
               </div>
               <p className="text-sm text-stone-600 mt-3 pl-[72px]">
-                <strong>{r.subject.name}</strong> — {r.subject.relationship}
+                <strong>{t(r.subject.name)}</strong> — {t(r.subject.relationship)}
               </p>
             </div>
           ))}
         </div>
 
         <div className="grid grid-cols-3 gap-3 mb-6 text-center">
-          <div className="bg-stone-50 rounded-2xl p-3"><p className="text-2xl font-bold text-emerald-600">{accuracy}%</p><p className="text-xs text-stone-500">Recognition</p></div>
-          <div className="bg-stone-50 rounded-2xl p-3"><p className="text-2xl font-bold text-emerald-600">{improved}</p><p className="text-xs text-stone-500">Relearned</p></div>
-          <div className="bg-stone-50 rounded-2xl p-3"><p className="text-2xl font-bold text-emerald-600">{avgTime}s</p><p className="text-xs text-stone-500">Avg. response</p></div>
+          <div className="bg-stone-50 rounded-2xl p-3"><p className="text-2xl font-bold text-emerald-600">{accuracy}%</p><p className="text-xs text-stone-500">{t('Recognition')}</p></div>
+          <div className="bg-stone-50 rounded-2xl p-3"><p className="text-2xl font-bold text-emerald-600">{improved}</p><p className="text-xs text-stone-500">{t('Relearned')}</p></div>
+          <div className="bg-stone-50 rounded-2xl p-3"><p className="text-2xl font-bold text-emerald-600">{avgTime}s</p><p className="text-xs text-stone-500">{t('Avg. response')}</p></div>
         </div>
 
         <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-5 text-center">
-          <p className="text-xs font-semibold text-emerald-700 uppercase tracking-widest mb-2">AURA Insight</p>
+          <p className="text-xs font-semibold text-emerald-700 uppercase tracking-widest mb-2">{t('AURA Insight')}</p>
           <p className="text-stone-700 text-lg" style={{ fontFamily: 'Georgia, serif' }}>
             "{improved > 0
-              ? 'You successfully recalled the information after reinforcement. That is exactly how memory grows.'
-              : 'You already knew these familiar things — a wonderful sign of a well-kept memory.'}"
+              ? t('You successfully recalled the information after reinforcement. That is exactly how memory grows.')
+              : t('You already knew these familiar things — a wonderful sign of a well-kept memory.')}"
           </p>
-          <p className="text-xs text-stone-400 mt-3">A learning insight — not a medical assessment.</p>
+          <p className="text-xs text-stone-400 mt-3">{t('A learning insight — not a medical assessment.')}</p>
         </div>
       </div>
     )
@@ -304,21 +306,21 @@ export default function ForgetTeachRetest({ onComplete }: FTRProps) {
       <div className="animate-fade-in max-w-md mx-auto text-center">
         {stageHeader}
         <p className="text-sm uppercase tracking-widest text-emerald-600 font-semibold mb-6">
-          {phase === 'teach' ? 'Let me show you again' : 'Take a moment with this'}
+          {phase === 'teach' ? t('Let me show you again') : t('Take a moment with this')}
         </p>
         <div className="bg-gradient-to-b from-emerald-50 to-white border-2 border-emerald-100 rounded-3xl p-8">
           <div className="w-28 h-28 mx-auto rounded-3xl bg-white shadow-md flex items-center justify-center text-6xl mb-5">
             {current.subject.emoji}
           </div>
           <h3 className="text-3xl font-bold text-stone-800" style={{ fontFamily: 'Georgia, serif' }}>
-            This is {current.subject.name}
+            {t('This is {name}', { name: t(current.subject.name) })}
           </h3>
-          <p className="text-emerald-700 font-medium mt-2">{current.subject.name} is {current.subject.relationship}.</p>
-          <p className="text-stone-500 mt-3">{current.subject.description}</p>
+          <p className="text-emerald-700 font-medium mt-2">{t('{name} is {rel}.', { name: t(current.subject.name), rel: t(current.subject.relationship) })}</p>
+          <p className="text-stone-500 mt-3">{t(current.subject.description)}</p>
         </div>
         {phase === 'teach' && (
           <p className="text-stone-400 text-sm mt-6 flex items-center justify-center gap-2">
-            <BookOpen size={14} /> Reading aloud for you...
+            <BookOpen size={14} /> {t('Reading aloud for you...')}
           </p>
         )}
       </div>
@@ -336,9 +338,9 @@ export default function ForgetTeachRetest({ onComplete }: FTRProps) {
             {current.subject.emoji}
           </div>
           <h3 className="text-2xl font-bold text-stone-800" style={{ fontFamily: 'Georgia, serif' }}>
-            {current.subject.kind === 'person' ? 'Who is this?' : current.subject.kind === 'place' ? 'What place is this?' : 'What is this?'}
+            {current.subject.kind === 'person' ? t('Who is this?') : current.subject.kind === 'place' ? t('What place is this?') : t('What is this?')}
           </h3>
-          {isRetest && <p className="text-emerald-600 text-sm mt-2">A gentle second look</p>}
+          {isRetest && <p className="text-emerald-600 text-sm mt-2">{t('A gentle second look')}</p>}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {current.options.map(opt => {
@@ -356,12 +358,12 @@ export default function ForgetTeachRetest({ onComplete }: FTRProps) {
                   : 'bg-white border-stone-200 text-stone-700 hover:border-emerald-300 hover:bg-emerald-50'
                 }`}
               >
-                {opt}
+                {t(opt)}
               </button>
             )
           })}
         </div>
-        <p className="text-center text-stone-400 text-sm mt-6">If the answer slips away, AURA will teach it — no pressure.</p>
+        <p className="text-center text-stone-400 text-sm mt-6">{t('If the answer slips away, AURA will teach it — no pressure.')}</p>
       </div>
     )
   }
@@ -370,7 +372,7 @@ export default function ForgetTeachRetest({ onComplete }: FTRProps) {
   return (
     <div className="text-center py-10">
       <div className="flex items-center justify-center gap-3 mb-6">
-        {[{ icon: Eye, label: 'Recall' }, { icon: BookOpen, label: 'Teach' }, { icon: RefreshCw, label: 'Retest' }].map((s, i) => (
+        {[{ icon: Eye, label: t('Recall') }, { icon: BookOpen, label: t('Teach') }, { icon: RefreshCw, label: t('Retest') }].map((s, i) => (
           <div key={s.label} className="flex items-center gap-3">
             {i > 0 && <ArrowRight size={16} className="text-stone-300" />}
             <div className="flex flex-col items-center gap-2">
@@ -382,13 +384,12 @@ export default function ForgetTeachRetest({ onComplete }: FTRProps) {
           </div>
         ))}
       </div>
-      <h3 className="text-2xl font-bold text-stone-800 mb-3">Remember & Relearn</h3>
+      <h3 className="text-2xl font-bold text-stone-800 mb-3">{t('Remember & Relearn')}</h3>
       <p className="text-stone-500 max-w-md mx-auto mb-8 leading-relaxed">
-        We will meet some familiar people and things. If a name slips away, AURA will gently
-        teach it again and give you a second chance. Forgetting here is simply the first step of learning.
+        {t('We will meet some familiar people and things. If a name slips away, AURA will gently teach it again and give you a second chance. Forgetting here is simply the first step of learning.')}
       </p>
       <button onClick={start} className="px-10 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-lg font-semibold transition-all hover:-translate-y-0.5 shadow-lg shadow-emerald-200">
-        Begin the Cycle
+        {t('Begin the Cycle')}
       </button>
     </div>
   )

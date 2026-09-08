@@ -3,6 +3,7 @@ import { RotateCcw, Trophy, Clock, BookOpen } from 'lucide-react'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { calculateDifficulty, getDifficultyConfig } from '../../utils/adaptiveDifficulty'
 import { playMatchChime, playWinChime } from '../../utils/audio'
+import { useTranslation } from '../../hooks/useTranslation'
 import type { GameSession } from '../../data/models'
 
 const ENCOURAGEMENTS = [
@@ -34,6 +35,7 @@ interface WordAssociationProps {
 }
 
 export default function WordAssociation({ onComplete }: WordAssociationProps) {
+  const { t } = useTranslation()
   const { getAverageAccuracy } = useGameProgress()
   const lastAccuracy = useRef(getAverageAccuracy('word-association'))
   const difficulty = calculateDifficulty(lastAccuracy.current || 75)
@@ -90,7 +92,7 @@ export default function WordAssociation({ onComplete }: WordAssociationProps) {
       setSelectedLeft(null)
       setCorrectThisRound(c => c + 1)
       playMatchChime()
-      setEncouragement(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)])
+      setEncouragement(t(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)]))
       setTimeout(() => setEncouragement(''), 2000)
 
       if (newMatches.size === pairs.length) {
@@ -128,11 +130,11 @@ export default function WordAssociation({ onComplete }: WordAssociationProps) {
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2 text-charcoal-500">
             <BookOpen size={18} />
-            <span className="font-medium">Round {rounds + 1}/3</span>
+            <span className="font-medium">{t('Round {n} of {total}', { n: rounds + 1, total: 3 })}</span>
           </div>
           <div className="flex items-center gap-2 text-charcoal-500">
             <RotateCcw size={18} />
-            <span className="font-medium">{matches.size}/{pairs.length} matched</span>
+            <span className="font-medium">{t('{a} of {b} matched', { a: matches.size, b: pairs.length })}</span>
           </div>
           <div className="flex items-center gap-2 text-charcoal-500">
             <Clock size={18} />
@@ -140,7 +142,7 @@ export default function WordAssociation({ onComplete }: WordAssociationProps) {
           </div>
         </div>
         <div className="bg-blue-50 px-4 py-2 rounded-xl">
-          <span className="text-sm font-medium text-blue-600">{difficulty} mode</span>
+          <span className="text-sm font-medium text-blue-600">{t(difficulty)} {t('mode')}</span>
         </div>
       </div>
 
@@ -153,23 +155,23 @@ export default function WordAssociation({ onComplete }: WordAssociationProps) {
       {phase === 'ready' && (
         <div className="text-center py-16">
           <div className="text-6xl mb-6">📖</div>
-          <h3 className="text-2xl font-bold text-charcoal-800 mb-3">Word Association</h3>
+          <h3 className="text-2xl font-bold text-charcoal-800 mb-3">{t('Word Association')}</h3>
           <p className="text-charcoal-400 mb-8 max-w-md mx-auto">
-            Study the related word pairs for a moment, then match each left word to its partner on the right.
+            {t('Study the related word pairs for a moment, then match each left word to its partner on the right.')}
           </p>
-          <button onClick={startGame} className="btn-primary">Start Round 1</button>
+          <button onClick={startGame} className="btn-primary">{t('Start Round 1')}</button>
         </div>
       )}
 
       {phase === 'memorize' && (
         <div className="text-center">
-          <p className="text-lg font-medium text-blue-600 mb-8 animate-pulse">Memorize these word pairs...</p>
+          <p className="text-lg font-medium text-blue-600 mb-8 animate-pulse">{t('Memorize these word pairs...')}</p>
           <div className="grid grid-cols-2 gap-4 max-w-lg mx-auto">
             {pairs.map(([left, right], i) => (
               <div key={i} className="card text-center py-4 animate-fade-in" style={{ animationDelay: `${i * 100}ms` }}>
-                <span className="text-lg font-semibold text-charcoal-700">{left}</span>
+                <span className="text-lg font-semibold text-charcoal-700">{t(left)}</span>
                 <span className="mx-2 text-blue-400">↔</span>
-                <span className="text-lg font-semibold text-blue-600">{right}</span>
+                <span className="text-lg font-semibold text-blue-600">{t(right)}</span>
               </div>
             ))}
           </div>
@@ -178,11 +180,11 @@ export default function WordAssociation({ onComplete }: WordAssociationProps) {
 
       {(phase === 'match' || phase === 'result') && (
         <div className="text-center">
-          <p className="text-lg font-medium text-charcoal-700 mb-8">Match each word to its pair</p>
+          <p className="text-lg font-medium text-charcoal-700 mb-8">{t('Match each word to its pair')}</p>
           <div className="grid grid-cols-2 gap-8 max-w-lg mx-auto">
             {/* Left column */}
             <div className="space-y-3">
-              <p className="text-xs font-medium text-charcoal-400 uppercase tracking-wide mb-2">Words</p>
+              <p className="text-xs font-medium text-charcoal-400 uppercase tracking-wide mb-2">{t('Words')}</p>
               {shuffledLeft.map(word => {
                 const isMatched = [...matches.keys()].includes(word)
                 const isSelected = selectedLeft === word
@@ -198,14 +200,14 @@ export default function WordAssociation({ onComplete }: WordAssociationProps) {
                         isWrong ? 'bg-red-50 border-red-300 text-red-600 animate-shake' :
                         'bg-white border-cream-200 text-charcoal-700 hover:border-blue-300 hover:bg-blue-50/50 cursor-pointer'}`}
                   >
-                    {word}
+                    {t(word)}
                   </button>
                 )
               })}
             </div>
             {/* Right column */}
             <div className="space-y-3">
-              <p className="text-xs font-medium text-charcoal-400 uppercase tracking-wide mb-2">Pairs</p>
+              <p className="text-xs font-medium text-charcoal-400 uppercase tracking-wide mb-2">{t('Pairs')}</p>
               {shuffledRight.map(word => {
                 const isMatched = [...matches.values()].includes(word)
                 const isWrong = wrongPair?.[1] === word
@@ -219,7 +221,7 @@ export default function WordAssociation({ onComplete }: WordAssociationProps) {
                         isWrong ? 'bg-red-50 border-red-300 text-red-600 animate-shake' :
                         'bg-white border-cream-200 text-charcoal-700 hover:border-blue-300 hover:bg-blue-50/50 cursor-pointer'}`}
                   >
-                    {word}
+                    {t(word)}
                   </button>
                 )
               })}
@@ -232,10 +234,10 @@ export default function WordAssociation({ onComplete }: WordAssociationProps) {
         <div className="text-center mt-8">
           <div className="card bg-blue-50 mb-6">
             <p className="text-charcoal-700">
-              You matched <strong>{correctThisRound}</strong> of <strong>{pairs.length}</strong> pairs correctly!
+              {t('You matched {a} of {b} pairs correctly!', { a: correctThisRound, b: pairs.length })}
             </p>
           </div>
-          <button onClick={initRound} className="btn-primary">Next Round ({rounds + 2}/3)</button>
+          <button onClick={initRound} className="btn-primary">{t('Next Round')} ({rounds + 2}/3)</button>
         </div>
       )}
 
@@ -243,9 +245,9 @@ export default function WordAssociation({ onComplete }: WordAssociationProps) {
         <div className="text-center mt-8 animate-fade-in">
           <div className="card bg-blue-50 border-blue-200">
             <Trophy className="mx-auto text-amber-500 mb-4" size={48} />
-            <h3 className="text-2xl font-bold text-charcoal-800 mb-2">Excellent Work!</h3>
-            <p className="text-charcoal-400 mb-4">Average accuracy: {Math.round(totalScore / 3)}%</p>
-            <p className="text-sm text-charcoal-400">Word association strengthens verbal memory and logical connections.</p>
+            <h3 className="text-2xl font-bold text-charcoal-800 mb-2">{t('Excellent Work!')}</h3>
+            <p className="text-charcoal-400 mb-4">{t('Average accuracy')}: {Math.round(totalScore / 3)}%</p>
+            <p className="text-sm text-charcoal-400">{t('Word association strengthens verbal memory and logical connections.')}</p>
           </div>
         </div>
       )}

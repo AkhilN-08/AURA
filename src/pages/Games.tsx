@@ -174,13 +174,13 @@ export default function Games() {
             <button
               onClick={() => { playTapSound(); setActiveGame('select') }}
               className="btn-ghost !p-2 rounded-xl"
-              aria-label="Back to game selection"
+              aria-label={t('Back to game selection')}
             >
               <ArrowLeft size={24} />
             </button>
             <div>
               <h2 className="text-2xl font-bold text-charcoal-800 dark:text-white">{t(def.titleKey)}</h2>
-              <p className="text-charcoal-400 text-sm">We'll keep things comfortable for you as you play.</p>
+              <p className="text-charcoal-400 text-sm">{t("We'll keep things comfortable for you as you play.")}</p>
             </div>
           </div>
           <div className="card p-6 md:p-8">
@@ -212,10 +212,10 @@ export default function Games() {
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-10">
           <h1 className="section-heading mb-4">
-            Memory <span className="text-gradient">Games</span>
+            {t('Memory')} <span className="text-gradient">{t('Games')}</span>
           </h1>
           <p className="section-subheading mx-auto">
-            Choose an activity to engage your mind. Each game gently adapts to your pace.
+            {t('Choose an activity to engage your mind. Each game gently adapts to your pace.')}
           </p>
         </div>
 
@@ -231,22 +231,22 @@ export default function Games() {
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1.5">
                 <Sparkles size={14} className="text-amber-500" />
-                <span className="text-xs font-bold text-amber-600 uppercase tracking-widest">Today's AURA Challenge</span>
+                <span className="text-xs font-bold text-amber-600 uppercase tracking-widest">{t("Today's AURA Challenge")}</span>
               </div>
               <h3 className="text-2xl font-bold text-charcoal-800 dark:text-white mb-1">{t(recDef.titleKey)}</h3>
               <div className="flex items-center gap-4 text-sm text-charcoal-500 flex-wrap">
-                <span className="flex items-center gap-1.5"><Play size={13} /> {recommendation.minutes} minutes</span>
-                <span className="flex items-center gap-1.5"><Target size={13} /> Focus: {recommendation.focus}</span>
-                <span className="flex items-center gap-1.5"><TrendingUp size={13} /> Difficulty: Level {recommendation.level}</span>
+                <span className="flex items-center gap-1.5"><Play size={13} /> {t('{n} minutes', { n: recommendation.minutes })}</span>
+                <span className="flex items-center gap-1.5"><Target size={13} /> {t('Focus')}: {t(recommendation.focus)}</span>
+                <span className="flex items-center gap-1.5"><TrendingUp size={13} /> {t('Difficulty')}: {t('Level')} {recommendation.level}</span>
               </div>
               <p className="text-xs text-charcoal-400 mt-2 italic">
                 {sessions.length > 0
-                  ? `Chosen from your recent sessions — ${recommendation.reason}.`
-                  : 'A gentle starting point for your first visit.'}
+                  ? t('Chosen from your recent sessions — {reason}.', { reason: t(recommendation.reason) })
+                  : t('A gentle starting point for your first visit.')}
               </p>
             </div>
             <div className="flex items-center justify-center gap-2 bg-amber-500 group-hover:bg-amber-600 text-white px-6 py-3.5 rounded-2xl font-bold transition-colors flex-shrink-0">
-              <Play size={18} /> START CHALLENGE
+              <Play size={18} /> {t('START CHALLENGE')}
             </div>
           </div>
         </button>
@@ -255,14 +255,14 @@ export default function Games() {
         {sessions.length > 0 && (
           <div className="card mb-10 !p-5">
             <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-              <h3 className="font-bold text-charcoal-800 dark:text-white text-sm uppercase tracking-wider">Your AURA Profile</h3>
-              <p className="text-xs text-charcoal-400">From your last {Math.min(sessions.length, 20)} sessions</p>
+              <h3 className="font-bold text-charcoal-800 dark:text-white text-sm uppercase tracking-wider">{t('Your AURA Profile')}</h3>
+              <p className="text-xs text-charcoal-400">{t('From your last {n} sessions', { n: Math.min(sessions.length, 20) })}</p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {categoryScores.map(cat => (
                 <div key={cat.category}>
                   <div className="flex items-baseline justify-between mb-1.5">
-                    <span className="text-xs font-medium text-charcoal-500">{cat.label}</span>
+                    <span className="text-xs font-medium text-charcoal-500">{t(cat.label)}</span>
                     <span className="text-sm font-bold text-charcoal-700 dark:text-white">{cat.value}%</span>
                   </div>
                   <div className="h-2 bg-cream-100 rounded-full overflow-hidden">
@@ -273,7 +273,7 @@ export default function Games() {
             </div>
             <p className="text-sm text-charcoal-500 mt-4 pt-4 border-t border-cream-100">
               <Sparkles size={14} className="inline text-amber-500 mr-1.5" />
-              AURA recommends <strong className="text-amber-600">{t(recDef.titleKey)}</strong> — {recommendation.reason}.
+              {t('AURA recommends {game} — {reason}.', { game: t(recDef.titleKey), reason: t(recommendation.reason) })}
             </p>
           </div>
         )}
@@ -284,9 +284,9 @@ export default function Games() {
             <div key={cat.id}>
               <div className="flex items-baseline gap-3 mb-1">
                 <h3 className="text-xl font-bold text-charcoal-800 dark:text-white">{t(cat.title)}</h3>
-                <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full ${cat.ring}`}>{cat.games.length} activities</span>
+                <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full ${cat.ring}`}>{t('{n} activities', { n: cat.games.length })}</span>
               </div>
-              <p className="text-sm text-charcoal-400 mb-4">{cat.blurb}</p>
+              <p className="text-sm text-charcoal-400 mb-4">{t(cat.blurb)}</p>
               <div className="grid gap-3">
                 {cat.games.map(id => {
                   const def = GAMES_RAW[id]
@@ -299,7 +299,7 @@ export default function Games() {
                     >
                       {isChallenge && (
                         <span className="absolute -top-2.5 right-4 bg-amber-400 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wide flex items-center gap-1">
-                          <Sparkles size={10} /> Challenge
+                          <Sparkles size={10} /> {t('Challenge')}
                         </span>
                       )}
                       <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${def.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-500`}>
@@ -328,9 +328,9 @@ export default function Games() {
             <Heart className="text-white" size={24} />
           </div>
           <div className="flex-1">
-            <h4 className="font-bold text-charcoal-800 dark:text-white">Memory Capsule</h4>
+            <h4 className="font-bold text-charcoal-800 dark:text-white">{t('Memory Capsule')}</h4>
             <p className="text-sm text-charcoal-400">
-              Add the people, places, and moments that matter — AURA weaves them into your games.
+              {t('Add the people, places, and moments that matter — AURA weaves them into your games.')}
             </p>
           </div>
           <ArrowRight size={20} className="text-rose-400 group-hover:translate-x-1 transition-transform" />

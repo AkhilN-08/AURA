@@ -3,6 +3,7 @@ import { RotateCcw, Trophy, Clock, Palette } from 'lucide-react'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { calculateDifficulty, getDifficultyConfig } from '../../utils/adaptiveDifficulty'
 import { playMatchChime, playWinChime, playTapSound, speakText } from '../../utils/audio'
+import { useTranslation } from '../../hooks/useTranslation'
 import type { GameSession } from '../../data/models'
 
 const ENCOURAGEMENTS = [
@@ -35,6 +36,7 @@ interface ColorSequenceProps {
 }
 
 export default function ColorSequence({ onComplete }: ColorSequenceProps) {
+  const { t, language } = useTranslation()
   const { getAverageAccuracy } = useGameProgress()
   const lastAccuracy = useRef(getAverageAccuracy('color-sequence'))
   const difficulty = calculateDifficulty(lastAccuracy.current || 75)
@@ -70,7 +72,7 @@ export default function ColorSequence({ onComplete }: ColorSequenceProps) {
     }, 900)
   }, [config.colorLength])
 
-  const startGame = () => { setRounds(0); setTotalScore(0); setElapsed(0); initRound(); speakText('Watch the colors light up in order, then tap them back from memory!') }
+  const startGame = () => { setRounds(0); setTotalScore(0); setElapsed(0); initRound(); speakText(t('Watch the colors light up in order, then tap them back from memory!'), language) }
 
   useEffect(() => {
     if (phase !== 'showing' && phase !== 'input') return
@@ -92,7 +94,7 @@ export default function ColorSequence({ onComplete }: ColorSequenceProps) {
       const accuracy = Math.round((correct / sequence.length) * 100)
       setPhase('result')
       playMatchChime()
-      setEncouragement(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)])
+      setEncouragement(t(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)]))
       setTimeout(() => setEncouragement(''), 2000)
 
       const newTotal = totalScore + accuracy
@@ -126,11 +128,11 @@ export default function ColorSequence({ onComplete }: ColorSequenceProps) {
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2 text-charcoal-500">
             <Palette size={18} />
-            <span className="font-medium">Round {rounds + 1}/3</span>
+            <span className="font-medium">{t('Round {n} of {total}', { n: rounds + 1, total: 3 })}</span>
           </div>
           <div className="flex items-center gap-2 text-charcoal-500">
             <RotateCcw size={18} />
-            <span className="font-medium">{userSequence.length}/{sequence.length || config.colorLength} selected</span>
+            <span className="font-medium">{t('{a} of {b} selected', { a: userSequence.length, b: sequence.length || config.colorLength })}</span>
           </div>
           <div className="flex items-center gap-2 text-charcoal-500">
             <Clock size={18} />
@@ -138,7 +140,7 @@ export default function ColorSequence({ onComplete }: ColorSequenceProps) {
           </div>
         </div>
         <div className="bg-pink-50 px-4 py-2 rounded-xl">
-          <span className="text-sm font-medium text-pink-600">{difficulty} mode</span>
+          <span className="text-sm font-medium text-pink-600">{t(difficulty)} {t('mode')}</span>
         </div>
       </div>
 
@@ -151,11 +153,11 @@ export default function ColorSequence({ onComplete }: ColorSequenceProps) {
       {phase === 'ready' && (
         <div className="text-center py-16">
           <div className="text-6xl mb-6">🎨</div>
-          <h3 className="text-2xl font-bold text-charcoal-800 mb-3">Color Sequence</h3>
+          <h3 className="text-2xl font-bold text-charcoal-800 mb-3">{t('Color Sequence')}</h3>
           <p className="text-charcoal-400 mb-8 max-w-md mx-auto">
-            Watch the colors light up in order, then tap them back from memory!
+            {t('Watch the colors light up in order, then tap them back from memory!')}
           </p>
-          <button onClick={() => { playTapSound(); startGame() }} className="btn-primary">Start Round 1</button>
+          <button onClick={() => { playTapSound(); startGame() }} className="btn-primary">{t('Start Round 1')}</button>
         </div>
       )}
 
@@ -163,12 +165,12 @@ export default function ColorSequence({ onComplete }: ColorSequenceProps) {
         <div className="text-center">
           {phase === 'showing' && (
             <p className="text-lg font-medium text-pink-600 mb-6 animate-pulse">
-              Watch the colors... {showIndex + 1}/{sequence.length}
+              {t('Watch the colors...')} {showIndex + 1}/{sequence.length}
             </p>
           )}
           {phase === 'input' && (
             <p className="text-lg font-medium text-charcoal-700 mb-6">
-              Your turn! Tap the colors in order
+              {t('Your turn! Tap the colors in order')}
             </p>
           )}
 
@@ -220,23 +222,23 @@ export default function ColorSequence({ onComplete }: ColorSequenceProps) {
 
           {phase === 'input' && userSequence.length > 0 && (
             <button onClick={handleClear} className="btn-ghost text-sm mb-4">
-              <RotateCcw size={14} className="inline mr-1" /> Clear
+              <RotateCcw size={14} className="inline mr-1" /> {t('Clear')}
             </button>
           )}
 
           {phase === 'result' && (
             <div className="mt-4">
               <p className="text-charcoal-600 mb-4">
-                You got <strong>{correctCount}</strong> of <strong>{sequence.length}</strong> colors correct!
+                {t('You got {a} of {b} colors correct!', { a: correctCount, b: sequence.length })}
               </p>
               <div className="flex items-center justify-center gap-2 mb-4">
-                <span className="text-xs text-charcoal-400">Correct:</span>
+                <span className="text-xs text-charcoal-400">{t('Correct answer')}:</span>
                 {sequence.map((c, i) => (
                   <div key={i} className="w-8 h-8 rounded-lg border" style={{ backgroundColor: COLORS[c].value }} />
                 ))}
               </div>
               {rounds < 3 && (
-                <button onClick={initRound} className="btn-primary">Next Round ({rounds + 2}/3)</button>
+                <button onClick={initRound} className="btn-primary">{t('Next Round')} ({rounds + 2}/3)</button>
               )}
             </div>
           )}
@@ -247,9 +249,9 @@ export default function ColorSequence({ onComplete }: ColorSequenceProps) {
         <div className="text-center mt-8 animate-fade-in">
           <div className="card bg-pink-50 border-pink-200">
             <Trophy className="mx-auto text-amber-500 mb-4" size={48} />
-            <h3 className="text-2xl font-bold text-charcoal-800 mb-2">Beautiful Memory!</h3>
-            <p className="text-charcoal-400 mb-4">Average accuracy: {Math.round(totalScore / 3)}%</p>
-            <p className="text-sm text-charcoal-400">Color sequence strengthens visual working memory and attention.</p>
+            <h3 className="text-2xl font-bold text-charcoal-800 mb-2">{t('Beautiful Memory!')}</h3>
+            <p className="text-charcoal-400 mb-4">{t('Average accuracy')}: {Math.round(totalScore / 3)}%</p>
+            <p className="text-sm text-charcoal-400">{t('Color sequence strengthens visual working memory and attention.')}</p>
           </div>
         </div>
       )}

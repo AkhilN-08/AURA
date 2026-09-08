@@ -4,6 +4,7 @@ import { useGameProgress } from '../../hooks/useGameProgress'
 import { useMemoryCapsule } from '../../hooks/useMemoryCapsule'
 import { useAuth } from '../../hooks/useAuth'
 import { playMatchChime, playWinChime, playTapSound, speakText } from '../../utils/audio'
+import { useTranslation } from '../../hooks/useTranslation'
 import type { GameSession } from '../../data/models'
 
 // ── Identity: storybook / memory-journal feel ───────────────────
@@ -12,12 +13,23 @@ interface StoryQuestion {
   q: string
   answer: string
   type: 'factual' | 'sequence' | 'person' | 'place'
+  name?: string
 }
 
 interface Story {
   title: string
-  pages: { text: string; emoji: string }[]
+  titlePlace?: string
+  place?: string
+  pages: { text: string; emoji: string; name?: string; place?: string; companion?: string; relationship?: string; second?: string; event?: string; year?: string }[]
   questions: StoryQuestion[]
+}
+
+function storyVars(o: Record<string, unknown>): Record<string, string> | undefined {
+  const out: Record<string, string> = {}
+  for (const [k, v] of Object.entries(o)) {
+    if (k !== 'text' && k !== 'emoji' && typeof v === 'string') out[k] = v
+  }
+  return Object.keys(out).length > 0 ? out : undefined
 }
 
 function buildStory(
@@ -32,26 +44,26 @@ function buildStory(
   const place = places[0] ?? { name: 'Family Garden', emoji: '🌿', memory: '' }
   const event = events[0] ?? null
 
-  const pages = [
-    { text: `${main} went to the ${place.name} in the morning. The air was cool and the flowers were awake.`, emoji: '🌅' },
-    { text: `${companion.name}, ${main}'s ${companion.relationship}, joined him there.`, emoji: companion.emoji },
-    { text: `Together they watered the roses and arranged the flowers.`, emoji: '🌹' },
-    { text: `Later, they had tea and watched the birds. ${second.name} called them in for lunch.`, emoji: '🍵' },
+  const pages: Story['pages'] = [
+    { text: '{name} went to the {place} in the morning. The air was cool and the flowers were awake.', name: main, place: place.name, emoji: '🌅' },
+    { text: '{companion}, {name}\'s {relationship}, joined him there.', name: main, companion: companion.name, relationship: companion.relationship, emoji: companion.emoji },
+    { text: 'Together they watered the roses and arranged the flowers.', emoji: '🌹' },
+    { text: 'Later, they had tea and watched the birds. {second} called them in for lunch.', second: second.name, emoji: '🍵' },
   ]
 
   const questions: StoryQuestion[] = [
-    { q: `Where did ${main} go?`, answer: place.name, type: 'place' },
-    { q: `Who joined ${main} in the garden?`, answer: companion.name, type: 'person' },
-    { q: `What did they do together?`, answer: 'Watered the roses', type: 'factual' },
-    { q: `What happened after the flowers?`, answer: 'Tea', type: 'sequence' },
+    { q: 'Where did {name} go?', name: main, answer: place.name, type: 'place' },
+    { q: 'Who joined {name} in the garden?', name: main, answer: companion.name, type: 'person' },
+    { q: 'What did they do together?', answer: 'Watered the roses', type: 'factual' },
+    { q: 'What happened after the flowers?', answer: 'Tea', type: 'sequence' },
   ]
 
   if (event) {
-    pages.push({ text: `It reminded ${main} of the ${event.name} of ${event.dateLabel}. What a lovely day that was.`, emoji: event.emoji })
-    questions.push({ q: `Which memory did the morning remind ${main} of?`, answer: event.name, type: 'factual' })
+    pages.push({ text: 'It reminded {name} of the {event} of {year}. What a lovely day that was.', name: main, event: event.name, year: event.dateLabel, emoji: event.emoji })
+    questions.push({ q: 'Which memory did the morning remind {name} of?', name: main, answer: event.name, type: 'factual' })
   }
 
-  return { title: `A Morning in the ${place.name}`, pages, questions }
+  return { title: 'A Morning in the {place}', place: place.name, pages, questions }
 }
 
 interface MSTProps {
@@ -59,6 +71,7 @@ interface MSTProps {
 }
 
 export default function MemoryStory({ onComplete }: MSTProps) {
+  const { t, language } = useTranslation()
   const capsule = useMemoryCapsule()
   const { seedDemo } = capsule
   useEffect(() => { seedDemo() }, [seedDemo])
@@ -86,13 +99,13 @@ export default function MemoryStory({ onComplete }: MSTProps) {
     startedAt.current = Date.now()
     setPhase('reading')
     setPageIdx(0)
-    speakText(`Let me tell you a little story. ${story.pages[0].text}`)
+    speakText(t('Let me tell you a little story. {text}', { text: t(story.pages[0].text, storyVars(story.pages[0])) }), language)
   }
 
   // Read each page aloud as it turns
   useEffect(() => {
     if (phase !== 'reading') return
-    speakText(story.pages[pageIdx].text)
+    speakText(t(story.pages[pageIdx].text, storyVars(story.pages[pageIdx])), language)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageIdx, phase])
 
@@ -103,7 +116,7 @@ export default function MemoryStory({ onComplete }: MSTProps) {
     } else {
       setPhase('questions')
       qStart.current = Date.now()
-      speakText('Now, a few questions about the story.')
+      speakText(t('Now, a few questions about the story.'), language)
     }
   }
 
@@ -115,7 +128,7 @@ export default function MemoryStory({ onComplete }: MSTProps) {
     const correct = choice === story.questions[qIdx].answer
     setAnswers(a => [...a, { correct, time }])
     if (correct) playMatchChime()
-    speakText(correct ? 'Well remembered.' : `It was ${story.questions[qIdx].answer}.`)
+    speakText(correct ? t('Well remembered.') : t('It was {answer}.', { answer: t(story.questions[qIdx].answer) }), language)
 
     setTimeout(() => {
       setSelected(null)
@@ -185,51 +198,51 @@ export default function MemoryStory({ onComplete }: MSTProps) {
     const placeScore = byType('place')
     const seqScore = byType('sequence')
 
-    let insight = 'The story settled in beautifully. Familiar stories are the kindest exercise for memory.'
+    let insight = t('The story settled in beautifully. Familiar stories are the kindest exercise for memory.')
     if (personScore !== null && placeScore !== null && personScore >= 70 && placeScore >= 70 && (seqScore === null || seqScore < 70)) {
-      insight = 'You recalled familiar people and places strongly, while event sequencing needs more practice.'
+      insight = t('You recalled familiar people and places strongly, while event sequencing needs more practice.')
     } else if (accuracy >= 80) {
-      insight = 'You held every thread of the story — people, places, and the order they came in.'
+      insight = t('You held every thread of the story — people, places, and the order they came in.')
     } else if (accuracy >= 50) {
-      insight = 'The people and places of the story stayed with you clearly. Reading it again will draw in the rest.'
+      insight = t('The people and places of the story stayed with you clearly. Reading it again will draw in the rest.')
     }
 
     return (
       <div className="animate-fade-in max-w-lg mx-auto">
         <div className="text-center mb-8">
           <BookMarked size={44} className="mx-auto text-rose-500 mb-2" />
-          <h3 className="text-2xl font-bold text-stone-800">The Story Ends</h3>
-          <p className="text-stone-500">But the memory stays with you.</p>
+          <h3 className="text-2xl font-bold text-stone-800">{t('The Story Ends')}</h3>
+          <p className="text-stone-500">{t('But the memory stays with you.')}</p>
         </div>
 
         {/* Journal-style summary */}
         <div className="rounded-3xl border-2 border-rose-100 bg-[#FFF9F5] p-6 mb-6 shadow-sm"
              style={{ backgroundImage: 'repeating-linear-gradient(transparent, transparent 31px, rgba(244,114,182,0.08) 32px)' }}>
-          <p className="text-xs font-semibold text-rose-400 uppercase tracking-widest mb-4 text-center">Memory Journal</p>
+          <p className="text-xs font-semibold text-rose-400 uppercase tracking-widest mb-4 text-center">{t('Memory Journal')}</p>
           <div className="space-y-3">
             {story.questions.map((q, i) => (
               <div key={i} className="flex items-center gap-3">
                 {answers[i]?.correct
                   ? <CheckCircle2 size={18} className="text-green-500 flex-shrink-0" />
                   : <XCircle size={18} className="text-amber-500 flex-shrink-0" />}
-                <p className="text-stone-600 text-sm">{q.q}</p>
-                {!answers[i]?.correct && <span className="text-stone-400 text-xs ml-auto">{q.answer}</span>}
+                <p className="text-stone-600 text-sm">{t(q.q, q.name ? { name: t(q.name) } : undefined)}</p>
+                {!answers[i]?.correct && <span className="text-stone-400 text-xs ml-auto">{t(q.answer)}</span>}
               </div>
             ))}
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3 mb-6 text-center">
-          <div className="bg-rose-50 rounded-2xl p-4"><p className="text-3xl font-bold text-rose-600">{accuracy}%</p><p className="text-xs text-stone-500">Story Recall</p></div>
-          <div className="bg-rose-50 rounded-2xl p-4"><p className="text-3xl font-bold text-rose-600">{correct}/{answers.length}</p><p className="text-xs text-stone-500">Details Held</p></div>
+          <div className="bg-rose-50 rounded-2xl p-4"><p className="text-3xl font-bold text-rose-600">{accuracy}%</p><p className="text-xs text-stone-500">{t('Story Recall')}</p></div>
+          <div className="bg-rose-50 rounded-2xl p-4"><p className="text-3xl font-bold text-rose-600">{correct}/{answers.length}</p><p className="text-xs text-stone-500">{t('Details Held')}</p></div>
         </div>
 
         <div className="bg-rose-50 border border-rose-200 rounded-2xl p-5 text-center">
           <p className="text-xs font-semibold text-rose-700 uppercase tracking-widest mb-2 flex items-center justify-center gap-1.5">
-            <Sparkles size={12} /> AURA Insight
+            <Sparkles size={12} /> {t('AURA Insight')}
           </p>
           <p className="text-stone-700 text-lg" style={{ fontFamily: 'Georgia, serif' }}>"{insight}"</p>
-          <p className="text-xs text-stone-400 mt-3">A performance insight — not a medical assessment.</p>
+          <p className="text-xs text-stone-400 mt-3">{t('A performance insight — not a medical assessment.')}</p>
         </div>
       </div>
     )
@@ -242,7 +255,7 @@ export default function MemoryStory({ onComplete }: MSTProps) {
     return (
       <div className="animate-fade-in max-w-lg mx-auto">
         <div className="flex items-center justify-between mb-5">
-          <span className="text-sm text-stone-500">Question {qIdx + 1} of {story.questions.length}</span>
+          <span className="text-sm text-stone-500">{t('Question {n} of {total}', { n: qIdx + 1, total: story.questions.length })}</span>
           <div className="flex gap-1">
             {story.questions.map((_, i) => (
               <span key={i} className={`h-2 rounded-full transition-all ${i <= qIdx ? 'w-6 bg-rose-400' : 'w-2 bg-stone-200'}`} />
@@ -251,7 +264,7 @@ export default function MemoryStory({ onComplete }: MSTProps) {
         </div>
         <div className="rounded-3xl border-2 border-rose-100 bg-[#FFF9F5] p-8 text-center mb-6">
           <BookOpen size={22} className="mx-auto text-rose-400 mb-3" />
-          <p className="text-2xl font-semibold text-stone-800" style={{ fontFamily: 'Georgia, serif' }}>{q.q}</p>
+          <p className="text-2xl font-semibold text-stone-800" style={{ fontFamily: 'Georgia, serif' }}>{t(q.q, q.name ? { name: t(q.name) } : undefined)}</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {choices.map(c => {
@@ -271,7 +284,7 @@ export default function MemoryStory({ onComplete }: MSTProps) {
               >
                 {reveal && isRight && <CheckCircle2 size={20} className="inline mr-2 text-green-600" />}
                 {reveal && isPicked && !isRight && <XCircle size={20} className="inline mr-2 text-amber-500" />}
-                {c}
+                {t(c)}
               </button>
             )
           })}
@@ -288,25 +301,25 @@ export default function MemoryStory({ onComplete }: MSTProps) {
         {/* Storybook spread */}
         <div className="rounded-3xl overflow-hidden border-2 border-amber-100 shadow-[0_10px_40px_rgba(150,100,50,0.12)] bg-[#FFFDF8] mb-6">
           <div className="bg-gradient-to-br from-amber-50 to-rose-50 py-8 text-center border-b border-amber-100">
-            <p className="text-xs uppercase tracking-[0.25em] text-amber-600 font-semibold mb-1">{story.title}</p>
-            <p className="text-[11px] text-amber-400">page {pageIdx + 1} of {story.pages.length}</p>
+            <p className="text-xs uppercase tracking-[0.25em] text-amber-600 font-semibold mb-1">{t(story.title, story.titlePlace ? { place: t(story.titlePlace) } : undefined)}</p>
+            <p className="text-[11px] text-amber-400">{t('page {n} of {total}', { n: pageIdx + 1, total: story.pages.length })}</p>
           </div>
           <div className="px-8 py-10 text-center">
             <span className="text-6xl block mb-6">{page.emoji}</span>
             <p className="text-xl leading-relaxed text-stone-700" style={{ fontFamily: 'Georgia, serif' }}>
-              {page.text}
+              {t(page.text, storyVars(page))}
             </p>
           </div>
           <button
             onClick={turnPage}
             className="w-full py-4 bg-rose-400 hover:bg-rose-500 text-white font-semibold text-lg transition-colors flex items-center justify-center gap-2"
           >
-            {pageIdx < story.pages.length - 1 ? 'Turn the Page' : 'I Read the Story'}
+            {pageIdx < story.pages.length - 1 ? t('Turn the Page') : t('I Read the Story')}
             <span aria-hidden>→</span>
           </button>
         </div>
         <p className="text-center text-stone-400 text-sm flex items-center justify-center gap-1.5">
-          <BookOpen size={14} /> Take your time with each page
+          <BookOpen size={14} /> {t('Take your time with each page')}
         </p>
       </div>
     )
@@ -318,13 +331,12 @@ export default function MemoryStory({ onComplete }: MSTProps) {
       <div className="w-20 h-20 mx-auto rounded-full bg-rose-50 border border-rose-100 flex items-center justify-center mb-5">
         <BookOpen size={34} className="text-rose-500" />
       </div>
-      <h3 className="text-2xl font-bold text-stone-800 mb-3">Memory Story</h3>
+      <h3 className="text-2xl font-bold text-stone-800 mb-3">{t('Memory Story')}</h3>
       <p className="text-stone-500 max-w-md mx-auto mb-8 leading-relaxed">
-        A little story drawn from your own memories — the people and places you hold dear.
-        I will read it to you, page by page, and then we will talk about it.
+        {t('A little story drawn from your own memories — the people and places you hold dear. I will read it to you, page by page, and then we will talk about it.')}
       </p>
       <button onClick={start} className="px-10 py-4 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white text-lg font-semibold transition-all hover:-translate-y-0.5 shadow-lg shadow-rose-200">
-        Open the Storybook
+        {t('Open the Storybook')}
       </button>
     </div>
   )

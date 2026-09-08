@@ -24,7 +24,7 @@ export default function About() {
         {/* Header */}
         <div className="about-anim mb-12">
           <button onClick={() => navigate(-1)} className="mb-4 text-charcoal-400 hover:text-charcoal-600 transition-colors flex items-center gap-1 text-sm">
-            <ArrowLeft size={16} /> Back
+            <ArrowLeft size={16} /> {t('Back')}
           </button>
           <div className="flex items-center gap-4 mb-4">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center shadow-lg">
@@ -169,7 +169,7 @@ export default function About() {
 
         {/* Developed by */}
         <div className="about-anim text-center mt-10">
-          <p className="text-xs text-charcoal-300">Developed by Team OriginX</p>
+          <p className="text-xs text-charcoal-300">{t('Developed by Team OriginX')}</p>
         </div>
       </div>
     </div>
