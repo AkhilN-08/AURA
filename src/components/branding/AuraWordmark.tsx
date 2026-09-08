@@ -1,21 +1,33 @@
 import { useEffect, useState } from 'react'
 
 /**
- * AURA wordmark — the brand identity is the word itself, written by a
- * single continuous stroke. Used animated for splash/entry moments and
- * static elsewhere (the full animation never replays on navigation).
+ * AURA wordmark — the brand is the word itself, written by hand.
+ *
+ * Design notes:
+ * - Rounded, friendly monoline letterforms with even rhythm
+ *   (baseline y=95, cap y=37, matched letter gaps).
+ * - One continuous stroke order: A → U → R → A, crossbars included.
+ * - A signature underline flourish is drawn last, like a pen signing off.
+ * - Animated variant: pen dot → stroke draw → flourish → soft glow pulse.
+ * - Reduced motion: the completed wordmark appears instantly.
  */
 
-// One continuous handwritten path: A → U → R → A (subpaths draw in order)
+// A — up over the apex and back down, then its crossbar
 const AURA_PATH =
-  // First A — two rounded diagonals with a soft crossbar flick
-  'M 25 100 Q 36 62 52 32 Q 68 64 82 100 M 38 76 Q 53 70 68 76 ' +
-  // U — deep rounded bowl
-  'M 112 32 L 112 72 Q 112 100 140 100 Q 168 100 168 72 L 168 32 ' +
-  // R — stem, bowl, leg
-  'M 192 100 L 192 32 L 222 32 Q 245 32 245 50 Q 245 67 222 67 L 192 67 M 220 67 L 247 100 ' +
+  'M 18 95 C 32 58 42 40 52 37 C 62 40 72 58 86 95 ' +
+  'M 34 71 C 45 67 60 67 70 71 ' +
+  // U — stems flowing into a rounded bowl
+  'M 112 37 C 112 58 113 74 121 85 C 127 93 141 93 147 85 C 155 74 156 58 156 37 ' +
+  // R — stem, generous bowl, kicking leg
+  'M 182 95 C 182 74 182 52 182 37 ' +
+  'M 182 37 C 196 36 212 40 212 53 C 212 66 196 70 182 70 ' +
+  'M 200 70 C 210 79 219 87 228 95 ' +
   // Final A
-  'M 275 100 Q 288 60 302 32 Q 318 62 332 100 M 288 76 Q 303 70 318 76'
+  'M 256 95 C 270 58 280 40 290 37 C 300 40 310 58 324 95 ' +
+  'M 272 71 C 283 67 298 67 308 71'
+
+// Signature underline — a gentle smile beneath the word
+const FLOURISH_PATH = 'M 64 113 C 130 122 220 122 296 112'
 
 function useReducedMotion(): boolean {
   const [reduced, setReduced] = useState(
@@ -53,9 +65,9 @@ export default function AuraWordmark({
   }, [])
 
   return (
-    <span className={`inline-flex flex-col items-center ${className.includes('h-') ? '' : ''}`} style={{ lineHeight: 0 }}>
+    <span className="inline-flex flex-col items-center" style={{ lineHeight: 0 }}>
       <svg
-        viewBox="0 0 360 130"
+        viewBox="0 0 344 130"
         className={className}
         style={{ width: 'auto', overflow: 'visible' }}
         role="img"
@@ -63,46 +75,41 @@ export default function AuraWordmark({
       >
         <defs>
           <linearGradient id="aura-stroke-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#F472B6" />
-            <stop offset="100%" stopColor="#DB2777" />
-          </linearGradient>
-          <linearGradient id="aura-fill-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#BE185D" />
-            <stop offset="100%" stopColor="#F472B6" />
+            <stop offset="0%" stopColor="#F9A8D4" />
+            <stop offset="45%" stopColor="#EC4899" />
+            <stop offset="100%" stopColor="#BE185D" />
           </linearGradient>
         </defs>
 
-        {/* Final filled wordmark — fades in as the pen finishes */}
-        <text
-          x="180"
-          y="100"
-          textAnchor="middle"
-          fontSize="92"
-          fontStyle="italic"
-          fontWeight="700"
-          fontFamily="Georgia, 'Times New Roman', serif"
-          letterSpacing="2"
-          fill="url(#aura-fill-grad)"
-          className={animate ? 'aura-wordmark-fill' : undefined}
-          style={animate ? undefined : { opacity: 1 }}
-        >
-          AURA
-        </text>
-
-        {/* The writing stroke — draws A→U→R→A, then gently fades away */}
-        {animate && (
+        <g className={animate ? 'aura-wordmark-glow' : undefined}>
+          {/* The wordmark — a monoline ink stroke in the brand gradient */}
           <path
             d={AURA_PATH}
             fill="none"
             stroke="url(#aura-stroke-grad)"
-            strokeWidth="7"
+            strokeWidth={9}
             strokeLinecap="round"
             strokeLinejoin="round"
             pathLength={1000}
-            className="aura-wordmark-stroke"
+            className={animate ? 'aura-wordmark-stroke' : undefined}
           />
-        )}
+          {/* Signature flourish — thinner, quieter, drawn last */}
+          <path
+            d={FLOURISH_PATH}
+            fill="none"
+            stroke="url(#aura-stroke-grad)"
+            strokeWidth={3.5}
+            strokeLinecap="round"
+            strokeOpacity={0.45}
+            pathLength={1000}
+            className={animate ? 'aura-wordmark-flourish' : undefined}
+          />
+        </g>
+
+        {/* The pen's starting point — appears, then lifts as the stroke begins */}
+        {animate && <circle className="aura-wordmark-pen" cx={18} cy={95} r={5} fill="#EC4899" />}
       </svg>
+
       {subtitle && (
         <span
           className={animate ? 'aura-wordmark-subtitle' : undefined}
@@ -118,15 +125,16 @@ export default function AuraWordmark({
           {subtitle}
         </span>
       )}
+
       {animate && <AuraAnimationWatcher onAnimationDone={onAnimationDone} />}
     </span>
   )
 }
 
-/** Fires onAnimationDone when the ~2.6s animation completes. */
+/** Fires onAnimationDone once the word is written and the flourish has landed. */
 function AuraAnimationWatcher({ onAnimationDone }: { onAnimationDone?: () => void }) {
   useEffect(() => {
-    const t = setTimeout(() => onAnimationDone?.(), 2700)
+    const t = setTimeout(() => onAnimationDone?.(), 2600)
     return () => clearTimeout(t)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
