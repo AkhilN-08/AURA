@@ -492,6 +492,20 @@ section {
   100% { stroke-dashoffset: 0; opacity: 1; }
 }
 
+/* Wordmark stroke colors — ink warming into sage on paper; night-journal ivory in dark mode */
+.aura-wordmark-main {
+  stroke: url(#aura-grad-light);
+}
+html.dark .aura-wordmark-main {
+  stroke: url(#aura-grad-dark);
+}
+.aura-wordmark-sign {
+  stroke: url(#aura-grad-light);
+}
+html.dark .aura-wordmark-sign {
+  stroke: url(#aura-grad-dark);
+}
+
 .aura-wordmark-stroke {
   stroke-dasharray: 1000;
   stroke-dashoffset: 1000;
@@ -522,11 +536,15 @@ section {
 .aura-wordmark-pen {
   transform-origin: 18px 95px;
   animation: auraPen 1s ease-in-out forwards;
+  fill: #5d7a51; /* the sage pen */
+}
+html.dark .aura-wordmark-pen {
+  fill: #B8D99A;
 }
 
 @keyframes auraGlow {
-  0%   { filter: drop-shadow(0 0 0 rgba(236, 72, 153, 0)); }
-  100% { filter: drop-shadow(0 0 9px rgba(236, 72, 153, 0.30)); }
+  0%   { filter: drop-shadow(0 0 0 rgba(93, 122, 81, 0)); }
+  100% { filter: drop-shadow(0 0 9px rgba(184, 217, 154, 0.45)); }
 }
 
 .aura-wordmark-glow {

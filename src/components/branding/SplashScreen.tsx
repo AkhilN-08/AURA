@@ -30,7 +30,7 @@ export default function SplashScreen({ onDone }: { onDone: () => void }) {
   return (
     <div
       className={`fixed inset-0 z-[100] flex flex-col items-center justify-center ${leaving ? 'aura-splash-exit' : ''}`}
-      style={{ backgroundColor: '#FFF8FA' }}
+      style={{ backgroundColor: '#F8F5EE' }}
       aria-hidden="true"
     >
       <AuraWordmark

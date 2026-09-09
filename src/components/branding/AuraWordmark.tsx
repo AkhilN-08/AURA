@@ -74,40 +74,45 @@ export default function AuraWordmark({
         aria-label="AURA"
       >
         <defs>
-          <linearGradient id="aura-stroke-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#F9A8D4" />
-            <stop offset="45%" stopColor="#EC4899" />
-            <stop offset="100%" stopColor="#BE185D" />
+          {/* Ink that warms into sage as the pen finishes — light surfaces */}
+          <linearGradient id="aura-grad-light" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#2f2a24" />
+            <stop offset="72%" stopColor="#3d4433" />
+            <stop offset="100%" stopColor="#5d7a51" />
+          </linearGradient>
+          {/* Night journal — ivory ink warming into sage, for dark surfaces */}
+          <linearGradient id="aura-grad-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#E8E3D8" />
+            <stop offset="72%" stopColor="#CFE0BC" />
+            <stop offset="100%" stopColor="#B8D99A" />
           </linearGradient>
         </defs>
 
         <g className={animate ? 'aura-wordmark-glow' : undefined}>
-          {/* The wordmark — a monoline ink stroke in the brand gradient */}
+          {/* The wordmark — a monoline ink stroke, ink warming into sage */}
           <path
             d={AURA_PATH}
             fill="none"
-            stroke="url(#aura-stroke-grad)"
             strokeWidth={9}
             strokeLinecap="round"
             strokeLinejoin="round"
             pathLength={1000}
-            className={animate ? 'aura-wordmark-stroke' : undefined}
+            className={`aura-wordmark-main ${animate ? 'aura-wordmark-stroke' : undefined}`}
           />
-          {/* Signature flourish — thinner, quieter, drawn last */}
+          {/* Signature flourish — the sage leaf-tone signature, drawn last */}
           <path
             d={FLOURISH_PATH}
             fill="none"
-            stroke="url(#aura-stroke-grad)"
             strokeWidth={3.5}
             strokeLinecap="round"
-            strokeOpacity={0.45}
+            strokeOpacity={0.75}
             pathLength={1000}
-            className={animate ? 'aura-wordmark-flourish' : undefined}
+            className={`aura-wordmark-sign ${animate ? 'aura-wordmark-flourish' : undefined}`}
           />
         </g>
 
         {/* The pen's starting point — appears, then lifts as the stroke begins */}
-        {animate && <circle className="aura-wordmark-pen" cx={18} cy={95} r={5} fill="#EC4899" />}
+        {animate && <circle className="aura-wordmark-pen" cx={18} cy={95} r={5} />}
       </svg>
 
       {subtitle && (
@@ -118,7 +123,7 @@ export default function AuraWordmark({
             fontSize: '0.95rem',
             letterSpacing: '0.22em',
             textTransform: 'uppercase',
-            color: '#9ca3af',
+            color: '#666666',
             fontWeight: 500,
           }}
         >
