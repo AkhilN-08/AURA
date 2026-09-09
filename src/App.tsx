@@ -25,6 +25,7 @@ import PageTransition from './components/ui/PageTransition'
 import GenderThemeApplier from './components/ui/GenderThemeApplier'
 import { Home, Phone } from 'lucide-react'
 import { playTapSound } from './utils/audio'
+import InstallExperience from './components/pwa/InstallExperience'
 import type { ReactNode } from 'react'
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
@@ -80,6 +81,7 @@ function AuthenticatedLayout({ children, hideNav }: { children: ReactNode; hideN
       <main>
         <PageTransition key={location.pathname}>{children}</PageTransition>
       </main>
+      <InstallExperience />
       {!isHome && <AssistantButton />}
       {!isGamesPage && !isHome && <AmbientBackground />}
       {!isHome && (
@@ -122,6 +124,8 @@ function AppRoutes() {
       <CustomCursor />
       <Routes>
         <Route path="/login" element={user ? <Navigate to="/" replace /> : <PageTransition><Login /></PageTransition>} />
+        {/* Cinematic scroll story — the front door of AURA */}
+        <Route path="/welcome" element={<Landing />} />
         <Route path="/assessment" element={
           <ProtectedRoute>
             <PageTransition><Assessment /></PageTransition>

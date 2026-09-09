@@ -3,6 +3,7 @@ import { Square, RotateCcw, CheckCircle2, XCircle, TrendingUp } from 'lucide-rea
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { playMatchChime, playWinChime, playTapSound, speakText } from '../../utils/audio'
 import { useTranslation } from '../../hooks/useTranslation'
+import AdaptationMeter from './AdaptationMeter'
 import type { GameSession } from '../../data/models'
 
 // ── Identity: minimal and distraction-free ──────────────────────
@@ -33,6 +34,8 @@ export default function PatternRecall({ onComplete }: PRProps) {
     return 1
   })
   const [adjusted, setAdjusted] = useState<string | null>(null)
+  // The level the session began at, for the adaptation meter
+  const startLevel = useRef(level)
 
   const [phase, setPhase] = useState<'ready' | 'showing' | 'input' | 'result' | 'done'>('ready')
   const [sequence, setSequence] = useState<number[]>([])
@@ -158,11 +161,13 @@ export default function PatternRecall({ onComplete }: PRProps) {
           <div className="bg-slate-50 rounded-2xl p-4"><p className="text-2xl font-bold text-slate-700">L{level}</p><p className="text-xs text-stone-500">{t('Final Level')}</p></div>
           <div className="bg-slate-50 rounded-2xl p-4"><p className="text-2xl font-bold text-slate-700">{correct}/{rounds.length}</p><p className="text-xs text-stone-500">{t('Patterns')}</p></div>
         </div>
-        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4">
-          <p className="text-sm text-slate-600">
-            {adjusted ?? t('You worked at Level {n} — {m} colors in each pattern.', { n: level, m: seqLength })}
-          </p>
-        </div>
+        <AdaptationMeter info={{
+          from: startLevel.current,
+          to: level,
+          correct,
+          total: rounds.length,
+          note: adjusted ?? undefined,
+        }} />
       </div>
     )
   }

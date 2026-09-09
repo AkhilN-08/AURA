@@ -1,5 +1,5 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Legend } from 'recharts'
-import { Activity, TrendingUp, Clock, Gamepad2, Lightbulb, Users, Bell, Heart, Send, Sparkles, MessageCircle, Image, Smile } from 'lucide-react'
+import { Activity, TrendingUp, Clock, Gamepad2, Lightbulb, Sprout, Users, Bell, Heart, Send, Sparkles, MessageCircle, Image, Smile } from 'lucide-react'
 import { useState } from 'react'
 import { useGameProgress } from '../hooks/useGameProgress'
 import { useAuth } from '../hooks/useAuth'
@@ -111,6 +111,62 @@ export default function Caregiver() {
             </div>
           </div>
         </div>
+
+        {/* ── AURA Observation — calm, neutral, data-honest ── */}
+        {sessions.length >= 2 && (() => {
+          const sorted = [...sessions].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+          const last3 = sorted.slice(-3)
+          const prev3 = sorted.slice(-6, -3)
+          const avg = (arr: typeof sessions) => arr.length ? Math.round(arr.reduce((x, s) => x + s.accuracy, 0) / arr.length) : 0
+          const a3 = avg(last3), p3 = avg(prev3)
+          const obs: string[] = []
+          if (prev3.length > 0) {
+            if (a3 >= p3) obs.push(t('Recall accuracy improved across the last 3 sessions.'))
+            else obs.push(t('Recall accuracy dipped slightly across the last 3 sessions — a good day to revisit a favorite activity.'))
+          }
+          const rt = last3.filter(s => typeof s.responseTime === 'number')
+          if (rt.length >= 2) {
+            const avgRt = rt.reduce((x, s) => x + (s.responseTime ?? 0), 0) / rt.length
+            const olderRt = sorted.slice(-6, -3).filter(s => typeof s.responseTime === 'number')
+            if (olderRt.length >= 2) {
+              const avgOld = olderRt.reduce((x, s) => x + (s.responseTime ?? 0), 0) / olderRt.length
+              if (avgRt > avgOld * 1.15) obs.push(t('Sequence activities took slightly longer today — perhaps a tired day. No pressure.'))
+              else if (avgRt < avgOld * 0.85) obs.push(t('Responses were quicker today — a lively day.'))
+            }
+          }
+          const cat = new Map<string, number[]>()
+          for (const s of sorted.slice(-10)) {
+            const c = s.category ?? 'memory'
+            if (!cat.has(c)) cat.set(c, [])
+            cat.get(c)!.push(s.accuracy)
+          }
+          let strongest = ''
+          let best = -1
+          for (const [c, accs] of cat) {
+            const v = accs.reduce((x, y) => x + y, 0) / accs.length
+            if (v > best) { best = v; strongest = c }
+          }
+          const catNames: Record<string, string> = {
+            memory: t('Visual Memory'), recognition: t('Recognition'),
+            attention: t('Attention'), routine: t('Routine Awareness'),
+          }
+          if (strongest) obs.push(t('Engagement looks strongest in {cat} activities lately.', { cat: catNames[strongest] ?? strongest }))
+          if (obs.length === 0) obs.push(t('AURA is still getting to know the rhythm — a few more sessions and gentle patterns will appear here.'))
+          return (
+            <div className="mb-8 border-2 border-[#e4dccd] rounded-3xl bg-gradient-to-br from-[#faf6ee] to-[#f3ead9] p-6">
+              <p className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-[#8a7d68] mb-4">
+                <Sprout size={13} className="text-[#7c9a6d]" />
+                {t('AURA OBSERVATION')}
+              </p>
+              <div className="space-y-2.5">
+                {obs.map((o, i) => (
+                  <p key={i} className="font-serif-display text-lg md:text-xl text-[#4a4237] leading-snug">“{o}”</p>
+                ))}
+              </div>
+              <p className="mt-4 text-xs text-[#a08d70]">{t('Simple observations from activity data — never a diagnosis.')}</p>
+            </div>
+          )
+        })()}
 
         {/* Warm summary banner */}
         {sessions.length > 0 && (

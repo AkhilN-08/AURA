@@ -12,6 +12,8 @@ import type { FamilyMessage } from '../data/demoData'
 import type { FamilyPhotoMessage } from '../data/models'
 import { generateDemoMessages, generateDemoReminders } from '../data/demoData'
 import gsap from 'gsap'
+import MemoryGarden from '../components/garden/MemoryGarden'
+import { Link } from 'react-router-dom'
 
 
 const ENCOURAGEMENTS = [
@@ -277,6 +279,20 @@ export default function PatientHome() {
         </button>
       </div>
 
+      {/* ── The Memory Garden — the living identity of AURA ── */}
+      <div className="home-anim mb-8">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-semibold text-charcoal-500 dark:text-charcoal-400 uppercase tracking-wider">{t('Your Memory Garden')}</h3>
+          <Link to="/welcome" className="text-xs font-semibold text-amber-600 hover:text-amber-700 flex items-center gap-1">
+            {t('step inside')} →
+          </Link>
+        </div>
+        <MemoryGarden compact />
+        <p className="text-xs text-charcoal-400 dark:text-charcoal-500 mt-2 text-center">
+          {t('The more a memory is revisited, the more the garden grows.')}
+        </p>
+      </div>
+
       {/* Suggested for you */}
       <div className="home-anim mb-6">
         <button onClick={() => { playTapSound(); navigate('/games') }} className="group block w-full p-5 rounded-3xl bg-gradient-to-br from-white/70 to-white/40 dark:from-white/10 dark:to-white/5 backdrop-blur-xl border border-white/50 dark:border-white/10 hover:shadow-[0_8px_30px_rgba(132,204,22,0.15)] hover:-translate-y-0.5 transition-all duration-500">
@@ -364,18 +380,6 @@ export default function PatientHome() {
               </div>
             ))}
           </div>
-        </div>
-      )}
-
-      {sessions.length > 0 && (
-        <div className="home-anim mb-6 p-4 rounded-2xl bg-white/50 dark:bg-white/5 backdrop-blur-sm border border-white/40 dark:border-white/10">
-          <h3 className="text-sm font-semibold text-charcoal-500 dark:text-charcoal-400 mb-3 uppercase tracking-wider">{t('Your Memory Garden')}</h3>
-          <div className="flex items-center justify-center gap-1">
-            {Array.from({ length: Math.min(sessions.length, 7) }).map((_, i) => (
-              <span key={i} className="text-2xl">🌸</span>
-            ))}
-          </div>
-          <p className="text-xs text-charcoal-400 mt-2 text-center">{t('{n} games played. You\'re doing great!', { n: sessions.length })}</p>
         </div>
       )}
 

@@ -7,8 +7,10 @@ import {
 import { useMemoryCapsule } from '../hooks/useMemoryCapsule'
 import { useGameProgress } from '../hooks/useGameProgress'
 import { useTranslation } from '../hooks/useTranslation'
+import MemoryGarden from '../components/garden/MemoryGarden'
 import { getRecommendedGame, getCategoryScores } from '../utils/adaptiveEngine'
 import { playTapSound, speakText } from '../utils/audio'
+import { useAuth } from '../hooks/useAuth'
 import { GAME_TYPES, CAPSULE_TYPE_META } from '../data/models'
 import type { MemoryCapsuleItem, CapsuleType, CapsulePerson, CapsulePlace, CapsuleObject, CapsuleEvent, CapsuleRoutine } from '../data/models'
 import type { GameSession } from '../data/models'
@@ -22,9 +24,11 @@ type EditorState =
   | { mode: 'edit'; item: MemoryCapsuleItem }
 
 export default function Capsule() {
-  const { t } = useTranslation()
+  const { t, language } = useTranslation()
+  const { user } = useAuth()
   const capsule = useMemoryCapsule()
   const { seedDemo } = capsule
+  const userName = user?.name || 'Ravi'
   // Seed demo on first visit so the prototype feels alive immediately
   useState(() => { seedDemo(); return null })
 
@@ -65,21 +69,31 @@ export default function Capsule() {
   return (
     <div className="min-h-screen pt-24 pb-16 px-4">
       <div className="max-w-4xl mx-auto">
-        {/* Header — warm, human */}
-        <div className="text-center mb-10">
-          <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-rose-100 to-amber-100 flex items-center justify-center mb-4">
-            <Heart size={30} className="text-rose-500" />
-          </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-charcoal-800 dark:text-white mb-3">
-            {t('Memory')} <span className="text-gradient">{t('Capsule')}</span>
+        {/* Header — editorial, human */}
+        <div className="mb-12">
+          <p className="font-mono text-xs uppercase tracking-[0.35em] text-[#a08d70] mb-4">{t('the memory capsule')}</p>
+          <h1 className="font-serif-display text-5xl md:text-7xl leading-[0.95] tracking-tight text-charcoal-800 dark:text-white mb-5">
+            {t('MEMORIES')}<br />{t('THAT MATTER.')}
           </h1>
-          <p className="section-subheading mx-auto !text-lg">
+          <p className="max-w-xl text-lg leading-relaxed text-charcoal-500 dark:text-charcoal-400">
             {t('The little library of what matters — people, places, and moments that AURA gently weaves into your games.')}
-            {' '}<em className="text-charcoal-500">{t('Turn memories that matter into personalized experiences.')}</em>
           </p>
-          <p className="text-xs text-charcoal-400 mt-3 flex items-center justify-center gap-1.5">
+          <p className="text-xs text-charcoal-400 mt-4 flex items-center gap-1.5">
             <ShieldCheck size={13} className="text-sage-500" />
             {t('Memory Capsule is private and controlled by you. Nothing leaves this device.')}
+          </p>
+        </div>
+
+        {/* The garden — every memory lives here */}
+        <div className="mb-12">
+          <MemoryGarden onSelectMemory={(id, name) => {
+            const it = capsule.items.find(i => i.id === id)
+            if (it) setEditor({ mode: 'edit', item: it })
+            else speakText(t(name), language)
+          }} />
+          <p className="mt-3 font-mono text-[11px] text-[#a0937e] flex items-center gap-2">
+            <Sparkles size={12} className="text-[#b3895e]" />
+            {t('Tap a tree, a bush, or a lantern to visit that memory. Every memory in your capsule is planted here.')}
           </p>
         </div>
 
@@ -168,7 +182,14 @@ export default function Capsule() {
                       <h3 className="font-bold text-charcoal-800 dark:text-white leading-tight">{labelOf(item)}</h3>
                       <p className="text-xs font-medium text-rose-400">{t(itemSubtitle(item))}</p>
                     </div>
-                  </div>                      <p className="text-sm text-charcoal-500 mt-2 line-clamp-2 leading-relaxed">{t(itemStory(item))}</p>
+                  </div>
+                  <p className="text-sm text-charcoal-500 mt-2 leading-relaxed">“{t(itemStory(item))}”</p>
+                  <Link
+                    to="/welcome"
+                    className="mt-3 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-[#8a7d68] hover:text-[#b3895e] transition-colors"
+                  >
+                    {t('VIEW IN MEMORY GARDEN')} →
+                  </Link>
                   {/* Actions */}
                   <div className="flex items-center gap-1 mt-3 pt-3 border-t border-cream-100">
                     <button onClick={() => { playTapSound(); setEditor({ mode: 'edit', item }) }} className="p-2 rounded-lg text-charcoal-400 hover:text-charcoal-700 hover:bg-cream-50 transition-colors"                      aria-label={t('Edit {name}', { name: labelOf(item) })} title={t('Edit')}>
@@ -229,6 +250,61 @@ export default function Capsule() {
             </p>
           </div>
         )}
+
+        {/* ── Memory Connections — a personal memory map ── */}
+        {capsule.activeItems.length >= 2 && (() => {
+          // Build organic chains: person → place they're associated with → event → object
+          const chains: MemoryCapsuleItem[][] = []
+          const used = new Set<string>()
+          for (const person of capsule.people) {
+            const chain: MemoryCapsuleItem[] = [person]
+            used.add(person.id)
+            const place = capsule.places.find(pl => pl.people.includes(person.name) && !used.has(pl.id))
+            if (place) { chain.push(place); used.add(place.id) }
+            const event = capsule.events.find(ev => ev.people.includes(person.name) && !used.has(ev.id))
+            if (event) { chain.push(event); used.add(event.id) }
+            const obj = capsule.objects.find(o => !used.has(o.id))
+            if (obj) { chain.push(obj); used.add(obj.id) }
+            if (chain.length >= 2) chains.push(chain)
+          }
+          // leftovers → one more chain
+          const rest = capsule.activeItems.filter(i => !used.has(i.id))
+          if (rest.length >= 2) chains.push(rest.slice(0, 4))
+          if (chains.length === 0) return null
+          return (
+            <div className="card mt-6 !p-6 bg-gradient-to-br from-[#faf6ee] to-[#f7efdd] border-[#e4dccd]">
+              <h3 className="font-serif-display text-2xl text-charcoal-800 dark:text-white mb-1">{t('How your memories hold each other')}</h3>
+              <p className="text-sm text-charcoal-400 mb-6">
+                {t('Memory rarely lives alone — a face, a place, a day, a thing. Here is your map.')}
+              </p>
+              <div className="space-y-5">
+                {chains.map((chain, ci) => (
+                  <div key={ci} className="flex flex-wrap items-center gap-x-2 gap-y-2">
+                    {chain.map((item, ii) => (
+                      <span key={item.id} className="flex items-center gap-2">
+                        {ii > 0 && (
+                          <svg width="26" height="14" viewBox="0 0 26 14" className="text-[#c9b8a0]" aria-hidden>
+                            <path d="M 0 7 C 8 2 18 12 26 7" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                            <circle cx="24" cy="7" r="2" fill="currentColor" />
+                          </svg>
+                        )}
+                        <button
+                          onClick={() => setEditor({ mode: 'edit', item })}
+                          className="flex items-center gap-2 bg-white border border-[#e4dccd] rounded-full pl-2 pr-4 py-1.5 hover:border-[#b3895e] hover:shadow-sm transition-all"
+                        >
+                          {item.photoData
+                            ? <img src={item.photoData} alt="" className="w-7 h-7 rounded-full object-cover" />
+                            : <span className="text-lg leading-none">{item.emoji}</span>}
+                          <span className="text-sm font-semibold text-charcoal-700 dark:text-white">{labelOf(item)}</span>
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+        })()}
       </div>
 
       {/* Editor modal */}

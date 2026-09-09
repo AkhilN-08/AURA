@@ -9,6 +9,7 @@ import { GAME_TYPES } from '../../data/models'
 import { useTranslation } from '../../hooks/useTranslation'
 import { useDarkMode } from '../../hooks/useDarkMode'
 import { useElderMode } from '../../hooks/useElderMode'
+import { useAuraInstall } from '../../pwa/useAuraInstall'
 import { playTapSound } from '../../utils/audio'
 
 interface ProfileMenuProps {
@@ -23,6 +24,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
   const { isDark, toggle: toggleDark } = useDarkMode()
   const { elderMode, setElderMode } = useElderMode()
   const { setRole, validateCaregiverPin } = useAuth()
+  const { installed, offerInstall } = useAuraInstall()
   const [showCaregiverPin, setShowCaregiverPin] = useState(false)
   const [cgPin, setCgPin] = useState('')
   const [cgPinError, setCgPinError] = useState('')
@@ -147,6 +149,21 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
 
           {/* Quick Links — iOS list style */}
           <div ref={el => { itemsRef.current[2] = el }}>
+            {/* Keep AURA with you — real install trigger, only when installable */}
+            {!installed && (
+              <button
+                onClick={async () => { playTapSound(); await offerInstall() }}
+                className="w-full rounded-[20px] bg-[#2f2a24] dark:bg-white/10 border border-[#2f2a24] dark:border-white/10 p-4 mb-3 flex items-center gap-3.5 text-left group"
+              >
+                <div className="w-9 h-9 rounded-[10px] bg-sage-500/20 flex items-center justify-center flex-shrink-0">
+                  <Flower2 size={18} className="text-sage-500" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[14px] font-semibold text-[#faf6ee] dark:text-white/90">{t('KEEP AURA WITH YOU')} →</p>
+                  <p className="text-[12px] text-[#faf6ee]/60 dark:text-white/50">{t('Add AURA to your device for quicker access.')}</p>
+                </div>
+              </button>
+            )}
             <div className="rounded-[20px] bg-white/15 dark:bg-white/[0.06] backdrop-blur-xl border border-white/25 dark:border-white/[0.08] overflow-hidden">
               {[
                 { icon: Gamepad2, label: 'Memory Games', path: '/games', iconBg: 'rgba(236,72,153,0.15)', iconColor: '#EC4899', show: true },
