@@ -2,6 +2,7 @@ import { Brain, Mic, BarChart3, Heart, Shield, Users, ArrowLeft, Gamepad2 } from
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from '../hooks/useTranslation'
 import GardenGlyph, { type GlyphName } from '../components/ui/GardenGlyph'
+import { buildVersion } from '../buildVersion'
 import Reveal from '../components/ui/Reveal'
 
 const CHAPTERS: { glyph: GlyphName; tint: string; textColor: string }[] = [
@@ -220,6 +221,7 @@ export default function About() {
             <GardenGlyph name="leaf" size={15} />
           </div>
           <p className="aura-meta">{t('Developed by Team OriginX')}</p>
+          <p className="aura-meta text-ink/40 mt-1">BUILD {buildVersion()}</p>
         </div>
       </div>
     </div>

@@ -7,6 +7,7 @@ import { useMemoryCapsule } from '../hooks/useMemoryCapsule'
 import { useGameProgress } from '../hooks/useGameProgress'
 import { useTranslation } from '../hooks/useTranslation'
 import { Link } from 'react-router-dom'
+import { buildVersion } from '../buildVersion'
 import { ArrowRight, Gamepad2, Heart, MapPin, Repeat, Sprout, TrendingUp } from 'lucide-react'
 import { useEffect, useMemo, type ReactNode } from 'react'
 
@@ -364,6 +365,7 @@ export default function Landing() {
         <p className="mt-10 font-mono text-[11px] text-[#b3a68d]">
           {t('AURA is a cognitive companion — a supportive tool, never a diagnosis.')} · {t('Developed by Team OriginX')}
         </p>
+        <p className="mt-2 font-mono text-[10px] text-[#c8bda6]">BUILD {buildVersion()}</p>
       </footer>
     </div>
   )

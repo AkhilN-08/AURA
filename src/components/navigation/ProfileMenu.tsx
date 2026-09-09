@@ -10,6 +10,7 @@ import { useTranslation } from '../../hooks/useTranslation'
 import { useDarkMode } from '../../hooks/useDarkMode'
 import { useElderMode } from '../../hooks/useElderMode'
 import { useAuraInstall } from '../../pwa/useAuraInstall'
+import { buildVersion } from '../../buildVersion'
 import { playTapSound } from '../../utils/audio'
 
 interface ProfileMenuProps {
@@ -433,6 +434,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
             <p className="text-[11px] text-ink/50 mt-1">
               © 2025 · <span className="text-leaf font-medium">Developed by Team OriginX</span>
             </p>
+            <p className="text-[10px] text-ink/35 mt-1.5 font-mono tracking-wider">BUILD {buildVersion()}</p>
           </div>
         </div>
       </div>
