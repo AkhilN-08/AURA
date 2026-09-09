@@ -660,6 +660,15 @@ html.dark .aura-index-row:hover,
 html.dark .aura-index-row:focus-visible {
   background: rgba(184, 217, 154, 0.10);
 }
+
+/* Profile panel — night journal */
+html.dark [style*="linear-gradient(180deg, #F8F5EE"] {
+  background: linear-gradient(180deg, #17131f 0%, #12101a 100%) !important;
+  border-left-color: rgba(255, 255, 255, 0.25) !important;
+}
+html.dark [style*="linear-gradient(180deg, #F8F5EE"] .text-ink {
+  color: #f1f5f9 !important;
+}
 html.dark .glass-card {
   background: rgba(30,30,50,0.7) !important;
   border-color: rgba(255,255,255,0.08) !important;
