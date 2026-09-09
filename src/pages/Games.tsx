@@ -210,42 +210,43 @@ export default function Games() {
   return (
     <div className="min-h-screen pt-24 pb-16 px-4">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-10">
-          <h1 className="section-heading mb-4">
-            {t('Memory')} <span className="text-gradient">{t('Games')}</span>
+        <div className="mb-10">
+          <div className="aura-meta mb-3">{t('№')} {String(sessions.length + 1).padStart(2, '0')} — {t('Gentle exercise for the mind')}</div>
+          <h1 className="font-serif-display text-4xl md:text-6xl text-ink dark:text-white leading-[1.02] mb-3">
+            {t('Memory')}<br />{t('Games')}.
           </h1>
-          <p className="section-subheading mx-auto">
+          <div className="aura-rule w-24 mb-4" />
+          <p className="section-subheading !text-lg">
             {t('Choose an activity to engage your mind. Each game gently adapts to your pace.')}
           </p>
         </div>
 
-        {/* ── Today's AURA Challenge ── */}
+        {/* ── Today's AURA Challenge — editorial front page ── */}
         <button
           onClick={() => openGame(recommendation.game)}
-          className="w-full text-left group rounded-3xl overflow-hidden border-2 border-amber-200/70 bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 mb-8 shadow-[0_4px_24px_rgba(251,146,60,0.10)] hover:shadow-[0_10px_36px_rgba(251,146,60,0.18)] hover:-translate-y-0.5 transition-all"
+          className="w-full text-left group rounded-xl overflow-hidden aura-card !border-2 !border-ink mb-8 relative"
         >
           <div className="p-6 md:p-7 flex flex-col sm:flex-row sm:items-center gap-6">
-            <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${recDef.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-500 shadow-lg`}>
+            <div className={`w-20 h-20 rounded-lg bg-gradient-to-br ${recDef.color} flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-300`}>
               <recDef.icon className="text-white" size={36} />
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1.5">
-                <Sparkles size={14} className="text-amber-500" />
-                <span className="text-xs font-bold text-amber-600 uppercase tracking-widest">{t("Today's AURA Challenge")}</span>
+                <span className="aura-meta text-amber-600">{t("Today's AURA Challenge")}</span>
               </div>
-              <h3 className="text-2xl font-bold text-charcoal-800 dark:text-white mb-1">{t(recDef.titleKey)}</h3>
-              <div className="flex items-center gap-4 text-sm text-charcoal-500 flex-wrap">
+              <h3 className="font-serif-display text-2xl md:text-3xl text-ink dark:text-white mb-1">{t(recDef.titleKey)}</h3>
+              <div className="flex items-center gap-4 text-sm text-charcoal-500 flex-wrap aura-meta">
                 <span className="flex items-center gap-1.5"><Play size={13} /> {t('{n} minutes', { n: recommendation.minutes })}</span>
                 <span className="flex items-center gap-1.5"><Target size={13} /> {t('Focus')}: {t(recommendation.focus)}</span>
                 <span className="flex items-center gap-1.5"><TrendingUp size={13} /> {t('Difficulty')}: {t('Level')} {recommendation.level}</span>
               </div>
-              <p className="text-xs text-charcoal-400 mt-2 italic">
+              <p className="text-sm text-charcoal-400 mt-2 font-serif-display italic">
                 {sessions.length > 0
                   ? t('Chosen from your recent sessions — {reason}.', { reason: t(recommendation.reason) })
                   : t('A gentle starting point for your first visit.')}
               </p>
             </div>
-            <div className="flex items-center justify-center gap-2 bg-amber-500 group-hover:bg-amber-600 text-white px-6 py-3.5 rounded-2xl font-bold transition-colors flex-shrink-0">
+            <div className="flex items-center justify-center gap-2 bg-ink text-ivory group-hover:bg-leaf px-6 py-3.5 rounded-lg font-bold transition-colors flex-shrink-0">
               <Play size={18} /> {t('START CHALLENGE')}
             </div>
           </div>
@@ -253,38 +254,39 @@ export default function Games() {
 
         {/* ── AURA cognitive profile strip ── */}
         {sessions.length > 0 && (
-          <div className="card mb-10 !p-5">
+          <div className="aura-card mb-10 !p-5 border-l-4 border-l-leaf">
             <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-              <h3 className="font-bold text-charcoal-800 dark:text-white text-sm uppercase tracking-wider">{t('Your AURA Profile')}</h3>
-              <p className="text-xs text-charcoal-400">{t('From your last {n} sessions', { n: Math.min(sessions.length, 20) })}</p>
+              <h3 className="aura-meta">{t('Your AURA Profile')}</h3>
+              <p className="aura-meta">{t('From your last {n} sessions', { n: Math.min(sessions.length, 20) })}</p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {categoryScores.map(cat => (
                 <div key={cat.category}>
                   <div className="flex items-baseline justify-between mb-1.5">
                     <span className="text-xs font-medium text-charcoal-500">{t(cat.label)}</span>
-                    <span className="text-sm font-bold text-charcoal-700 dark:text-white">{cat.value}%</span>
+                    <span className="font-serif-display text-xl text-ink dark:text-white">{cat.value}%</span>
                   </div>
-                  <div className="h-2 bg-cream-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-sage-400 to-sage-500 rounded-full transition-all duration-700" style={{ width: `${cat.value}%` }} />
+                  <div className="h-2 bg-ink/5 rounded-full overflow-hidden border border-ink/10">
+                    <div className="h-full bg-leaf rounded-full transition-all duration-700" style={{ width: `${cat.value}%` }} />
                   </div>
                 </div>
               ))}
             </div>
-            <p className="text-sm text-charcoal-500 mt-4 pt-4 border-t border-cream-100">
-              <Sparkles size={14} className="inline text-amber-500 mr-1.5" />
+            <p className="text-sm text-charcoal-500 mt-4 pt-4 border-t border-ink/10">
               {t('AURA recommends {game} — {reason}.', { game: t(recDef.titleKey), reason: t(recommendation.reason) })}
             </p>
           </div>
         )}
 
-        {/* ── Categories ── */}
+        {/* ── Categories — editorial collections ── */}
         <div className="space-y-10">
-          {CATEGORIES.map(cat => (
+          {CATEGORIES.map((cat, ci) => (
             <div key={cat.id}>
               <div className="flex items-baseline gap-3 mb-1">
-                <h3 className="text-xl font-bold text-charcoal-800 dark:text-white">{t(cat.title)}</h3>
-                <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full ${cat.ring}`}>{t('{n} activities', { n: cat.games.length })}</span>
+                <span className="aura-meta">0{ci + 1}</span>
+                <h3 className="font-serif-display text-2xl text-ink dark:text-white">{t(cat.title)}</h3>
+                <div className="flex-1 h-px bg-ink/10" />
+                <span className={`aura-meta px-2 py-0.5 border border-ink/15 rounded ${cat.ring}`}>{t('{n} activities', { n: cat.games.length })}</span>
               </div>
               <p className="text-sm text-charcoal-400 mb-4">{t(cat.blurb)}</p>
               <div className="grid gap-3">
@@ -295,21 +297,21 @@ export default function Games() {
                     <button
                       key={id}
                       onClick={() => openGame(id)}
-                      className={`card-hover !p-4 flex items-center gap-4 text-left group relative ${isChallenge ? 'ring-2 ring-amber-300' : ''}`}
+                      className={`aura-card !p-4 flex items-center gap-4 text-left group relative hover:-translate-y-0.5 transition-transform ${isChallenge ? '!border-amber-400 !border-2' : ''}`}
                     >
                       {isChallenge && (
-                        <span className="absolute -top-2.5 right-4 bg-amber-400 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wide flex items-center gap-1">
-                          <Sparkles size={10} /> {t('Challenge')}
+                        <span className="absolute -top-2.5 right-4 bg-amber-400 text-ink text-[10px] font-bold px-2.5 py-0.5 rounded uppercase tracking-wide flex items-center gap-1">
+                          {t('Challenge')}
                         </span>
                       )}
-                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${def.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-500`}>
+                      <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${def.color} flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-300`}>
                         <def.icon className="text-white" size={22} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-charcoal-800 dark:text-white">{t(def.titleKey)}</h4>
+                        <h4 className="font-bold text-ink dark:text-white">{t(def.titleKey)}</h4>
                         <p className="text-sm text-charcoal-400 line-clamp-1">{t(def.descKey)}</p>
                       </div>
-                      <span className={`text-lg transition-transform group-hover:translate-x-1 ${def.accent}`}>→</span>
+                      <span className="text-lg transition-transform group-hover:translate-x-1 text-ink/40">→</span>
                     </button>
                   )
                 })}
@@ -322,13 +324,13 @@ export default function Games() {
         <Link
           to="/capsule"
           onClick={() => playTapSound()}
-          className="mt-12 card-hover !p-6 flex items-center gap-5 group bg-gradient-to-br from-rose-50/80 to-amber-50/60 border-rose-100"
+          className="mt-12 aura-card !p-6 flex items-center gap-5 group border-l-4 border-l-rose-400 hover:-translate-y-0.5 transition-transform"
         >
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-500 shadow-lg">
-            <Heart className="text-white" size={24} />
+          <div className="w-14 h-14 rounded-lg bg-rose-400/15 border-2 border-rose-400/40 flex items-center justify-center flex-shrink-0 group-hover:bg-rose-400 group-hover:[&>svg]:text-ivory transition-all duration-300">
+            <Heart className="text-rose-400" size={24} />
           </div>
           <div className="flex-1">
-            <h4 className="font-bold text-charcoal-800 dark:text-white">{t('Memory Capsule')}</h4>
+            <h4 className="font-serif-display text-lg text-ink dark:text-white">{t('Memory Capsule')}</h4>
             <p className="text-sm text-charcoal-400">
               {t('Add the people, places, and moments that matter — AURA weaves them into your games.')}
             </p>

@@ -11,7 +11,6 @@ import { GAME_TYPES } from '../data/models'
 import type { FamilyMessage } from '../data/demoData'
 import type { FamilyPhotoMessage } from '../data/models'
 import { generateDemoMessages, generateDemoReminders } from '../data/demoData'
-import gsap from 'gsap'
 import MemoryGarden from '../components/garden/MemoryGarden'
 import { Link } from 'react-router-dom'
 
@@ -176,8 +175,19 @@ export default function PatientHome() {
   }, [])
 
   useEffect(() => {
-    const els = document.querySelectorAll('.home-anim')
-    gsap.fromTo(els, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: 'power2.out', delay: 0.1 })
+    // Editorial entrance via CSS — reliable under throttled rAF and reduced motion.
+    const els = Array.from(document.querySelectorAll<HTMLElement>('.home-anim'))
+    els.forEach((el, i) => {
+      el.style.opacity = '0'
+      el.style.transform = 'translateY(14px)'
+      el.style.transition = `opacity 0.55s cubic-bezier(0.25,0.1,0.25,1) ${i * 70}ms, transform 0.55s cubic-bezier(0.25,0.1,0.25,1) ${i * 70}ms`
+    })
+    const raf = requestAnimationFrame(() => requestAnimationFrame(() => {
+      els.forEach(el => { el.style.opacity = '1'; el.style.transform = 'translateY(0)' })
+    }))
+    // Failsafe: guarantee visibility even if rAF never fires
+    const failsafe = setTimeout(() => els.forEach(el => { el.style.opacity = '1'; el.style.transform = 'translateY(0)' }), 900)
+    return () => { cancelAnimationFrame(raf); clearTimeout(failsafe) }
   }, [])
 
   const pendingReminders = useMemo(() => reminders.filter(r => !r.completed).slice(0, 3), [reminders])
@@ -225,54 +235,52 @@ export default function PatientHome() {
   return (
     <div className="min-h-screen px-4 pt-20 pb-8 max-w-2xl mx-auto">
       <div className="home-anim text-center mb-8 pt-4">
-        <div className="text-5xl mb-3">{greeting.emoji}</div>
-        <h1 className="text-3xl md:text-4xl font-bold text-charcoal-800 dark:text-white mb-1">
-          {t(greeting.text)}, {user?.name || t('Friend')}!
+        <div className="aura-meta mb-3">{dateStr} · {currentTime}</div>
+        <h1 className="font-serif-display text-4xl md:text-5xl text-ink dark:text-white leading-[1.08] mb-2">
+          {t(greeting.text)},<br />{user?.name || t('Friend')}.
         </h1>
-        <p className="text-charcoal-400 dark:text-charcoal-500 text-lg">{t(greeting.sub)}</p>
+        <div className="aura-rule w-20 mx-auto my-4" />
+        <p className="text-charcoal-500 dark:text-charcoal-400 text-lg">{t(greeting.sub)}</p>
         {/* Analog Clock */}
-        <div className="flex justify-center mt-4 mb-2">
+        <div className="flex justify-center mt-5 mb-2">
           <AnalogClock />
-        </div>
-        <div className="flex items-center justify-center gap-2 text-charcoal-300 dark:text-charcoal-500 text-sm">
-          <Clock size={14} />
-          <span>{currentTime}</span>
-          <span className="mx-1">|</span>
-          <span>{dateStr}</span>
         </div>
       </div>
 
       <div className="home-anim grid grid-cols-1 gap-4 mb-8">
-        <button onClick={() => { playTapSound(); navigate('/games') }} className="group flex items-center gap-5 p-6 rounded-3xl bg-gradient-to-br from-sage-50 to-sage-100/80 dark:from-sage-900/30 dark:to-sage-800/20 border border-sage-200/60 dark:border-sage-700/30 hover:shadow-[0_8px_30px_rgba(132,204,22,0.15)] hover:-translate-y-0.5 transition-all duration-500 text-left">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center flex-shrink-0 shadow-[0_4px_20px_rgba(132,204,22,0.3)] group-hover:scale-110 transition-transform duration-300">
-            <Gamepad2 size={32} className="text-white" />
+        <button onClick={() => { playTapSound(); navigate('/games') }} className="group flex items-center gap-5 p-6 rounded-xl aura-card border-l-4 border-l-leaf hover:-translate-y-0.5 transition-all duration-300 text-left">
+          <div className="w-16 h-16 rounded-lg bg-leaf/15 border-2 border-leaf/40 flex items-center justify-center flex-shrink-0 group-hover:bg-leaf group-hover:[&>svg]:text-ivory transition-all duration-300">
+            <Gamepad2 size={30} className="text-leaf" />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-charcoal-800 dark:text-white mb-1">{t('Play a Game')}</h2>
+            <div className="aura-meta mb-1">{t('Gentle exercise')}</div>
+            <h2 className="text-xl font-bold font-serif-display text-ink dark:text-white mb-1">{t('Play a Game')}</h2>
             <p className="text-charcoal-400 dark:text-charcoal-500 text-sm">
               {gamesPlayed > 0 ? t("You're doing great! Let's play again!") : t('Start with a fun memory game!')}
             </p>
           </div>
-          <ChevronRight size={24} className="text-sage-400 group-hover:translate-x-1 transition-transform" />
+          <ChevronRight size={24} className="text-leaf group-hover:translate-x-1 transition-transform" />
         </button>
 
-        <button onClick={() => { playTapSound(); navigate('/assistant') }} className="group flex items-center gap-5 p-6 rounded-3xl bg-gradient-to-br from-sky-50 to-blue-100/80 dark:from-sky-900/30 dark:to-blue-800/20 border border-sky-200/60 dark:border-sky-700/30 hover:shadow-[0_8px_30px_rgba(59,130,246,0.15)] hover:-translate-y-0.5 transition-all duration-500 text-left">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center flex-shrink-0 shadow-[0_4px_20px_rgba(59,130,246,0.3)] group-hover:scale-110 transition-transform duration-300">
-            <Mic size={32} className="text-white" />
+        <button onClick={() => { playTapSound(); navigate('/assistant') }} className="group flex items-center gap-5 p-6 rounded-xl aura-card border-l-4 border-l-amber-400 hover:-translate-y-0.5 transition-all duration-300 text-left">
+          <div className="w-16 h-16 rounded-lg bg-amber-400/15 border-2 border-amber-400/40 flex items-center justify-center flex-shrink-0 group-hover:bg-amber-400 group-hover:[&>svg]:text-ivory transition-all duration-300">
+            <Mic size={30} className="text-amber-500" />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-charcoal-800 dark:text-white mb-1">{t('Talk to Me')}</h2>
+            <div className="aura-meta mb-1">{t('Always here to listen')}</div>
+            <h2 className="text-xl font-bold font-serif-display text-ink dark:text-white mb-1">{t('Talk to Me')}</h2>
             <p className="text-charcoal-400 dark:text-charcoal-500 text-sm">{t('Ask me anything - set reminders, check the date, or just chat.')}</p>
           </div>
-          <ChevronRight size={24} className="text-sky-400 group-hover:translate-x-1 transition-transform" />
+          <ChevronRight size={24} className="text-amber-400 group-hover:translate-x-1 transition-transform" />
         </button>
 
-        <button onClick={() => { playTapSound(); navigate('/family') }} className="group flex items-center gap-5 p-6 rounded-3xl bg-gradient-to-br from-rose-50 to-pink-100/80 dark:from-rose-900/30 dark:to-pink-800/20 border border-rose-200/60 dark:border-rose-700/30 hover:shadow-[0_8px_30px_rgba(244,114,182,0.15)] hover:-translate-y-0.5 transition-all duration-500 text-left">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-rose-400 to-pink-600 flex items-center justify-center flex-shrink-0 shadow-[0_4px_20px_rgba(244,114,182,0.3)] group-hover:scale-110 transition-transform duration-300">
-            <Users size={32} className="text-white" />
+        <button onClick={() => { playTapSound(); navigate('/family') }} className="group flex items-center gap-5 p-6 rounded-xl aura-card border-l-4 border-l-rose-400 hover:-translate-y-0.5 transition-all duration-300 text-left">
+          <div className="w-16 h-16 rounded-lg bg-rose-400/15 border-2 border-rose-400/40 flex items-center justify-center flex-shrink-0 group-hover:bg-rose-400 group-hover:[&>svg]:text-ivory transition-all duration-300">
+            <Users size={30} className="text-rose-400" />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-charcoal-800 dark:text-white mb-1">{t('My Family')}</h2>
+            <div className="aura-meta mb-1">{t('The people who matter')}</div>
+            <h2 className="text-xl font-bold font-serif-display text-ink dark:text-white mb-1">{t('My Family')}</h2>
             <p className="text-charcoal-400 dark:text-charcoal-500 text-sm">{t('See photos and messages from your loved ones.')}</p>
           </div>
           <ChevronRight size={24} className="text-rose-400 group-hover:translate-x-1 transition-transform" />
@@ -282,45 +290,43 @@ export default function PatientHome() {
       {/* ── The Memory Garden — the living identity of AURA ── */}
       <div className="home-anim mb-8">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-semibold text-charcoal-500 dark:text-charcoal-400 uppercase tracking-wider">{t('Your Memory Garden')}</h3>
-          <Link to="/welcome" className="text-xs font-semibold text-amber-600 hover:text-amber-700 flex items-center gap-1">
+          <h3 className="font-serif-display text-lg text-ink dark:text-white">{t('Your Memory Garden')}</h3>
+          <Link to="/welcome" className="aura-meta text-leaf hover:underline">
             {t('step inside')} →
           </Link>
         </div>
         <MemoryGarden compact />
-        <p className="text-xs text-charcoal-400 dark:text-charcoal-500 mt-2 text-center">
-          {t('The more a memory is revisited, the more the garden grows.')}
-        </p>
+        <p className="aura-meta mt-2 text-center">{t('The more a memory is revisited, the more the garden grows.')}</p>
       </div>
 
       {/* Suggested for you */}
       <div className="home-anim mb-6">
-        <button onClick={() => { playTapSound(); navigate('/games') }} className="group block w-full p-5 rounded-3xl bg-gradient-to-br from-white/70 to-white/40 dark:from-white/10 dark:to-white/5 backdrop-blur-xl border border-white/50 dark:border-white/10 hover:shadow-[0_8px_30px_rgba(132,204,22,0.15)] hover:-translate-y-0.5 transition-all duration-500">
+        <button onClick={() => { playTapSound(); navigate('/games') }} className="group block w-full p-5 rounded-xl aura-card hover:-translate-y-0.5 transition-all duration-300">
           <div className="flex items-center gap-2 mb-3">
-            <Sparkles size={14} className="text-amber-500" />
-            <span className="text-xs font-semibold text-amber-600 uppercase tracking-wider">{t('Suggested for you')}</span>
+            <span className="text-xs font-bold text-amber-600 uppercase tracking-widest">{t('Suggested for you')}</span>
+            <div className="flex-1 h-px bg-ink/10" />
           </div>
           <div className="flex items-center gap-4">
-            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${suggestedGame().color} flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+            <div className={`w-14 h-14 rounded-lg bg-gradient-to-br ${suggestedGame().color} flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-300`}>
               <span className="text-2xl" role="img" aria-label={suggestedGame().name}>{suggestedGame().icon}</span>
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-bold text-charcoal-800 dark:text-white">{t(suggestedGame().name)}</h3>
+              <h3 className="text-lg font-bold font-serif-display text-ink dark:text-white">{t(suggestedGame().name)}</h3>
               <p className="text-sm text-charcoal-400 dark:text-charcoal-500">{t(suggestedGame().tip)}</p>
             </div>
-            <ChevronRight size={22} className="text-sage-400 group-hover:translate-x-1 transition-transform" />
+            <ChevronRight size={22} className="text-leaf group-hover:translate-x-1 transition-transform" />
           </div>
         </button>
       </div>
 
       {lastActivity && (
         <div className="home-anim mb-6">
-          <button onClick={() => navigate(lastActivity)} className="w-full flex items-center gap-4 p-4 rounded-2xl bg-white/60 dark:bg-white/10 backdrop-blur-xl border border-white/50 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/15 transition-all duration-300 text-left">
-            <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+          <button onClick={() => navigate(lastActivity)} className="w-full flex items-center gap-4 p-4 rounded-xl aura-card transition-all duration-300 text-left">
+            <div className="w-12 h-12 rounded-lg bg-amber-400/15 border border-amber-400/30 flex items-center justify-center">
               <Volume2 size={20} className="text-amber-500" />
             </div>
             <div>
-              <p className="text-sm font-medium text-charcoal-800 dark:text-white">{t('Continue where you left off')}</p>
+              <p className="text-sm font-medium text-ink dark:text-white">{t('Continue where you left off')}</p>
               <p className="text-xs text-charcoal-400 dark:text-charcoal-500">{t('Pick up right where you stopped')}</p>
             </div>
           </button>
@@ -329,14 +335,14 @@ export default function PatientHome() {
 
       {pendingReminders.length > 0 && (
         <div className="home-anim mb-6">
-          <h3 className="text-sm font-semibold text-charcoal-500 dark:text-charcoal-400 mb-3 uppercase tracking-wider">{t('Reminders')}</h3>
+          <h3 className="aura-meta mb-3">{t('Reminders')}</h3>
           <div className="space-y-2">
             {pendingReminders.map(r => (
-              <div key={r.id} className="flex items-center gap-3 p-3 rounded-xl bg-white/50 dark:bg-white/5 backdrop-blur-sm border border-white/40 dark:border-white/10">
+              <div key={r.id} className="flex items-center gap-3 p-3 rounded-lg aura-card border-l-4 border-l-rose-400">
                 <Pill size={18} className="text-rose-400 flex-shrink-0" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-charcoal-800 dark:text-white">{t(r.title)}</p>
-                  {r.time && <p className="text-xs text-charcoal-400">{r.time}</p>}
+                  <p className="text-sm font-medium text-ink dark:text-white">{t(r.title)}</p>
+                  {r.time && <p className="text-xs text-charcoal-400 aura-meta">{r.time}</p>}
                 </div>
               </div>
             ))}
@@ -346,15 +352,15 @@ export default function PatientHome() {
 
       {unreadMessages.length > 0 && (
         <div className="home-anim mb-6">
-          <h3 className="text-sm font-semibold text-charcoal-500 dark:text-charcoal-400 mb-3 uppercase tracking-wider">{t('Messages from Family')}</h3>
+          <h3 className="aura-meta mb-3">{t('Messages from Family')}</h3>
           <div className="space-y-2">
             {unreadMessages.map(msg => (
-              <div key={msg.id} className="flex items-center gap-3 p-3 rounded-xl bg-white/50 dark:bg-white/5 backdrop-blur-sm border border-white/40 dark:border-white/10">
-                <div className="w-10 h-10 rounded-full bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center flex-shrink-0">
+              <div key={msg.id} className="flex items-center gap-3 p-3 rounded-lg aura-card border-l-4 border-l-rose-400">
+                <div className="w-10 h-10 rounded-full bg-rose-400/15 border border-rose-400/30 flex items-center justify-center flex-shrink-0">
                   <Heart size={16} className="text-rose-400" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-charcoal-800 dark:text-white">{msg.from}</p>
+                  <p className="text-sm font-medium text-ink dark:text-white">{msg.from}</p>
                   <p className="text-xs text-charcoal-400 truncate">{t(msg.text)}</p>
                 </div>
                 <div className="w-2 h-2 rounded-full bg-rose-400 flex-shrink-0" />
@@ -366,15 +372,15 @@ export default function PatientHome() {
 
       {unreadPhotos.length > 0 && (
         <div className="home-anim mb-6">
-          <h3 className="text-sm font-semibold text-charcoal-500 dark:text-charcoal-400 mb-3 uppercase tracking-wider">{t('Photos from Family')}</h3>
+          <h3 className="aura-meta mb-3">{t('Photos from Family')}</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {unreadPhotos.map((m) => (
-              <div key={m.id} className="group rounded-2xl overflow-hidden bg-white/60 dark:bg-white/5 border border-white/40 dark:border-white/10">
+              <div key={m.id} className="group rounded-lg overflow-hidden aura-card !p-0">
                 <div className="aspect-square bg-charcoal-100 dark:bg-charcoal-800 flex items-center justify-center text-4xl">
                   <img src={m.photoData} alt={m.caption} className="w-full h-full object-cover" />
                 </div>
-                <div className="px-3 py-2 border-t border-white/40 dark:border-white/10">
-                  <p className="text-xs font-medium text-charcoal-700 dark:text-white truncate">{m.from}</p>
+                <div className="px-3 py-2 border-t border-ink/10">
+                  <p className="text-xs font-medium text-ink dark:text-white truncate">{m.from}</p>
                   <p className="text-[11px] text-charcoal-400 truncate">{t(m.caption)}</p>
                 </div>
               </div>
@@ -385,12 +391,12 @@ export default function PatientHome() {
 
       {!moodOpen && !mood && (
         <div className="home-anim mb-6">
-          <button onClick={() => setMoodOpen(true)} className="w-full flex items-center gap-4 p-4 rounded-2xl bg-white/60 dark:bg-white/10 backdrop-blur-xl border border-white/50 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/15 transition-all duration-300 text-left">
-            <div className="w-12 h-12 rounded-xl bg-sage-100 dark:bg-sage-900/30 flex items-center justify-center">
-              <Smile size={22} className="text-sage-500" />
+          <button onClick={() => setMoodOpen(true)} className="w-full flex items-center gap-4 p-4 rounded-xl aura-card transition-all duration-300 text-left">
+            <div className="w-12 h-12 rounded-lg bg-leaf/15 border border-leaf/30 flex items-center justify-center">
+              <Smile size={22} className="text-leaf" />
             </div>
             <div>
-              <p className="text-sm font-medium text-charcoal-800 dark:text-white">{t('How are you feeling today?')}</p>
+              <p className="text-sm font-medium text-ink dark:text-white">{t('How are you feeling today?')}</p>
               <p className="text-xs text-charcoal-400">{t('A quick check-in to start the day')}</p>
             </div>
           </button>
@@ -398,10 +404,10 @@ export default function PatientHome() {
       )}
 
       {moodOpen && (
-        <div className="home-anim mb-6 p-5 rounded-2xl bg-white/80 dark:bg-white/10 backdrop-blur-xl border border-white/60 dark:border-white/10">
+        <div className="home-anim mb-6 p-5 rounded-xl aura-card">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-semibold text-charcoal-700 dark:text-white">{t('How are you feeling today?')}</h3>
-            <button onClick={() => { setMoodOpen(false); setMoodChoice('') }} className="p-1 rounded-full hover:bg-white/60 text-charcoal-400" aria-label={t('Close')}>
+            <h3 className="text-sm font-semibold text-ink dark:text-white">{t('How are you feeling today?')}</h3>
+            <button onClick={() => { setMoodOpen(false); setMoodChoice('') }} className="p-1 rounded-full hover:bg-ink/5 text-charcoal-400" aria-label={t('Close')}>
               <X size={16} />
             </button>
           </div>
@@ -415,7 +421,7 @@ export default function PatientHome() {
                   setMoodChoice('')
                   speakText(t('Feeling {m}', { m: moodLabel(m) }), language)
                 }}
-                className={`py-3 rounded-xl border-2 text-sm font-medium capitalize transition-all ${moodChoice === m ? 'bg-sage-100 border-sage-500 scale-105' : 'bg-white/70 border-white/50 hover:bg-white hover:border-sage-300'}`}
+                className={`py-3 rounded-lg border-2 text-sm font-medium capitalize transition-all ${moodChoice === m ? 'bg-leaf/10 border-leaf scale-105' : 'bg-transparent border-ink/15 hover:border-leaf/50'}`}
               >
                 {m === 'great' ? '😊' : m === 'okay' ? '🙂' : m === 'tired' ? '😴' : '🤔'} {moodLabel(m)}
               </button>
@@ -427,9 +433,9 @@ export default function PatientHome() {
         </div>
       )}
 
-      <div className="home-anim text-center mt-8 p-6 rounded-2xl bg-white/30 dark:bg-white/5 backdrop-blur-sm border border-white/30 dark:border-white/10">
-        <Heart size={24} className="text-rose-300 mx-auto mb-2" />
-        <p className="text-charcoal-500 dark:text-charcoal-400 text-sm italic">"{t(getDailyEncouragement())}"</p>
+      <div className="home-anim text-center mt-8 p-6 rounded-xl border-2 border-dashed border-ink/15">
+        <Heart size={22} className="text-rose-400 mx-auto mb-2" />
+        <p className="font-serif-display italic text-ink/70 dark:text-charcoal-400 text-lg">"{t(getDailyEncouragement())}"</p>
       </div>
     </div>
   )

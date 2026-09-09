@@ -897,6 +897,20 @@ const HI: Record<string, string> = {
   'Tap "Add to Home screen" or "Install app"': '"होम स्क्रीन पर जोड़ें" या "ऐप इंस्टॉल करें" दबाएं',
   'Choose "Install app" or "Cast, save and share → Install"': '"ऐप इंस्टॉल करें" चुनें',
   'Look for "Install app" or "Add to Home Screen".': '"ऐप इंस्टॉल करें" या "होम स्क्रीन पर जोड़ें" ढूंढें।',
+
+  /* ── Editorial redesign strings ── */
+  'A quiet door': 'एक शांत द्वार',
+  'Every memory': 'हर याद',
+  'matters.': 'अनमोल है।',
+  '№': 'क्रमांक',
+  '№ 02 — Your page': 'क्रमांक 02 — आपका पृष्ठ',
+  'REMEMBER WHAT MATTERS': 'जो अनमोल है उसे याद रखें',
+  'Gentle exercise': 'कोमल व्यायाम',
+  'Always here to listen': 'सुनने के लिए सदा तैयार',
+  'The people who matter': 'जो लोग अनमोल हैं',
+  'Gentle exercise for the mind': 'मन के लिए कोमल व्यायाम',
+  'optional': 'वैकल्पिक',
+  'A separate PIN for caregiver access. Only caregivers should know this.': 'देखभालकर्ता के लिए अलग पिन। यह केवल देखभालकर्ता को पता होना चाहिए।',
 }
 
 export function TranslationProvider({ children }: { children: ReactNode }) {
