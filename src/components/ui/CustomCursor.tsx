@@ -1,195 +1,107 @@
 import { useEffect, useRef, useState } from 'react'
 
-interface TrailParticle {
-  x: number; y: number
-  size: number
-  rot: number
-  rotSpeed: number
-  vy: number
-  vx: number
-  opacity: number
-  life: number
-  maxLife: number
-  hue: number
-}
+const RING_TRANSITION = 'transform 0.22s cubic-bezier(0.25, 0.1, 0.25, 1), width 0.25s, height 0.25s, margin 0.25s, border-color 0.25s, background 0.25s'
 
+/**
+ * The AURA cursor — a pen on paper.
+ *
+ * A small ink dot rides exactly under the pointer; a thin ring glides a
+ * moment behind it, the way a hand circles before it writes. Over things
+ * you can press, the ring quietly fills with sage. No glow, no particles,
+ * no animation loop — just two GPU transforms and a CSS transition.
+ */
 export default function CustomCursor() {
-  const [isHovering, setIsHovering] = useState(false)
-  const [isHidden, setIsHidden] = useState(false)
-  const trailRef = useRef<HTMLCanvasElement>(null)
-  const mouseRef = useRef({ x: -100, y: -100 })
-  const particlesRef = useRef<TrailParticle[]>([])
-  const lastSpawnRef = useRef(0)
-  const animRef = useRef(0)
+  const [interactive, setInteractive] = useState(false)
+  const [hidden, setHidden] = useState(true)
+  const [reducedMotion, setReducedMotion] = useState(false)
+  const dotRef = useRef<HTMLDivElement>(null)
+  const ringRef = useRef<HTMLDivElement>(null)
+  const ringPos = useRef({ x: -100, y: -100 })
 
   useEffect(() => {
-    if ('ontouchstart' in window) {
-      setIsHidden(true)
+    // Touch devices use their finger — no drawn cursor at all
+    if ('ontouchstart' in window && window.matchMedia('(pointer: coarse)').matches) {
+      setHidden(false)
       return
     }
 
-    const orb = document.getElementById('cursor-orb')!
-    const dot = document.getElementById('cursor-dot')!
-    const canvas = trailRef.current!
-    const ctx = canvas.getContext('2d')!
-
-    const resize = () => {
-      canvas.width = window.innerWidth * (window.devicePixelRatio || 1)
-      canvas.height = window.innerHeight * (window.devicePixelRatio || 1)
-      canvas.style.width = window.innerWidth + 'px'
-      canvas.style.height = window.innerHeight + 'px'
-      ctx.setTransform(window.devicePixelRatio || 1, 0, 0, window.devicePixelRatio || 1, 0, 0)
-    }
-    resize()
-    window.addEventListener('resize', resize)
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    setReducedMotion(mq.matches)
+    const onMqChange = () => setReducedMotion(mq.matches)
+    mq.addEventListener?.('change', onMqChange)
 
     const onMove = (e: MouseEvent) => {
-      mouseRef.current.x = e.clientX
-      mouseRef.current.y = e.clientY
-      // Use transform instead of left/top for GPU-accelerated smooth movement
-      orb.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`
-      dot.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`
-    }
+      setHidden(false)
+      const { clientX: x, clientY: y } = e
+      if (dotRef.current) dotRef.current.style.transform = `translate(${x}px, ${y}px)`
 
-    const onEnterInteractive = () => setIsHovering(true)
-    const onLeaveInteractive = () => setIsHovering(false)
-
-    window.addEventListener('mousemove', onMove)
-
-    // Spawn blossom trail particles
-    const spawnTrail = (x: number, y: number) => {
-      const now = performance.now()
-      if (now - lastSpawnRef.current < 120) return
-      lastSpawnRef.current = now
-
-      particlesRef.current.push({
-        x: x + (Math.random() - 0.5) * 12,
-        y: y + (Math.random() - 0.5) * 12,
-        size: 2.5 + Math.random() * 4,
-        rot: Math.random() * Math.PI * 2,
-        rotSpeed: (Math.random() - 0.5) * 0.05,
-        vy: 0.15 + Math.random() * 0.35,
-        vx: (Math.random() - 0.5) * 0.25,
-        opacity: 0.3 + Math.random() * 0.2,
-        life: 0,
-        maxLife: 35 + Math.random() * 25,
-        hue: Math.random() > 0.5 ? 330 + Math.random() * 20 : 210 + Math.random() * 30,
-      })
-    }
-
-    const drawPetal = (p: TrailParticle) => {
-      ctx.save()
-      ctx.translate(p.x, p.y)
-      ctx.rotate(p.rot)
-      ctx.globalAlpha = p.opacity
-      ctx.fillStyle = `hsla(${p.hue}, 70%, 78%, 0.9)`
-      ctx.beginPath()
-      ctx.moveTo(0, -p.size)
-      ctx.bezierCurveTo(p.size * 0.5, -p.size * 0.3, p.size * 0.4, p.size * 0.3, 0, p.size)
-      ctx.bezierCurveTo(-p.size * 0.4, p.size * 0.3, -p.size * 0.5, -p.size * 0.3, 0, -p.size)
-      ctx.fill()
-      ctx.fillStyle = `rgba(255,255,255,${p.opacity * 0.25})`
-      ctx.beginPath()
-      ctx.ellipse(-p.size * 0.08, -p.size * 0.1, p.size * 0.08, p.size * 0.18, -0.3, 0, Math.PI * 2)
-      ctx.fill()
-      ctx.restore()
-    }
-
-    const animate = () => {
-      const mx = mouseRef.current.x
-      const my = mouseRef.current.y
-      if (mx > 0 && my > 0) spawnTrail(mx, my)
-
-      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
-
-      particlesRef.current = particlesRef.current.filter(p => {
-        p.life++
-        const progress = p.life / p.maxLife
-        if (progress < 0.12) p.opacity = (progress / 0.12) * 0.5
-        else if (progress > 0.6) p.opacity = Math.max(0, 0.5 * (1 - (progress - 0.6) / 0.4))
-        else p.opacity = 0.5
-
-        p.x += p.vx + Math.sin(p.life * 0.06) * 0.25
-        p.y += p.vy
-        p.vy += 0.006
-        p.rot += p.rotSpeed
-
-        if (p.life >= p.maxLife) return false
-        drawPetal(p)
-        return true
-      })
-
-      animRef.current = requestAnimationFrame(animate)
-    }
-    animate()
-
-    const interval = setInterval(() => {
-      document.querySelectorAll('a, button, [data-cursor="pointer"], input, select, textarea').forEach(el => {
-        if (!(el as any).__cursorBound) {
-          el.addEventListener('mouseenter', onEnterInteractive)
-          el.addEventListener('mouseleave', onLeaveInteractive)
-          ;(el as any).__cursorBound = true
+      // Ring trails behind via CSS transition — instant for reduced motion
+      if (ringRef.current) {
+        if (reducedMotion) {
+          ringRef.current.style.transform = `translate(${x}px, ${y}px)`
+        } else if (Math.hypot(x - ringPos.current.x, y - ringPos.current.y) > 60) {
+          // If the pointer jumped (e.g., window re-entry), catch up silently
+          ringPos.current = { x, y }
+          ringRef.current.style.transition = 'none'
+          ringRef.current.style.transform = `translate(${x}px, ${y}px)`
+          requestAnimationFrame(() => {
+            if (ringRef.current) ringRef.current.style.transition = RING_TRANSITION
+          })
         }
-      })
-    }, 1000)
+      }
+
+      // Interactive hover via delegation — one listener, no polling
+      const target = e.target as Element | null
+      const isInteractive = !!target?.closest?.('a, button, input, select, textarea, label, [role="button"], [role="switch"]')
+      setInteractive(prev => (prev === isInteractive ? prev : isInteractive))
+    }
+
+    const onLeave = () => setHidden(true)
+    window.addEventListener('mousemove', onMove, { passive: true })
+    document.documentElement.addEventListener('mouseleave', onLeave)
 
     return () => {
       window.removeEventListener('mousemove', onMove)
-      window.removeEventListener('resize', resize)
-      cancelAnimationFrame(animRef.current)
-      clearInterval(interval)
+      document.documentElement.removeEventListener('mouseleave', onLeave)
+      mq.removeEventListener?.('change', onMqChange)
     }
-  }, [])
+  }, [reducedMotion])
 
-  if (isHidden) return null
-
-  const orbSize = isHovering ? 56 : 44
-  const dotSize = isHovering ? 8 : 6
+  if (hidden && 'ontouchstart' in window) return null
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-[9999] block" aria-hidden>
-      {/* Particle trail canvas */}
-      <canvas
-        ref={trailRef}
-        className="absolute inset-0"
-        style={{ pointerEvents: 'none' }}
-      />
-      {/* Outer glow orb — uses transform for smooth GPU-accelerated movement */}
+    <div className="pointer-events-none fixed inset-0 z-[9999]" aria-hidden>
+      {/* Trailing ring — the hand circling before it writes */}
       <div
-        id="cursor-orb"
+        ref={ringRef}
         className="absolute rounded-full"
         style={{
-          width: orbSize,
-          height: orbSize,
-          marginLeft: -orbSize / 2,
-          marginTop: -orbSize / 2,
-          background: isHovering
-            ? 'radial-gradient(circle, rgba(251,207,232,0.45) 0%, rgba(249,168,212,0.2) 40%, rgba(255,255,255,0.08) 70%, transparent 100%)'
-            : 'radial-gradient(circle, rgba(244,114,182,0.4) 0%, rgba(236,72,153,0.18) 40%, rgba(255,255,255,0.06) 70%, transparent 100%)',
-          boxShadow: isHovering
-            ? '0 0 20px 6px rgba(251,207,232,0.25), 0 0 50px 15px rgba(249,168,212,0.12)'
-            : '0 0 20px 6px rgba(236,72,153,0.2), 0 0 50px 15px rgba(244,114,182,0.1)',
+          width: interactive ? 44 : 34,
+          height: interactive ? 44 : 34,
+          marginLeft: interactive ? -22 : -17,
+          marginTop: interactive ? -22 : -17,
+          border: `1.5px solid ${interactive ? 'rgba(124, 154, 109, 0.85)' : 'rgba(23, 23, 23, 0.35)'}`,
+          background: interactive ? 'rgba(184, 217, 154, 0.14)' : 'transparent',
+          transition: reducedMotion
+            ? 'width 0.2s, height 0.2s, margin 0.2s, border-color 0.2s, background 0.2s'
+            : RING_TRANSITION,
           willChange: 'transform',
-          transition: 'width 0.4s cubic-bezier(0.25,0.1,0.25,1), height 0.4s cubic-bezier(0.25,0.1,0.25,1), background 0.4s, box-shadow 0.4s',
+          opacity: hidden ? 0 : 1,
         }}
       />
-      {/* Solid center dot — uses transform for smooth GPU-accelerated movement */}
+      {/* The pen tip — a small ink dot */}
       <div
-        id="cursor-dot"
+        ref={dotRef}
         className="absolute rounded-full"
         style={{
-          width: dotSize,
-          height: dotSize,
-          marginLeft: -dotSize / 2,
-          marginTop: -dotSize / 2,
-          background: isHovering
-            ? 'radial-gradient(circle, #F472B6 30%, #EC4899 100%)'
-            : 'radial-gradient(circle, #EC4899 30%, #DB2777 100%)',
-          boxShadow: isHovering
-            ? '0 0 8px 3px rgba(236,72,153,0.5), 0 0 16px 6px rgba(236,72,153,0.2)'
-            : '0 0 6px 2px rgba(236,72,153,0.4), 0 0 12px 4px rgba(236,72,153,0.15)',
+          width: 6,
+          height: 6,
+          marginLeft: -3,
+          marginTop: -3,
+          background: interactive ? '#5d7a51' : '#171717',
+          transition: 'background 0.2s, opacity 0.2s',
           willChange: 'transform',
-          transition: 'width 0.3s, height 0.3s, background 0.3s, box-shadow 0.3s',
+          opacity: hidden ? 0 : 1,
         }}
       />
     </div>
