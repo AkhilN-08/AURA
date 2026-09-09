@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Bell, Plus, Trash2, Check, Clock, Mic, MicOff, Send, Volume2, VolumeX, RotateCcw, Navigation, ListChecks } from 'lucide-react'
+import { Bell, Plus, Trash2, Check, Clock, Mic, Send, Volume2, VolumeX, RotateCcw, ListChecks } from 'lucide-react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { useVoiceAgent } from '../hooks/useVoiceAgent'
 import type { Reminder, DailyTask } from '../data/models'
@@ -158,439 +158,357 @@ export default function Assistant() {
     return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   }
 
+  const SUGGESTIONS = [
+    { label: t("What's on today?"), cmd: 'What are my reminders for today?' },
+    { label: t('Call my daughter'), cmd: 'Call daughter' },
+    { label: t('Remind me later'), cmd: 'Remind me to ' },
+    { label: t("Let's play a memory game"), cmd: "Let's play a memory game" },
+  ]
+
   return (
-    <div className="min-h-screen pt-24 pb-16 px-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="section-heading mb-4">
-            {t('Voice')} <span className="text-gradient">{t('Assistant')}</span>
+    <div className="room room-listen px-4">
+      <div className="max-w-3xl mx-auto">
+        {/* ── The room header — quiet, human ── */}
+        <header className="text-center mb-10">
+          <div className="aura-meta mb-4">{t('Memory Assistant')}</div>
+          <h1 className="font-serif-display text-4xl md:text-5xl text-ink dark:text-white leading-[1.1] mb-3">
+            {voice.messages.length === 0 ? (
+              <>"{t("I'm here.")}"<br />{t('What would you like to do?')}</>
+            ) : (
+              t('Here with you.')
+            )}
           </h1>
-          <p className="section-subheading mx-auto">
-            {t("Speak naturally — I'll set reminders, make calls, and help with your daily routine.")}
-          </p>
-        </div>
+          <div className="aura-rule w-16 mx-auto my-5" />
+        </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-          {/* Left: Voice Chat (3 cols) */}
-          <div className="lg:col-span-3 space-y-4">
-            {/* Voice Interface Card */}
-            <div className="card overflow-hidden">
-              {/* Chat Messages */}
-              <div className="h-[400px] overflow-y-auto p-4 space-y-3" id="voice-chat-scroll">
-                {voice.messages.length === 0 && (
-                  <div className="flex flex-col items-center justify-center h-full text-center">
-                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-pink-100 flex items-center justify-center mb-4">
-                      <span className="text-4xl">🎙️</span>
-                    </div>
-                    <p className="text-charcoal-600 font-medium mb-2">{t("Hi! I'm your voice assistant")}</p>
-                    <p className="text-charcoal-400 text-sm max-w-xs">
-                      {t('Tap the microphone and speak naturally. Try saying:')}
-                    </p>
-                    <div className="mt-3 space-y-2">
-                      {[
-                        t('"Remind me to take medicine at 8 AM"'),
-                        t('"Call mom"'),
-                        t('"Set an alarm for 7:00"'),
-                        t('"Let\'s play a memory game"'),
-                        t('"What time is it?"'),
-                      ].map((example, i) => (
-                        <button
-                          key={i}
-                          onClick={() => voice.sendText(example.replace(/"/g, ''))}
-                          className="block mx-auto text-xs text-blue-500 bg-blue-50 hover:bg-blue-100 rounded-full px-3 py-1.5 transition-colors"
-                        >
-                          {example}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
+        {/* ── The conversation — AURA beside you, not a panel ── */}
+        {voice.messages.length === 0 && !voice.isListening ? (
+          /* First contact: one big mic, nothing else competing */
+          <section className="text-center mb-14">
+            <button
+              onClick={voice.toggleListening}
+              disabled={!voice.isSupported}
+              className={`relative mx-auto w-40 h-40 rounded-full flex items-center justify-center transition-all duration-500 mb-8 ${
+                voice.isSupported
+                  ? 'bg-[#7d9bbd] text-white hover:bg-[#6b8aad] active:scale-95 aura-breath'
+                  : 'bg-ink/20 text-ink/40 cursor-not-allowed'
+              }`}
+              aria-label={t('Start voice input')}
+            >
+              <Mic size={56} strokeWidth={1.6} />
+            </button>
+            <div className="aura-meta mb-2">{t('TAP TO SPEAK')}</div>
+            <p className="text-charcoal-500 dark:text-charcoal-300 text-lg max-w-md mx-auto mb-10">
+              {voice.error ? voice.error : t('Speak naturally — I will set reminders, make calls, and help with your day.')}
+            </p>
 
-                {voice.messages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                  >
-                    <div
-                      className={`max-w-[80%] rounded-2xl px-4 py-2.5 ${
-                        msg.role === 'user'
-                          ? 'bg-gradient-to-r from-sage-400 to-sage-600 text-white rounded-br-md'
-                          : 'bg-white/60 backdrop-blur-sm border border-sage-100 text-charcoal-700 rounded-bl-md shadow-sm'
-                      }`}
-                    >
-                      {msg.role === 'agent' && (
-                        <div className="flex items-center gap-1.5 mb-1">
-                          <span className="text-xs">🤖</span>
-                          <span className="text-[10px] font-medium text-sage-400 uppercase tracking-wide">AURA-NER</span>
-                        </div>
-                      )}
-                      <p className="text-sm leading-relaxed">{msg.text}</p>
-                      <div className={`flex items-center gap-2 mt-1 ${msg.role === 'user' ? 'justify-end' : ''}`}>
-                        <span className={`text-[10px] ${msg.role === 'user' ? 'text-white/60' : 'text-charcoal-300'}`}>
-                          {formatTime(msg.timestamp)}
-                        </span>
-                        {msg.action?.type === 'reminder' && (
-                          <span className="text-[10px] bg-green-100 text-green-600 px-1.5 py-0.5 rounded-full">✓ {t('Reminder saved')}</span>
-                        )}
-                        {msg.action?.type === 'call' && (
-                          <span className="text-[10px] bg-sage-100 text-sage-600 px-1.5 py-0.5 rounded-full">📞 {t('Calling...')}</span>
-                        )}
-                        {msg.action?.type === 'navigate' && (
-                          <span className="text-[10px] bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded-full">
-                            <Navigation size={8} className="inline" /> {t('Navigating...')}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-
-                {voice.isProcessing && (
-                  <div className="flex justify-start">
-                    <div className="bg-white/60 backdrop-blur-sm border border-sage-100 rounded-2xl rounded-bl-md px-4 py-3 shadow-sm">
-                      <div className="flex items-center gap-2">
-                        <div className="flex gap-1">
-                          <span className="w-1.5 h-1.5 bg-sage-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                          <span className="w-1.5 h-1.5 bg-sage-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                          <span className="w-1.5 h-1.5 bg-sage-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                        </div>
-                        <span className="text-xs text-charcoal-400">{t('Thinking...')}</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div ref={messagesEndRef} />
-              </div>
-
-              {/* Live Transcript */}
-              {voice.isListening && voice.transcript && (
-                <div className="px-4 py-2 bg-sage-50/50 border-t border-sage-100">
-                  <p className="text-xs text-sage-400 mb-0.5">{t('Listening...')}</p>
-                  <p className="text-sm text-charcoal-600 italic">{voice.transcript}</p>
-                </div>
-              )}
-
-              {/* Error */}
-              {voice.error && (
-                <div className="px-4 py-2 bg-red-50 border-t border-red-100 flex items-center justify-between">
-                  <p className="text-xs text-red-500">{voice.error}</p>
-                  <button onClick={voice.clearError} className="text-red-400 hover:text-red-600">
-                    <RotateCcw size={12} />
-                  </button>
-                </div>
-              )}
-
-              {/* Input Bar */}
-              <div className="p-3 border-t border-cream-100 flex items-center gap-2">
-                {/* Microphone Button */}
-                <button
-                  onClick={voice.toggleListening}
-                  disabled={!voice.isSupported}
-                  className={`relative flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${
-                    voice.isListening
-                      ? 'bg-gradient-to-br from-red-400 to-pink-500 text-white shadow-lg shadow-red-200 animate-pulse'
-                      : 'bg-gradient-to-br from-sage-400 to-sage-600 text-white shadow-md shadow-sage-200 hover:shadow-lg hover:scale-105'
-                  } ${!voice.isSupported ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  aria-label={voice.isListening ? t('Stop listening') : t('Start voice input')}
-                >
-                  {voice.isListening ? <MicOff size={20} /> : <Mic size={20} />}
-                  {voice.isListening && (
-                    <span className="absolute inset-0 rounded-full border-2 border-red-400 animate-ping opacity-30" />
-                  )}
-                </button>
-
-                {/* Text Input */}
-                <div className="flex-1 relative">
-                  <input
-                    type="text"
-                    value={textInput}
-                    onChange={e => setTextInput(e.target.value)}
-                    onKeyDown={e => e.key === 'Enter' && handleTextSend()}
-                    placeholder={voice.isListening ? t('Listening...') : t('Type a message or tap mic to speak...')}
-                    className="w-full px-4 py-2.5 rounded-xl bg-cream-50 border border-cream-200 focus:outline-none focus:ring-2 focus:ring-sage-300 text-sm text-charcoal-700 placeholder:text-charcoal-300"
-                    disabled={voice.isListening}
-                  />
-                </div>
-
-                {/* Send Text */}
-                {textInput.trim() && (
-                  <button
-                    onClick={handleTextSend}
-                    className="flex-shrink-0 w-10 h-10 rounded-full bg-sage-500 text-white flex items-center justify-center hover:bg-sage-600 transition-colors"
-                  >
-                    <Send size={16} />
-                  </button>
-                )}
-
-                {/* Voice Toggle */}
-                <button
-                  onClick={() => setVoiceEnabled(!voiceEnabled)}
-                  className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
-                    voiceEnabled ? 'text-sage-500 hover:bg-sage-50' : 'text-charcoal-300 hover:bg-cream-100'
-                  }`}
-                  title={voiceEnabled ? t('Voice output on') : t('Voice output off')}
-                >
-                  {voiceEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
-                </button>
-
-                {/* Clear Chat */}
-                {voice.messages.length > 0 && (
-                  <button
-                    onClick={voice.clearMessages}
-                    className="flex-shrink-0 w-10 h-10 rounded-full text-charcoal-300 hover:text-red-400 hover:bg-red-50 flex items-center justify-center transition-colors"
-                    title={t('Clear conversation')}
-                  >
-                    <RotateCcw size={16} />
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              {[
-                { label: t('Set Reminder'), icon: '⏰', cmd: 'Remind me to ' },
-                { label: t('Make a Call'), icon: '📞', cmd: 'Call ' },
-                { label: t('Play Game'), icon: '🧠', cmd: "Let's play a memory game" },
-                { label: t('What Time?'), icon: '🕐', cmd: 'What time is it?' },
-              ].map((action, i) => (
+            {/* Suggested things to say — the conversation starters */}
+            <div className="max-w-md mx-auto space-y-2">
+              {SUGGESTIONS.map((s, i) => (
                 <button
                   key={i}
-                  onClick={() => {
-                    if (action.cmd.includes('memory game')) {
-                      voice.sendText(action.cmd)
-                    } else {
-                      setTextInput(action.cmd)
-                    }
-                  }}
-                  className="card-hover !py-3 flex flex-col items-center gap-1.5 text-center group"
+                  onClick={() => s.cmd.endsWith(' ') ? setTextInput(s.cmd) : voice.sendText(s.cmd)}
+                  className="w-full text-left px-5 py-3.5 bg-white/70 border border-ink/12 rounded-xl hover:border-[#7d9bbd] hover:bg-white transition-all group"
                 >
-                  <span className="text-xl group-hover:scale-110 transition-transform">{action.icon}</span>
-                  <span className="text-xs font-medium text-charcoal-600">{action.label}</span>
+                  <span className="font-serif-display text-lg text-ink dark:text-white">"{s.label}"</span>
+                  <span className="float-right text-[#7d9bbd] opacity-0 group-hover:opacity-100 transition-opacity">→</span>
                 </button>
               ))}
             </div>
-          </div>
 
-          {/* Right: Tasks + Reminders Panel (2 cols) */}
-          <div className="lg:col-span-2 space-y-4">
-            {/* Today's Tasks */}
-            <div className="card">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm font-semibold text-charcoal-800 flex items-center gap-2">
-                  <ListChecks size={16} className="text-sage-500" />
-                  {t("Today's Tasks")}
-                  {pendingTasks.length > 0 && (
-                    <span className="text-[10px] bg-sage-100 text-sage-600 px-1.5 py-0.5 rounded-full">{pendingTasks.length}</span>
-                  )}
-                </h2>
-                {todayTasks.length > 0 && (
-                  <span className="text-[10px] text-charcoal-300">{t('{a} of {b} done', { a: completedTasks.length, b: todayTasks.length })}</span>
-                )}
-              </div>
+            {/* Fallback text input — quiet, at the bottom */}
+            <div className="max-w-md mx-auto mt-8 flex items-center gap-2">
+              <input
+                type="text"
+                value={textInput}
+                onChange={e => setTextInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleTextSend()}
+                placeholder={t('Or type here...')}
+                className="flex-1 px-4 py-3 bg-transparent border-b-2 border-ink/20 focus:border-[#7d9bbd] focus:outline-none text-ink dark:text-white placeholder:text-ink/30 transition-colors"
+              />
+              {textInput.trim() && (
+                <button onClick={handleTextSend} className="w-11 h-11 rounded-full bg-[#7d9bbd] text-white flex items-center justify-center hover:bg-[#6b8aad] transition-colors" aria-label={t('Send')}>
+                  <Send size={18} />
+                </button>
+              )}
+            </div>
+          </section>
+        ) : (
+          /* Ongoing conversation: the exchange, then the mic again */
+          <section className="mb-14">
+            <div className="max-w-2xl mx-auto space-y-5 mb-10">
+              {voice.messages.map((msg) => (
+                <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[85%] px-5 py-3 ${
+                    msg.role === 'user'
+                      ? 'bg-[#7d9bbd] text-white rounded-2xl rounded-br-sm'
+                      : 'bg-white border border-ink/10 text-ink dark:text-charcoal-100 dark:bg-[#1e1e32] rounded-2xl rounded-bl-sm'
+                  }`}>
+                    {msg.role === 'agent' && (
+                      <div className="aura-meta mb-1 !text-[10px]" style={{ color: '#7d9bbd' }}>AURA</div>
+                    )}
+                    <p className="text-base leading-relaxed">{msg.text}</p>
+                    {msg.action?.type === 'reminder' && (
+                      <div className="aura-meta mt-2 !text-[10px] text-emerald-600">✓ {t('Reminder saved')}</div>
+                    )}
+                    {msg.action?.type === 'call' && (
+                      <div className="aura-meta mt-2 !text-[10px] text-[#5a7ba6]">📞 {t('Calling...')}</div>
+                    )}
+                  </div>
+                </div>
+              ))}
 
-              {/* Task input */}
-              <div className="flex items-center gap-2 mb-3">
+              {voice.isProcessing && (
+                <div className="flex justify-start">
+                  <div className="bg-white border border-ink/10 dark:bg-[#1e1e32] dark:border-white/10 rounded-2xl rounded-bl-sm px-5 py-3">
+                    <div className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 bg-[#7d9bbd] rounded-full animate-bounce" />
+                      <span className="w-1.5 h-1.5 bg-[#7d9bbd] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                      <span className="w-1.5 h-1.5 bg-[#7d9bbd] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                      <span className="text-sm text-charcoal-400 ml-1">{t('Thinking...')}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {voice.isListening && voice.transcript && (
+                <div className="text-center">
+                  <p className="font-serif-display italic text-xl text-ink/60 dark:text-charcoal-300">"{voice.transcript}"</p>
+                </div>
+              )}
+
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* The mic — always reachable in a conversation */}
+            <div className="flex flex-col items-center gap-4">
+              <button
+                onClick={voice.toggleListening}
+                disabled={!voice.isSupported}
+                className={`w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 ${
+                  voice.isListening
+                    ? 'bg-[#5a7ba6] text-white aura-breath-fast'
+                    : 'bg-[#7d9bbd] text-white hover:bg-[#6b8aad] active:scale-95 aura-breath'
+                } ${!voice.isSupported ? 'opacity-40 cursor-not-allowed' : ''}`}
+                aria-label={voice.isListening ? t('Stop listening') : t('Start voice input')}
+              >
+                <Mic size={36} strokeWidth={1.6} />
+              </button>
+              <div className="aura-meta">{voice.isListening ? t('LISTENING…') : t('TAP TO SPEAK')}</div>
+              {voice.error && (
+                <p className="text-sm text-red-600 flex items-center gap-2">
+                  {voice.error}
+                  <button onClick={voice.clearError} className="underline"><RotateCcw size={12} /></button>
+                </p>
+              )}
+
+              <div className="flex items-center gap-3 mt-2">
                 <input
                   type="text"
-                  value={newTaskTitle}
-                  onChange={e => setNewTaskTitle(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && addTask()}
-                  placeholder={t('Add a task for today...')}
-                  className="flex-1 px-3 py-2 rounded-lg bg-cream-50 border border-cream-200 text-sm focus:outline-none focus:ring-2 focus:ring-sage-300 placeholder:text-charcoal-300"
+                  value={textInput}
+                  onChange={e => setTextInput(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && handleTextSend()}
+                  placeholder={voice.isListening ? t('Listening...') : t('Or type here...')}
+                  className="px-4 py-2.5 bg-transparent border-b-2 border-ink/20 focus:border-[#7d9bbd] focus:outline-none text-ink dark:text-white placeholder:text-ink/30 w-64 transition-colors"
+                  disabled={voice.isListening}
                 />
-                <button
-                  onClick={addTask}
-                  disabled={!newTaskTitle.trim()}
-                  className="w-8 h-8 rounded-lg bg-sage-500 text-white flex items-center justify-center hover:bg-sage-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  <Plus size={14} />
-                </button>
-              </div>
-
-              {/* Task list */}
-              {todayTasks.length > 0 && (
-                <div className="space-y-1.5">
-                  {pendingTasks.map(task => (
-                    <div key={task.id} className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-cream-50/50 transition-colors group">
-                      <button
-                        onClick={() => toggleTask(task.id)}
-                        className="w-5 h-5 rounded-md border-2 border-cream-300 hover:border-sage-400 flex items-center justify-center transition-colors flex-shrink-0"
-                      />
-                      <span className="text-sm text-charcoal-700 flex-1 truncate">{task.title}</span>
-                      <button
-                        onClick={() => deleteTask(task.id)}
-                        className="p-1 rounded hover:bg-red-50 text-charcoal-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
-                      >
-                        <Trash2 size={10} />
-                      </button>
-                    </div>
-                  ))}
-                  {completedTasks.length > 0 && (
-                    <div className="pt-1.5 border-t border-cream-100 mt-1.5">
-                      {completedTasks.map(task => (
-                        <div key={task.id} className="flex items-center gap-2.5 px-2 py-1.5">
-                          <button
-                            onClick={() => toggleTask(task.id)}
-                            className="w-5 h-5 rounded-md bg-sage-50 border-2 border-sage-300 flex items-center justify-center flex-shrink-0"
-                          >
-                            <Check size={10} className="text-sage-500" />
-                          </button>
-                          <span className="text-sm text-charcoal-400 line-through flex-1 truncate">{task.title}</span>
-                          <button
-                            onClick={() => deleteTask(task.id)}
-                            className="p-1 rounded hover:bg-red-50 text-charcoal-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
-                          >
-                            <Trash2 size={10} />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {todayTasks.length === 0 && (
-                <p className="text-xs text-charcoal-300 text-center py-2">{t('No tasks yet. Add one above!')}</p>
-              )}
-            </div>
-
-            {/* Reminder Header */}
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-charcoal-800 flex items-center gap-2">
-                <Bell size={18} />
-                {t('Reminders')}
-                {pending.length > 0 && (
-                  <span className="text-xs bg-sage-100 text-sage-600 px-2 py-0.5 rounded-full">{pending.length}</span>
+                {textInput.trim() && (
+                  <button onClick={handleTextSend} className="w-10 h-10 rounded-full bg-[#7d9bbd] text-white flex items-center justify-center hover:bg-[#6b8aad] transition-colors" aria-label={t('Send')}>
+                    <Send size={16} />
+                  </button>
                 )}
-              </h2>
+                <button
+                  onClick={() => setVoiceEnabled(!voiceEnabled)}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${voiceEnabled ? 'text-[#5a7ba6] hover:bg-[#7d9bbd]/10' : 'text-ink/30 hover:bg-ink/5'}`}
+                  title={voiceEnabled ? t('Voice output on') : t('Voice output off')}
+                  aria-label={voiceEnabled ? t('Voice output on') : t('Voice output off')}
+                >
+                  {voiceEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
+                </button>
+                {voice.messages.length > 0 && (
+                  <button
+                    onClick={voice.clearMessages}
+                    className="w-10 h-10 rounded-full text-ink/30 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center justify-center transition-colors"
+                    title={t('Clear conversation')}
+                    aria-label={t('Clear conversation')}
+                  >
+                    <RotateCcw size={15} />
+                  </button>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ── TODAY WITH AURA — the day, together ── */}
+        <section className="max-w-2xl mx-auto mb-10">
+          <div className="flex items-baseline gap-4 mb-5">
+            <h2 className="font-serif-display text-2xl text-ink dark:text-white">{t('TODAY WITH AURA')}</h2>
+            <div className="flex-1 h-px bg-ink/15" />
+          </div>
+
+          {/* Tasks */}
+          {todayTasks.length > 0 && (
+            <div className="mb-6">
+              {pendingTasks.map(task => (
+                <div key={task.id} className="aura-index-row !py-3.5">
+                  <button
+                    onClick={() => toggleTask(task.id)}
+                    className="w-7 h-7 rounded-md border-2 border-ink/25 hover:border-[#7d9bbd] flex-shrink-0 self-center transition-colors"
+                    aria-label={t('Mark done')}
+                  />
+                  <span className="text-lg text-ink dark:text-white flex-1">{task.title}</span>
+                  <button
+                    onClick={() => deleteTask(task.id)}
+                    className="p-1.5 rounded text-ink/30 hover:text-red-500 transition-colors"
+                    aria-label={t('Delete')}
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </div>
+              ))}
+              {completedTasks.map(task => (
+                <div key={task.id} className="aura-index-row !py-3.5 opacity-55">
+                  <button
+                    onClick={() => toggleTask(task.id)}
+                    className="w-7 h-7 rounded-md bg-[#7d9bbd]/30 border-2 border-[#7d9bbd] flex items-center justify-center flex-shrink-0 self-center"
+                    aria-label={t('Mark not done')}
+                  >
+                    <Check size={13} className="text-[#4a6a92]" />
+                  </button>
+                  <span className="text-lg text-ink/60 dark:text-charcoal-400 line-through flex-1">{task.title}</span>
+                  <button
+                    onClick={() => deleteTask(task.id)}
+                    className="p-1.5 rounded text-ink/30 hover:text-red-500 transition-colors"
+                    aria-label={t('Delete')}
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Add a task */}
+          <div className="flex items-center gap-3 mb-8">
+            <input
+              type="text"
+              value={newTaskTitle}
+              onChange={e => setNewTaskTitle(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && addTask()}
+              placeholder={t('Add a task for today...')}
+              className="flex-1 px-4 py-3 bg-white/70 border border-ink/12 rounded-xl focus:border-[#7d9bbd] focus:outline-none text-ink dark:text-white dark:bg-[#1e1e32] dark:border-white/10 placeholder:text-ink/30 transition-colors"
+            />
+            <button
+              onClick={addTask}
+              disabled={!newTaskTitle.trim()}
+              className="w-12 h-12 rounded-xl bg-ink text-ivory flex items-center justify-center hover:bg-[#4a6a92] transition-colors disabled:opacity-30"
+              aria-label={t('Add task')}
+            >
+              <Plus size={18} />
+            </button>
+          </div>
+
+          {/* Reminders */}
+          {pending.length > 0 && (
+            <div className="mb-4">
+              <div className="aura-meta mb-3">{t('Reminders')}</div>
+              {pending.map(reminder => {
+                const typeInfo = REMINDER_TYPES[reminder.type]
+                return (
+                  <div key={reminder.id} className="aura-index-row !py-3.5">
+                    <button
+                      onClick={() => toggleComplete(reminder.id)}
+                      className="w-7 h-7 rounded-full border-2 border-ink/25 hover:border-[#7d9bbd] flex-shrink-0 self-center transition-colors"
+                      aria-label={t('Mark done')}
+                    />
+                    <span className="text-lg text-ink dark:text-white flex-1">{reminder.title}</span>
+                    <span className="aura-meta">{t(typeInfo.label)}</span>
+                    {reminder.time && (
+                      <span className="aura-meta flex items-center gap-1"><Clock size={11} /> {reminder.time}</span>
+                    )}
+                    <button
+                      onClick={() => deleteReminder(reminder.id)}
+                      className="p-1.5 rounded text-ink/30 hover:text-red-500 transition-colors"
+                      aria-label={t('Delete')}
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+
+          {completed.length > 0 && (
+            <div className="mt-4">
+              <div className="aura-meta mb-2">{t('Completed')} ({completed.length})</div>
+              {completed.slice(0, 5).map(reminder => (
+                <div key={reminder.id} className="flex items-center gap-3 py-2 opacity-60">
+                  <Check size={14} className="text-[#7d9bbd]" />
+                  <p className="text-base text-ink/60 dark:text-charcoal-400 line-through flex-1">{reminder.title}</p>
+                  <button
+                    onClick={() => deleteReminder(reminder.id)}
+                    className="p-1 rounded text-ink/30 hover:text-red-500 transition-colors"
+                    aria-label={t('Delete')}
+                  >
+                    <Trash2 size={13} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {reminders.length === 0 && todayTasks.length === 0 && (
+            <div className="text-center py-10 border-2 border-dashed border-ink/15 rounded-2xl">
+              <ListChecks className="mx-auto text-ink/25 mb-3" size={30} />
+              <p className="font-serif-display text-lg text-ink/60 dark:text-charcoal-300">{t('Nothing planned yet today.')}</p>
+              <p className="text-charcoal-400 text-sm mt-1">{t('Say "Remind me to..." and I will take care of it.')}</p>
               <button
                 onClick={() => setShowNewForm(true)}
-                className="text-xs bg-sage-500 text-white px-3 py-1.5 rounded-lg hover:bg-sage-600 transition-colors inline-flex items-center gap-1"
+                className="mt-4 inline-flex items-center gap-2 aura-meta border border-ink/25 rounded-lg px-4 py-2 hover:border-ink transition-colors"
               >
-                <Plus size={12} /> {t('New')}
+                <Plus size={14} /> {t('New Reminder')}
               </button>
             </div>
+          )}
+        </section>
 
-            {/* Pending Reminders */}
-            {pending.length > 0 && (
-              <div className="space-y-2">
-                {pending.map(reminder => {
-                  const typeInfo = REMINDER_TYPES[reminder.type]
-                  return (
-                    <div key={reminder.id} className="card-hover !p-3 flex items-center gap-3">
-                      <button
-                        onClick={() => toggleComplete(reminder.id)}
-                        className="w-7 h-7 rounded-full border-2 border-cream-300 hover:border-sage-400 flex items-center justify-center transition-colors flex-shrink-0"
-                      >
-                        {reminder.completed && <Check size={12} className="text-sage-500" />}
-                      </button>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-charcoal-800 text-sm truncate">{reminder.title}</p>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${typeInfo.color}`}>
-                            {t(typeInfo.label)}
-                          </span>
-                          {reminder.time && (
-                            <span className="text-[10px] text-charcoal-400 flex items-center gap-0.5">
-                              <Clock size={8} /> {reminder.time}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => deleteReminder(reminder.id)}
-                        className="p-1.5 rounded-lg hover:bg-red-50 text-charcoal-300 hover:text-red-500 transition-colors"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-
-            {/* Completed */}
-            {completed.length > 0 && (
-              <div>
-                <h3 className="text-xs font-medium text-charcoal-400 mb-2">{t('Completed')} ({completed.length})</h3>
-                <div className="space-y-1.5">
-                  {completed.slice(0, 5).map(reminder => (
-                    <div key={reminder.id} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-cream-50/50">
-                      <div className="w-5 h-5 rounded-full bg-sage-50 flex items-center justify-center">
-                        <Check size={10} className="text-sage-500" />
-                      </div>
-                      <p className="text-xs text-charcoal-400 line-through flex-1 truncate">{reminder.title}</p>
-                      <button
-                        onClick={() => deleteReminder(reminder.id)}
-                        className="p-1 rounded hover:bg-red-50 text-charcoal-300 hover:text-red-500 transition-colors"
-                      >
-                        <Trash2 size={10} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Empty State */}
-            {reminders.length === 0 && (
-              <div className="card text-center py-8">
-                <Bell className="mx-auto text-charcoal-200 mb-2" size={32} />
-                <p className="text-charcoal-400 text-sm">{t('No reminders yet')}</p>
-                <p className="text-charcoal-300 text-xs mt-1">{t('Say "Remind me to..." to create one')}</p>
-              </div>
-            )}
-
-            {/* Tips Card */}
-            <div className="card bg-gradient-to-br from-sage-50 to-cream-100 border-sage-100">
-              <h3 className="text-sm font-semibold text-charcoal-700 mb-2">💡 {t('Try saying:')}</h3>
-              <ul className="space-y-1.5 text-xs text-charcoal-500">
-                <li>• <strong>{t('"Remind me to take medicine"')}</strong></li>
-                <li>• <strong>{t('"Call mom"')}</strong></li>
-                <li>• <strong>{t('"What time is it?"')}</strong></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* New Reminder Modal */}
+        {/* ── New Reminder Modal ── */}
         <Modal isOpen={showNewForm} onClose={() => setShowNewForm(false)} title={t('New Reminder')}>
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-charcoal-700 mb-1 block">{t('What should I remind you about?')}</label>
+              <label className="aura-meta mb-2 block">{t('What should I remind you about?')}</label>
               <input
                 type="text"
                 value={newTitle}
                 onChange={e => setNewTitle(e.target.value)}
                 placeholder={t('e.g., Take medicine')}
-                className="w-full px-4 py-3 rounded-xl border border-cream-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full px-4 py-3 rounded-xl border-2 border-ink/15 focus:border-[#7d9bbd] focus:outline-none text-ink dark:text-white bg-transparent"
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-charcoal-700 mb-1 block">{t('Time')}</label>
+              <label className="aura-meta mb-2 block">{t('Time')}</label>
               <input
                 type="time"
                 value={newTime}
                 onChange={e => setNewTime(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-cream-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full px-4 py-3 rounded-xl border-2 border-ink/15 focus:border-[#7d9bbd] focus:outline-none text-ink dark:text-white bg-transparent"
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-charcoal-700 mb-1 block">{t('Type')}</label>
+              <label className="aura-meta mb-2 block">{t('Type')}</label>
               <select
                 value={newType}
                 onChange={e => setNewType(e.target.value as Reminder['type'])}
-                className="w-full px-4 py-3 rounded-xl border border-cream-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full px-4 py-3 rounded-xl border-2 border-ink/15 focus:border-[#7d9bbd] focus:outline-none text-ink dark:text-white bg-transparent"
               >
                 {Object.entries(REMINDER_TYPES).map(([key, val]) => (
                   <option key={key} value={key}>{t(val.label)}</option>
                 ))}
               </select>
             </div>
-            <button onClick={handleAdd} className="btn-primary w-full" disabled={!newTitle.trim()}>
+            <button onClick={handleAdd} className="w-full bg-ink text-ivory py-4 rounded-xl font-bold text-lg hover:bg-[#4a6a92] transition-colors disabled:opacity-40" disabled={!newTitle.trim()}>
               {t('Save Reminder')}
             </button>
           </div>

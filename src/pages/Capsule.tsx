@@ -67,7 +67,7 @@ export default function Capsule() {
   }
 
   return (
-    <div className="min-h-screen pt-24 pb-16 px-4">
+    <div className="room room-archive px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header — editorial, human */}
         <div className="mb-12">
@@ -122,94 +122,96 @@ export default function Capsule() {
         </div>
 
         {/* Filters + add */}
-        <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
-          <div className="flex items-center gap-2 flex-wrap">
-            <button
-              onClick={() => { playTapSound(); setFilter('all') }}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${filter === 'all' ? 'bg-charcoal-700 text-white' : 'bg-white border border-cream-200 text-charcoal-500 hover:border-charcoal-300'}`}
-            >
-              {t('All')} · {capsule.items.length}
-            </button>
-            {(Object.keys(CAPSULE_TYPE_META) as CapsuleType[]).map(ct => {
-              const Icon = TYPE_ICONS[ct]
-              return (
-                <button
-                  key={ct}
-                  onClick={() => { playTapSound(); setFilter(ct) }}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-1.5 ${filter === ct ? 'bg-charcoal-700 text-white' : 'bg-white border border-cream-200 text-charcoal-500 hover:border-charcoal-300'}`}
-                >
-                  <Icon size={14} /> {t(CAPSULE_TYPE_META[ct].label)} · {counts[ct]}
-                </button>
-              )
-            })}
-          </div>
+        <div className="flex items-center justify-between gap-4 mb-10 flex-wrap">
+          <div className="aura-meta">{capsule.items.length} {t('memories kept')}</div>
           <AddButton onPick={(type) => setEditor({ mode: 'add', type })} />
         </div>
 
-        {/* Memory cards — warm, photo-like */}
+        {/* ── The archive — an album, not a database ── */}
         {visible.length === 0 ? (
-          <div className="card text-center py-16">
+          <div className="text-center py-16 border-2 border-dashed border-ink/15 rounded-2xl">
             <div className="text-5xl mb-4">🕊️</div>
-            <h3 className="text-xl font-bold text-charcoal-800 mb-2">{t('Your capsule is waiting')}</h3>
-            <p className="text-charcoal-400 max-w-sm mx-auto mb-6">
+            <h3 className="font-serif-display text-2xl text-ink dark:text-white mb-2">{t('Your capsule is waiting')}</h3>
+            <p className="text-charcoal-500 dark:text-charcoal-400 max-w-sm mx-auto mb-6">
               {t('Add a person, a place, or a little story — and watch AURA turn it into a game your family will recognize.')}
             </p>
             <AddButton onPick={(type) => setEditor({ mode: 'add', type })} centered />
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {visible.map(item => (
-              <div key={item.id} className={`relative rounded-3xl overflow-hidden border transition-all ${item.enabled ? 'bg-white border-cream-200 shadow-sm hover:shadow-md' : 'bg-stone-50 border-stone-200 opacity-70'}`}>
-                {/* Photo area */}
-                <div className="h-28 bg-gradient-to-br from-rose-50 via-amber-50 to-sage-50 flex items-center justify-center relative">
-                  {item.photoData
-                    ? <img src={item.photoData} alt={labelOf(item)} className="w-full h-full object-cover" />
-                    : <span className="text-5xl">{item.emoji}</span>}
-                  <div className="absolute top-2 left-2 bg-white/85 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-charcoal-500 flex items-center gap-1">
-                    {(() => { const Icon = TYPE_ICONS[item.type]; return <Icon size={11} /> })()}
-                    {CAPSULE_TYPE_META[item.type].label.replace(/s$/, '')}
+          (Object.keys(CAPSULE_TYPE_META) as CapsuleType[])
+            .filter(ct => visible.some(i => i.type === ct))
+            .map(ct => {
+              const sectionItems = visible.filter(i => i.type === ct)
+              const Icon = TYPE_ICONS[ct]
+              const sectionTitles: Record<CapsuleType, string> = {
+                person: t('MY PEOPLE'),
+                place: t('MY PLACES'),
+                object: t('MY OBJECTS'),
+                event: t('MY MEMORIES'),
+                routine: t('MY ROUTINES'),
+              }
+              return (
+                <section key={ct} className="mb-14">
+                  <div className="flex items-baseline gap-4 mb-6">
+                    <Icon size={18} className="text-[#b3895e] self-center" />
+                    <h2 className="font-serif-display text-2xl md:text-3xl text-ink dark:text-white">{sectionTitles[ct]}</h2>
+                    <div className="flex-1 h-px bg-ink/15" />
+                    <span className="aura-meta">{sectionItems.length}</span>
                   </div>
-                  {!item.enabled && (
-                    <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
-                      <span className="text-xs font-semibold text-charcoal-500 bg-white/90 rounded-full px-3 py-1">{t('Paused')}</span>
-                    </div>
-                  )}
-                </div>
-                {/* Body */}
-                <div className="p-4">
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <h3 className="font-bold text-charcoal-800 dark:text-white leading-tight">{labelOf(item)}</h3>
-                      <p className="text-xs font-medium text-rose-400">{t(itemSubtitle(item))}</p>
-                    </div>
+
+                  <div className="space-y-0">
+                    {sectionItems.map(item => (
+                      <article
+                        key={item.id}
+                        className={`aura-index-row !items-start !py-5 ${item.enabled ? '' : 'opacity-55'}`}
+                      >
+                        {/* The photograph — printed, with its white border */}
+                        <div className="flex-shrink-0 bg-white p-1.5 pb-4 shadow-[0_4px_14px_-4px_rgba(23,23,23,0.3)] self-start">
+                          {item.photoData
+                            ? <img src={item.photoData} alt={labelOf(item)} className="w-20 h-20 object-cover" />
+                            : <div className="w-20 h-20 bg-[#f3ead9] flex items-center justify-center text-4xl">{item.emoji}</div>}
+                        </div>
+
+                        {/* The record */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-baseline gap-3 flex-wrap">
+                            <h3 className="font-serif-display text-xl md:text-2xl text-ink dark:text-white">{labelOf(item)}</h3>
+                            <span className="aura-meta" style={{ color: '#b3895e' }}>{t(itemSubtitle(item))}</span>
+                            {!item.enabled && <span className="aura-meta">· {t('Paused')}</span>}
+                          </div>
+                          <p className="font-serif-display italic text-ink/70 dark:text-charcoal-300 mt-1.5 leading-snug">
+                            “{t(itemStory(item))}”
+                          </p>
+                          <Link
+                            to="/welcome"
+                            className="mt-2 inline-block aura-meta hover:text-[#b3895e] transition-colors"
+                          >
+                            {t('VIEW IN MEMORY GARDEN')} →
+                          </Link>
+                        </div>
+
+                        {/* Actions — quiet, on the margin */}
+                        <div className="flex flex-col gap-1 self-center">
+                          <button onClick={() => { playTapSound(); setEditor({ mode: 'edit', item }) }} className="p-2 rounded-lg text-ink/40 hover:text-ink hover:bg-ink/5 transition-colors" aria-label={t('Edit {name}', { name: labelOf(item) })} title={t('Edit')}>
+                            <Pencil size={16} />
+                          </button>
+                          <button onClick={() => { playTapSound(); capsule.toggleItem(item.id) }} className="p-2 rounded-lg text-ink/40 hover:text-ink hover:bg-ink/5 transition-colors" aria-label={item.enabled ? t('Pause') : t('Resume')} title={item.enabled ? t('Pause from games') : t('Use in games again')}>
+                            {item.enabled ? <EyeOff size={16} /> : <Eye size={16} />}
+                          </button>
+                          <button
+                            onClick={() => { playTapSound(); if (confirm(t('Remove {name} from your capsule?', { name: labelOf(item) }))) capsule.deleteItem(item.id) }}
+                            className="p-2 rounded-lg text-ink/30 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                            aria-label={t('Delete {name}', { name: labelOf(item) })} title={t('Delete')}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </article>
+                    ))}
                   </div>
-                  <p className="text-sm text-charcoal-500 mt-2 leading-relaxed">“{t(itemStory(item))}”</p>
-                  <Link
-                    to="/welcome"
-                    className="mt-3 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-[#8a7d68] hover:text-[#b3895e] transition-colors"
-                  >
-                    {t('VIEW IN MEMORY GARDEN')} →
-                  </Link>
-                  {/* Actions */}
-                  <div className="flex items-center gap-1 mt-3 pt-3 border-t border-cream-100">
-                    <button onClick={() => { playTapSound(); setEditor({ mode: 'edit', item }) }} className="p-2 rounded-lg text-charcoal-400 hover:text-charcoal-700 hover:bg-cream-50 transition-colors"                      aria-label={t('Edit {name}', { name: labelOf(item) })} title={t('Edit')}>
-                      <Pencil size={15} />
-                    </button>
-                    <button onClick={() => { playTapSound(); capsule.toggleItem(item.id) }} className="p-2 rounded-lg text-charcoal-400 hover:text-charcoal-700 hover:bg-cream-50 transition-colors"                      aria-label={item.enabled ? t('Pause') : t('Resume')} title={item.enabled ? t('Pause from games') : t('Use in games again')}>
-                      {item.enabled ? <EyeOff size={15} /> : <Eye size={15} />}
-                    </button>
-                    <button
-                      onClick={() => { playTapSound(); if (confirm(t('Remove {name} from your capsule?', { name: labelOf(item) }))) capsule.deleteItem(item.id) }}
-                      className="p-2 rounded-lg text-charcoal-300 hover:text-red-500 hover:bg-red-50 transition-colors ml-auto"
-                      aria-label={t('Delete {name}', { name: labelOf(item) })} title={t('Delete')}
-                    >
-                      <Trash2 size={15} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+                </section>
+              )
+            })
         )}
 
         {/* Where memories are used */}
@@ -272,7 +274,7 @@ export default function Capsule() {
           if (rest.length >= 2) chains.push(rest.slice(0, 4))
           if (chains.length === 0) return null
           return (
-            <div className="card mt-6 !p-6 bg-gradient-to-br from-[#faf6ee] to-[#f7efdd] border-[#e4dccd]">
+            <div className="mt-6 border-2 border-[#e4dccd] rounded-2xl p-6 bg-white/50">
               <h3 className="font-serif-display text-2xl text-charcoal-800 dark:text-white mb-1">{t('How your memories hold each other')}</h3>
               <p className="text-sm text-charcoal-400 mb-6">
                 {t('Memory rarely lives alone — a face, a place, a day, a thing. Here is your map.')}

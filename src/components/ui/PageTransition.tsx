@@ -1,44 +1,31 @@
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
-import gsap from 'gsap'
 
 interface PageTransitionProps {
   children: ReactNode
 }
 
+/**
+ * Room transition — moving between rooms in the AURA memory world.
+ * Calm fade + soft rise, driven by CSS transitions (not rAF-driven JS),
+ * so it can never freeze and leave a page invisible. Reduced-motion
+ * disables the movement entirely (see index.css).
+ */
 export default function PageTransition({ children }: PageTransitionProps) {
   const location = useLocation()
-  const containerRef = useRef<HTMLDivElement>(null)
-  const isFirstRender = useRef(true)
+  const [entering, setEntering] = useState(true)
+  const first = useRef(true)
 
   useEffect(() => {
-    if (!containerRef.current) return
-
-    if (isFirstRender.current) {
-      // First render — just fade in gently
-      isFirstRender.current = false
-      gsap.fromTo(containerRef.current,
-        { opacity: 0, y: 12 },
-        { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }
-      )
-      return
-    }
-
-    // Route change — smooth fade in
-    gsap.fromTo(containerRef.current,
-      { opacity: 0, y: 16, filter: 'blur(4px)' },
-      {
-        opacity: 1,
-        y: 0,
-        filter: 'blur(0px)',
-        duration: 0.5,
-        ease: 'power2.out',
-      }
-    )
+    setEntering(true)
+    const raf = requestAnimationFrame(() => requestAnimationFrame(() => setEntering(false)))
+    // Failsafe: content must never stay hidden
+    const failsafe = setTimeout(() => setEntering(false), 400)
+    return () => { cancelAnimationFrame(raf); clearTimeout(failsafe) }
   }, [location.pathname])
 
   return (
-    <div ref={containerRef} className="min-h-screen">
+    <div className={`room-enter ${entering ? '' : 'room-enter-active'}`}>
       {children}
     </div>
   )

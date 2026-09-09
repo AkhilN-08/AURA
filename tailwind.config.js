@@ -72,11 +72,17 @@ export default {
           800: '#1a1a1a',
           900: '#0d0d0d',
         },
-        /* AURA editorial palette — warm paper, ink, sage leaf */
-        ink: '#2f2a24',
-        ivory: '#FDF9F0',
+        /* AURA editorial palette — warm paper, ink, garden */
+        ink: '#171717',
+        inkwarm: '#2f2a24',
+        ivory: '#F8F5EE',
         paper: '#F8F1E5',
         leaf: '#7c9a6d',
+        sagesoft: '#B8D99A',
+        mist: '#AFCBEF',
+        blush: '#F2B6C6',
+        peachy: '#F3C6A5',
+        sun: '#F1D98A',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],

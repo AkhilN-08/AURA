@@ -83,7 +83,8 @@ function AuthenticatedLayout({ children, hideNav }: { children: ReactNode; hideN
       </main>
       <InstallExperience />
       {!isHome && <AssistantButton />}
-      {!isGamesPage && !isHome && <AmbientBackground />}
+      {/* Petals belong to the garden rooms — the listen room and archive carry their own atmosphere */}
+      {!isGamesPage && !isHome && location.pathname !== '/assistant' && location.pathname !== '/capsule' && <AmbientBackground />}
       {!isHome && (
         <button
           onClick={() => { playTapSound(); navigate('/') }}

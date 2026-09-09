@@ -255,24 +255,79 @@ section {
 
 /* ── AURA editorial design language — warm paper, ink, garden ── */
 
+/* ROOMS — each route is its own space in the AURA world.
+   One shared system, one distinct atmosphere per room. */
+
+.room {
+  min-height: 100vh;
+  /* Safe space for the fixed navbar — no heading ever hides underneath */
+  padding-top: 7rem;
+  padding-bottom: 6rem;
+}
+
+.room-garden {
+  /* HOME — warm ivory with the faintest warm-pink memory tint */
+  background:
+    radial-gradient(ellipse 70% 45% at 15% 0%, rgba(242, 182, 198, 0.10), transparent 60%),
+    radial-gradient(ellipse 55% 40% at 90% 15%, rgba(184, 217, 154, 0.12), transparent 55%),
+    #F8F5EE;
+}
+
+.room-focus {
+  /* GAMES — quiet sage/cream, concentration */
+  background:
+    radial-gradient(ellipse 60% 40% at 85% 0%, rgba(184, 217, 154, 0.14), transparent 55%),
+    #EEF1E7;
+}
+
+.room-listen {
+  /* ASSISTANT — soft sky, AURA sitting beside you */
+  background:
+    radial-gradient(ellipse 65% 45% at 50% 0%, rgba(175, 203, 239, 0.16), transparent 60%),
+    #EAF2F8;
+}
+
+.room-archive {
+  /* CAPSULE — warm peach paper, family album */
+  background:
+    radial-gradient(ellipse 60% 40% at 80% 0%, rgba(243, 198, 165, 0.16), transparent 55%),
+    #F6EADF;
+}
+
+.room-analyze {
+  /* CAREGIVER — calm ivory, almost no decoration */
+  background: #F8F5EE;
+}
+
+/* Paper grain shared by all rooms (very subtle) */
+.room::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(23, 23, 23, 0.014) 31px, rgba(23, 23, 23, 0.014) 32px);
+}
+.room > * { position: relative; z-index: 1; }
+
 .aura-paper {
-  background-color: #FDF9F0;
+  background-color: #F8F5EE;
   background-image:
-    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(124, 154, 109, 0.05), transparent 60%),
-    radial-gradient(ellipse 60% 40% at 90% 90%, rgba(201, 111, 74, 0.04), transparent 55%),
-    repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(47, 42, 36, 0.025) 31px, rgba(47, 42, 36, 0.025) 32px);
+    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(184, 217, 154, 0.06), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 90%, rgba(243, 198, 165, 0.05), transparent 55%),
+    repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(23, 23, 23, 0.02) 31px, rgba(23, 23, 23, 0.02) 32px);
 }
 
 .aura-card {
   background: #FFFFFF;
-  border: 1.5px solid rgba(47, 42, 36, 0.16);
+  border: 1.5px solid rgba(23, 23, 23, 0.14);
   border-radius: 0.75rem;
-  box-shadow: 0 2px 10px -2px rgba(47, 42, 36, 0.06);
+  box-shadow: 0 2px 10px -2px rgba(23, 23, 23, 0.05);
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 .aura-card:hover {
-  box-shadow: 0 10px 28px -10px rgba(47, 42, 36, 0.18), 4px 4px 0 0 rgba(47, 42, 36, 0.05);
-  border-color: rgba(47, 42, 36, 0.28);
+  box-shadow: 0 10px 28px -10px rgba(23, 23, 23, 0.16), 4px 4px 0 0 rgba(23, 23, 23, 0.05);
+  border-color: rgba(23, 23, 23, 0.26);
 }
 
 .aura-meta {
@@ -280,13 +335,57 @@ section {
   font-size: 0.72rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(47, 42, 36, 0.5);
+  color: rgba(23, 23, 23, 0.48);
 }
 
 .aura-rule {
   height: 2px;
-  background: #2f2a24;
+  background: #171717;
   opacity: 0.85;
+}
+
+/* Editorial index rows — the numbered collection list */
+.aura-index-row {
+  display: flex;
+  align-items: baseline;
+  gap: 1.25rem;
+  width: 100%;
+  text-align: left;
+  padding: 1.1rem 0.25rem;
+  border-bottom: 1.5px solid rgba(23, 23, 23, 0.12);
+  transition: background 0.25s ease, padding-left 0.25s ease;
+}
+.aura-index-row:hover,
+.aura-index-row:focus-visible {
+  background: rgba(184, 217, 154, 0.12);
+  padding-left: 0.75rem;
+}
+
+/* Assistant — breathing mic */
+@keyframes auraBreath {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(120, 150, 190, 0.35); }
+  50% { transform: scale(1.045); box-shadow: 0 0 0 18px rgba(120, 150, 190, 0); }
+}
+.aura-breath {
+  animation: auraBreath 2.6s ease-in-out infinite;
+}
+@keyframes auraBreathFast {
+  0%, 100% { transform: scale(1.05); box-shadow: 0 0 0 6px rgba(120, 150, 190, 0.30); }
+  50% { transform: scale(1.1); box-shadow: 0 0 0 26px rgba(120, 150, 190, 0); }
+}
+.aura-breath-fast {
+  animation: auraBreathFast 1.4s ease-in-out infinite;
+}
+
+/* Room transition (used by PageTransition) — calm, never flashy */
+.room-enter {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.room-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.45s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.45s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 /* ── Editorial serif display for headings ─────────────────── */
@@ -329,6 +428,8 @@ section {
 @media (prefers-reduced-motion: reduce) {
   .garden-sway, .garden-sway-slow, .animate-bounce-slow { animation: none; }
   .reveal { opacity: 1; transform: none; transition: none; }
+  .aura-breath, .aura-breath-fast { animation: none; }
+  .room-enter, .room-enter-active { opacity: 1; transform: none; transition: none; }
 }
 
 /* ── AURA install experience — editorial card + growing leaf ── */
@@ -534,6 +635,30 @@ html.dark .aura-meta {
 }
 html.dark .aura-rule {
   background: #e2e8f0 !important;
+}
+
+/* Dark rooms — same architecture, night atmosphere */
+html.dark .room-garden {
+  background: radial-gradient(ellipse 70% 45% at 15% 0%, rgba(242, 182, 198, 0.07), transparent 60%), #0f0f1a !important;
+}
+html.dark .room-focus {
+  background: radial-gradient(ellipse 60% 40% at 85% 0%, rgba(184, 217, 154, 0.08), transparent 55%), #12121f !important;
+}
+html.dark .room-listen {
+  background: radial-gradient(ellipse 65% 45% at 50% 0%, rgba(175, 203, 239, 0.09), transparent 60%), #101623 !important;
+}
+html.dark .room-archive {
+  background: radial-gradient(ellipse 60% 40% at 80% 0%, rgba(243, 198, 165, 0.07), transparent 55%), #17130f !important;
+}
+html.dark .room-analyze {
+  background: #0f0f1a !important;
+}
+html.dark .room::before {
+  background-image: none !important;
+}
+html.dark .aura-index-row:hover,
+html.dark .aura-index-row:focus-visible {
+  background: rgba(184, 217, 154, 0.10);
 }
 html.dark .glass-card {
   background: rgba(30,30,50,0.7) !important;

@@ -233,19 +233,20 @@ export default function PatientHome() {
   const moodLabel = (m: string) => t(m === 'great' ? 'great' : m === 'okay' ? 'okay' : m === 'tired' ? 'tired' : 'confused')
 
   return (
-    <div className="min-h-screen px-4 pt-20 pb-8 max-w-2xl mx-auto">
-      <div className="home-anim text-center mb-8 pt-4">
-        <div className="aura-meta mb-3">{dateStr} · {currentTime}</div>
-        <h1 className="font-serif-display text-4xl md:text-5xl text-ink dark:text-white leading-[1.08] mb-2">
-          {t(greeting.text)},<br />{user?.name || t('Friend')}.
-        </h1>
-        <div className="aura-rule w-20 mx-auto my-4" />
-        <p className="text-charcoal-500 dark:text-charcoal-400 text-lg">{t(greeting.sub)}</p>
-        {/* Analog Clock */}
-        <div className="flex justify-center mt-5 mb-2">
-          <AnalogClock />
+    <div className="room room-garden px-4">
+      <div className="max-w-2xl mx-auto">
+        <div className="home-anim text-center mb-8">
+          <div className="aura-meta mb-3">{dateStr} · {currentTime}</div>
+          <h1 className="font-serif-display text-4xl md:text-5xl text-ink dark:text-white leading-[1.08] mb-2">
+            {t(greeting.text)},<br />{user?.name || t('Friend')}.
+          </h1>
+          <div className="aura-rule w-20 mx-auto my-4" />
+          <p className="text-charcoal-500 dark:text-charcoal-400 text-lg">{t(greeting.sub)}</p>
+          {/* Analog Clock */}
+          <div className="flex justify-center mt-5 mb-2">
+            <AnalogClock />
+          </div>
         </div>
-      </div>
 
       <div className="home-anim grid grid-cols-1 gap-4 mb-8">
         <button onClick={() => { playTapSound(); navigate('/games') }} className="group flex items-center gap-5 p-6 rounded-xl aura-card border-l-4 border-l-leaf hover:-translate-y-0.5 transition-all duration-300 text-left">
@@ -437,6 +438,8 @@ export default function PatientHome() {
         <Heart size={22} className="text-rose-400 mx-auto mb-2" />
         <p className="font-serif-display italic text-ink/70 dark:text-charcoal-400 text-lg">"{t(getDailyEncouragement())}"</p>
       </div>
+      </div>
     </div>
   )
 }
+
