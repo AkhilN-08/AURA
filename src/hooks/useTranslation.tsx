@@ -905,8 +905,6 @@ const HI: Record<string, string> = {
   'A quiet door': 'एक शांत द्वार',
   'Every memory': 'हर याद',
   'matters.': 'अनमोल है।',
-  '№': 'क्रमांक',
-  '№ 02 — Your page': 'क्रमांक 02 — आपका पृष्ठ',
   'Your page': 'आपका पृष्ठ',
   'REMEMBER WHAT MATTERS': 'जो अनमोल है उसे याद रखें',
   'Gentle exercise': 'कोमल व्यायाम',
