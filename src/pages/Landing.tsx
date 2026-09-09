@@ -1,4 +1,5 @@
 import InstallLink from '../components/pwa/InstallLink'
+import GardenGlyph, { type GlyphName } from '../components/ui/GardenGlyph'
 import AuraWordmark from '../components/branding/AuraWordmark'
 import MemoryGarden from '../components/garden/MemoryGarden'
 import Reveal from '../components/ui/Reveal'
@@ -40,11 +41,16 @@ const DEMO_ROUTINES = [
   { activity: 'Morning Routine', time: '7:00 AM', steps: ['Wake up', 'Breakfast', 'Morning walk', 'Memory activity'] },
 ]
 
-function SectionHeading({ index, lines, tone = 'dark' }: { index: string; lines: string[]; tone?: 'dark' | 'light' }) {
+const STEP_MARKS: GlyphName[] = ['sprout', 'leaf', 'flower', 'sun', 'path', 'branch']
+
+function SectionHeading({ index, lines, tone = 'dark', glyph }: { index: string; lines: string[]; tone?: 'dark' | 'light'; glyph?: GlyphName }) {
   const { t } = useTranslation()
   return (
     <div className="mb-8">
-      <p className={`font-mono text-xs tracking-[0.3em] mb-4 ${tone === 'light' ? 'text-[#c9b8a0]' : 'text-[#a08d70]'}`}>{t(index)}</p>
+      <p className={`font-mono text-xs tracking-[0.3em] mb-4 flex items-center gap-2.5 ${tone === 'light' ? 'text-[#c9b8a0]' : 'text-[#a08d70]'}`}>
+        {glyph && <GardenGlyph name={glyph} size={16} className="flex-shrink-0" />}
+        <span>{t(index)}</span>
+      </p>
       <h2 className={`font-serif-display text-[13vw] sm:text-6xl md:text-7xl leading-[0.95] tracking-tight ${tone === 'light' ? 'text-[#2f2a24]' : 'text-[#2f2a24]'}`}>
         {lines.map((l, i) => (
           <span key={i} className="block">{t(l)}</span>
@@ -157,7 +163,7 @@ export default function Landing() {
 
       {/* ═══════════════ 01 · MEMORIES MATTER ═══════════════ */}
       <section className="border-t-2 border-[#2f2a24]/70 px-5 sm:px-10 py-20 max-w-6xl mx-auto">
-        <SectionHeading index="01 — MEMORY" lines={['MEMORIES', 'MATTER.']} />
+        <SectionHeading index="MEMORY" glyph="sprout" lines={['MEMORIES', 'MATTER.']} />
         <div className="grid md:grid-cols-2 gap-10 items-end">
           <Reveal>
             <p className="text-lg leading-relaxed text-[#5d5344] max-w-md">
@@ -181,7 +187,7 @@ export default function Landing() {
 
       {/* ═══════════════ 02 · PEOPLE ═══════════════ */}
       <section className="px-5 sm:px-10 py-20 max-w-6xl mx-auto">
-        <SectionHeading index="02 — PEOPLE" lines={['THE PEOPLE', 'WHO RAISED US.']} />
+        <SectionHeading index="PEOPLE" glyph="branch" lines={['THE PEOPLE', 'WHO RAISED US.']} />
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {people.map((p, i) => (
             <Reveal key={p.id} delay={i * 100}>
@@ -207,7 +213,7 @@ export default function Landing() {
 
       {/* ═══════════════ 03 · PLACES ═══════════════ */}
       <section className="px-5 sm:px-10 py-20 max-w-6xl mx-auto">
-        <SectionHeading index="03 — PLACES" lines={['PLACES THAT', 'REMEMBER US.']} />
+        <SectionHeading index="PLACES" glyph="path" lines={['PLACES THAT', 'REMEMBER US.']} />
         <div className="grid md:grid-cols-2 gap-6">
           {places.map((pl, i) => (
             <Reveal key={pl.id} delay={i * 120}>
@@ -229,7 +235,7 @@ export default function Landing() {
 
       {/* ═══════════════ 04 · ROUTINES ═══════════════ */}
       <section className="px-5 sm:px-10 py-20 max-w-6xl mx-auto">
-        <SectionHeading index="04 — ROUTINES" lines={['THE QUIET', 'RHYTHM OF DAYS.']} />
+        <SectionHeading index="ROUTINES" glyph="sun" lines={['THE QUIET', 'RHYTHM OF DAYS.']} />
         <div className="space-y-6">
           {routines.map((r, i) => (
             <Reveal key={r.id} delay={i * 100}>
@@ -241,7 +247,7 @@ export default function Landing() {
                 <ol className="flex flex-wrap items-center gap-x-3 gap-y-2 px-6 py-5">
                   {r.steps.map((s, j) => (
                     <li key={j} className="flex items-center gap-3">
-                      <span className="font-serif-display text-2xl text-[#d3c3a2]">{String(j + 1).padStart(2, '0')}</span>
+                      <span className="text-[#b3895e]"><GardenGlyph name={STEP_MARKS[j % STEP_MARKS.length]} size={16} /></span>
                       <span className="text-[#5d5344]">{t(s)}</span>
                       {j < r.steps.length - 1 && <span className="text-[#c9b8a0]">→</span>}
                     </li>
@@ -261,7 +267,7 @@ export default function Landing() {
 
       {/* ═══════════════ 05 · ACTIVITY ═══════════════ */}
       <section className="border-t-2 border-[#2f2a24]/70 px-5 sm:px-10 py-20 max-w-6xl mx-auto">
-        <SectionHeading index="05 — ACTIVITY" lines={['GENTLE EXERCISE', 'FOR THE MIND.']} />
+        <SectionHeading index="ACTIVITY" glyph="leaf" lines={['GENTLE EXERCISE', 'FOR THE MIND.']} />
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
             { icon: <Gamepad2 size={22} />, label: '16', sub: 'memory activities', desc: 'Sequencing, recognition, storytelling and more.' },
@@ -288,17 +294,17 @@ export default function Landing() {
 
       {/* ═══════════════ 06 · AURA LEARNS ═══════════════ */}
       <section className="px-5 sm:px-10 py-24 max-w-6xl mx-auto bg-[#f3ead9]/60 border-y border-[#d8c7a8]">
-        <SectionHeading index="06 — ADAPTATION" lines={['AURA LEARNS', 'WITH YOU.']} />
+        <SectionHeading index="ADAPTATION" glyph="sprout" lines={['AURA LEARNS', 'WITH YOU.']} />
         <div className="grid md:grid-cols-3 gap-6">
           {[
-            { n: '01', h: 'You play', p: 'Every activity records how it felt — pace, recall, attention. Nothing leaves the device.' },
-            { n: '02', h: 'AURA listens', p: 'The cognitive profile updates after each session. Strengths are noted, focus areas are spotted.' },
-            { n: '03', h: 'Tomorrow adapts', p: 'The next challenge meets you exactly where you are — a little bolder, or a little calmer.' },
+            { g: 'leaf' as const, h: 'You play', p: 'Every activity records how it felt — pace, recall, attention. Nothing leaves the device.' },
+            { g: 'sprout' as const, h: 'AURA listens', p: 'The cognitive profile updates after each session. Strengths are noted, focus areas are spotted.' },
+            { g: 'flower' as const, h: 'Tomorrow adapts', p: 'The next challenge meets you exactly where you are — a little bolder, or a little calmer.' },
           ].map((s, i) => (
             <Reveal key={i} delay={i * 120}>
               <div className="relative pl-6">
                 <span className="absolute left-0 top-1 bottom-1 w-[3px] bg-[#b3895e]" />
-                <p className="font-mono text-xs tracking-[0.25em] text-[#a08d70] mb-2">{s.n}</p>
+                <p className="mb-2 text-[#b3895e]"><GardenGlyph name={s.g} size={20} /></p>
                 <h3 className="font-serif-display text-3xl mb-3">{t(s.h)}</h3>
                 <p className="text-[#5d5344] leading-relaxed">{t(s.p)}</p>
               </div>
@@ -318,7 +324,7 @@ export default function Landing() {
 
       {/* ═══════════════ 07 · THE GARDEN GROWS ═══════════════ */}
       <section className="px-5 sm:px-10 py-20 max-w-6xl mx-auto">
-        <SectionHeading index="07 — MEMORY" lines={['THE GARDEN', 'GROWS.']} />
+        <SectionHeading index="THE GARDEN" glyph="flower" lines={['THE GARDEN', 'GROWS.']} />
         <Reveal>
           <MemoryGarden />
         </Reveal>

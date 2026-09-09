@@ -1,5 +1,6 @@
 import { useTranslation } from '../../hooks/useTranslation'
 import { TrendingUp, Minus, Sparkles } from 'lucide-react'
+import GardenGlyph from '../ui/GardenGlyph'
 
 /**
  * AdaptationMeter — makes AURA's adaptive intelligence visible and
@@ -27,11 +28,9 @@ function LevelTrack({ level, active, label }: { level: number; active: boolean; 
   return (
     <div className="flex-1 min-w-[120px]">
       <div className="flex items-center justify-between mb-1.5">
-        <span className={`font-mono text-[10px] uppercase tracking-[0.2em] ${active ? 'text-[#7a5f38]' : 'text-[#a08d70]'}`}>
-          {label}
-        </span>
-        <span className={`font-mono text-[10px] ${active ? 'font-bold text-[#7a5f38]' : 'text-[#a08d70]'}`}>
-          {String(level).padStart(2, '0')}
+        <span className={`font-mono text-[10px] uppercase tracking-[0.2em] flex items-center gap-1.5 ${active ? 'text-[#7a5f38]' : 'text-[#a08d70]'}`}>
+          <GardenGlyph name={active ? 'sprout' : 'leaf'} size={12} />
+          {label} {level}
         </span>
       </div>
       {/* track */}

@@ -46,7 +46,7 @@ export default function Navbar() {
       <nav
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-400 ease-[cubic-bezier(0.25,0.1,0.25,1)] ${
           scrolled
-            ? 'bg-white/50 dark:bg-[#12121f]/60 backdrop-blur-2xl shadow-[0_1px_30px_rgba(0,0,0,0.06)] border-b border-white/60 dark:border-white/10 py-3'
+            ? 'bg-ivory/85 dark:bg-[#12121f]/85 backdrop-blur-xl shadow-[0_1px_0_rgba(23,23,23,0.08)] py-3'
             : 'bg-transparent py-3'
         }`}
         role="navigation"
@@ -58,16 +58,16 @@ export default function Navbar() {
             <AuraWordmark className="h-9 group-hover:opacity-80 transition-opacity" />
           </Link>
 
-          {/* Desktop Nav — glass pills */}
-          <div className="hidden md:flex items-center gap-0.5 bg-white/25 dark:bg-white/10 backdrop-blur-xl rounded-xl px-1.5 py-1 border border-white/30 dark:border-white/10">
+          {/* Desktop Nav — the paper index */}
+          <div className="hidden md:flex items-center gap-1 bg-white/60 dark:bg-white/[0.06] backdrop-blur-md rounded-xl px-2 py-1.5 border border-ink/15 dark:border-white/10">
             {NAV_LINKS.map(link => (
               <Link
                 key={link.href}
                 to={link.href}
-                className={`relative px-2.5 py-1 rounded-md text-[11px] font-medium transition-all duration-300 ${
+                className={`relative px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all duration-300 ${
                   location.pathname === link.href
-                    ? 'bg-sage-500/90 text-white shadow-sm'
-                    : 'text-charcoal-500 dark:text-charcoal-300 hover:text-charcoal-800 dark:hover:text-white hover:bg-white/50 dark:hover:bg-white/10'
+                    ? 'bg-leaf text-white'
+                    : 'text-ink/60 dark:text-charcoal-300 hover:text-ink dark:hover:text-white hover:bg-sagesoft/30 dark:hover:bg-white/10'
                 }`}
               >
                 {link.label}
@@ -82,15 +82,15 @@ export default function Navbar() {
                 {/* Profile trigger button — compact */}
                 <button
                   onClick={() => setProfileOpen(true)}
-                  className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white/30 dark:bg-white/10 backdrop-blur-sm border border-white/40 dark:border-white/10 hover:bg-white/60 dark:hover:bg-white/15 transition-all duration-200 group"
+                  className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white/60 dark:bg-white/10 backdrop-blur-sm border border-ink/15 dark:border-white/10 hover:bg-sagesoft/30 dark:hover:bg-white/15 transition-all duration-200 group"
                   aria-label="Open profile menu"
                 >
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center shadow-sm">
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: '#7c9a6d' }}>
                     <span className="text-[10px] font-bold text-white">
                       {user.name.charAt(0).toUpperCase()}
                     </span>
                   </div>
-                  <span className="text-[11px] font-medium text-charcoal-700 dark:text-charcoal-200 max-w-[80px] truncate hidden lg:inline">
+                  <span className="text-[11px] font-medium text-ink dark:text-charcoal-200 max-w-[80px] truncate hidden lg:inline">
                     {user.name}
                   </span>
                 </button>

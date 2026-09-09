@@ -1,4 +1,7 @@
+import GardenGlyph, { type GlyphName } from '../ui/GardenGlyph'
 import { useEffect, useState } from 'react'
+
+const STEP_GLYPHS: GlyphName[] = ['sprout', 'leaf', 'flower']
 import { ArrowRight, X, Share, Plus, MonitorSmartphone } from 'lucide-react'
 import { useAuraInstall } from '../../pwa/useAuraInstall'
 import OfflineBadge from './OfflineBadge'
@@ -168,7 +171,7 @@ function ManualSteps({ platform }: { platform: { title: string; steps: string[] 
       <ol className="space-y-1.5">
         {platform.steps.map((s, i) => (
           <li key={i} className="flex items-center gap-2 text-[12.5px] text-[#5d5344]">
-            <span className="font-mono text-[10px] text-[#b3895e]">{String(i + 1).padStart(2, '0')}</span>
+            <span className="text-[#b3895e] flex-shrink-0"><GardenGlyph name={STEP_GLYPHS[i % STEP_GLYPHS.length]} size={13} /></span>
             {t(s)}
           </li>
         ))}

@@ -83,27 +83,29 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
 
   return (
     <div className="fixed inset-0 z-50">
-      {/* Overlay — pure blur, no color */}
+      {/* Overlay — warm dim, the room settles back */}
       <div
         ref={overlayRef}
-        className="absolute inset-0 backdrop-blur-xl bg-black/20 dark:bg-black/40"
+        className="absolute inset-0 backdrop-blur-md"
+        style={{ background: 'rgba(38, 33, 28, 0.32)' }}
         onClick={handleClose}
-        style={{ opacity: 0 }}
       />
 
-      {/* Panel — iOS liquid glass: fully transparent, pure blur */}
+      {/* Panel — a warm paper journal page sliding in */}
       <div
         ref={panelRef}
-        className="absolute top-0 right-0 bottom-0 w-[min(460px,100vw)] backdrop-blur-[80px] bg-white/10 dark:bg-white/[0.04] border-l border-white/20 dark:border-white/[0.08] overflow-y-auto overscroll-contain"
+        className="absolute top-0 right-0 bottom-0 w-[min(460px,100vw)] overflow-y-auto overscroll-contain"
         style={{
           transform: 'translateX(100%)',
-          boxShadow: '-1px 0 0 rgba(255,255,255,0.15)',
+          background: 'linear-gradient(180deg, #F8F5EE 0%, #F6F1E4 100%)',
+          borderLeft: '2px solid #171717',
+          boxShadow: '-24px 0 60px -30px rgba(23,23,23,0.45)',
         }}
       >
         <div className="p-7 pb-10 space-y-6">
           {/* Header */}
           <div ref={el => { itemsRef.current[0] = el }} className="flex items-center justify-between">
-            <h2 className="text-[22px] font-semibold text-charcoal-900 dark:text-white/95 tracking-[-0.02em]">Profile</h2>
+            <h2 className="font-serif-display text-2xl text-ink">Profile</h2>
             <button
               onClick={handleClose}
               className="w-8 h-8 rounded-full bg-white/15 dark:bg-white/10 flex items-center justify-center text-charcoal-500 dark:text-white/50 hover:bg-white/25 dark:hover:bg-white/15 transition-all duration-200"
@@ -113,32 +115,37 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
             </button>
           </div>
 
-          {/* User Card — transparent glass with gradient accent */}
+          {/* User card — a pressed flower in the journal */}
           <div ref={el => { itemsRef.current[1] = el }}>
-            <div className="rounded-[20px] bg-white/15 dark:bg-white/[0.06] backdrop-blur-xl border border-white/25 dark:border-white/[0.08] p-5">
-              <div className="flex items-center gap-4 mb-5">
-                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center text-xl font-bold text-white shadow-lg shadow-sage-500/20">
+            <div className="rounded-2xl border-2 border-ink/70 bg-white p-5 relative overflow-hidden">
+              <span className="absolute top-0 left-0 right-0 h-2" style={{ background: 'linear-gradient(90deg, #B8D99A, #AFCBEF, #F2B6C6, #F3C6A5, #F1D98A)' }} />
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold text-white" style={{ background: '#7c9a6d' }}>
                   {user?.name?.charAt(0).toUpperCase() || '?'}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[17px] font-semibold text-charcoal-900 dark:text-white/95 truncate">{user?.name || 'User'}</p>
-                  <p className="text-[13px] text-charcoal-600 dark:text-white/60 truncate flex items-center gap-1.5 mt-0.5">
+                  <p className="font-serif-display text-xl text-ink truncate">{user?.name || 'User'}</p>
+                  <p className="text-[13px] text-ink/50 truncate flex items-center gap-1.5 mt-0.5">
                     <Mail size={12} /> {user?.email || t('No email')}
                   </p>
                 </div>
               </div>
-              {/* Stats */}
-              <div className="text-center">
-                <p className="text-sm text-charcoal-400 dark:text-white/60 mb-2">
+              {/* Stats — warm summary, not cold metrics */}
+              <div className="text-center border-t border-ink/10 pt-3">
+                <p className="text-sm text-ink/60 mb-2">
                   {sessions.length > 0
                     ? sessions.length + ' games played — you are building a lovely routine'
                     : 'No games yet — start when you are ready'}
                 </p>
                 {sessions.length > 0 && (
-                  <div className="flex gap-3 justify-center flex-wrap">
-                    {sessions.slice(-3).map((s) => (
-                      <div key={s.gameType} className="text-[11px] text-charcoal-500 dark:text-white/55">
-                        <span className="font-medium text-sage-500">{GAME_TYPES[s.gameType]?.label || 'Game'}</span>
+                  <div className="flex gap-2 justify-center flex-wrap">
+                    {sessions.slice(-3).map((s, i) => (
+                      <div key={s.gameType} className="text-[11px] font-medium px-2.5 py-1 rounded-full border" style={{
+                        color: ['#5d7a51', '#4a6a92', '#b45a74'][i % 3],
+                        background: ['rgba(184,217,154,0.25)', 'rgba(175,203,239,0.3)', 'rgba(242,182,198,0.3)'][i % 3],
+                        borderColor: ['#B8D99A', '#AFCBEF', '#F2B6C6'][i % 3],
+                      }}>
+                        {GAME_TYPES[s.gameType]?.label || 'Game'}
                       </div>
                     ))}
                   </div>
@@ -153,46 +160,46 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
             {!installed && (
               <button
                 onClick={async () => { playTapSound(); await offerInstall() }}
-                className="w-full rounded-[20px] bg-[#2f2a24] dark:bg-white/10 border border-[#2f2a24] dark:border-white/10 p-4 mb-3 flex items-center gap-3.5 text-left group"
+                className="w-full rounded-2xl bg-ink p-4 mb-3 flex items-center gap-3.5 text-left group hover:bg-leaf active:translate-y-0.5 transition-all"
               >
-                <div className="w-9 h-9 rounded-[10px] bg-sage-500/20 flex items-center justify-center flex-shrink-0">
-                  <Flower2 size={18} className="text-sage-500" />
+                <div className="w-9 h-9 rounded-lg bg-white/15 flex items-center justify-center flex-shrink-0">
+                  <Flower2 size={18} className="text-sagesoft" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[14px] font-semibold text-[#faf6ee] dark:text-white/90">{t('KEEP AURA WITH YOU')} →</p>
-                  <p className="text-[12px] text-[#faf6ee]/60 dark:text-white/50">{t('Add AURA to your device for quicker access.')}</p>
+                  <p className="text-[14px] font-semibold text-ivory">{t('KEEP AURA WITH YOU')} →</p>
+                  <p className="text-[12px] text-ivory/60">{t('Add AURA to your device for quicker access.')}</p>
                 </div>
               </button>
             )}
-            <div className="rounded-[20px] bg-white/15 dark:bg-white/[0.06] backdrop-blur-xl border border-white/25 dark:border-white/[0.08] overflow-hidden">
+            <div className="rounded-2xl bg-white border-2 border-ink/70 overflow-hidden">
               {[
-                { icon: Gamepad2, label: 'Memory Games', path: '/games', iconBg: 'rgba(236,72,153,0.15)', iconColor: '#EC4899', show: true },
-                { icon: Brain, label: 'Memory Assistant', path: '/assistant', iconBg: 'rgba(249,115,22,0.15)', iconColor: '#F97316', show: true },
-                { icon: BarChart3, label: 'Caregiver Dashboard', path: '/caregiver', iconBg: 'rgba(59,130,246,0.15)', iconColor: '#3B82F6', show: user?.role === 'caregiver' },
+                { icon: Gamepad2, label: 'Memory Games', path: '/games', iconBg: 'rgba(184,217,154,0.35)', iconColor: '#5d7a51', show: true },
+                { icon: Brain, label: 'Memory Assistant', path: '/assistant', iconBg: 'rgba(175,203,239,0.4)', iconColor: '#4a6a92', show: true },
+                { icon: BarChart3, label: 'Caregiver Dashboard', path: '/caregiver', iconBg: 'rgba(243,198,165,0.4)', iconColor: '#b06a35', show: user?.role === 'caregiver' },
               ].filter(item => item.show).map((item, i) => (
                 <button
                   key={i}
                   onClick={() => { handleClose(); setTimeout(() => navigate(item.path), 350) }}
-                  className={`w-full flex items-center gap-3.5 px-5 py-3.5 hover:bg-white/10 dark:hover:bg-white/[0.04] transition-all duration-200 text-left group ${i !== 0 ? 'border-t border-white/10 dark:border-white/[0.05]' : ''}`}
+                  className={`w-full flex items-center gap-3.5 px-5 py-3.5 hover:bg-sagesoft/20 transition-all duration-200 text-left group ${i !== 0 ? 'border-t border-ink/10' : ''}`}
                 >
-                  <div className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0" style={{ backgroundColor: item.iconBg }}>
+                  <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 border" style={{ backgroundColor: item.iconBg, borderColor: item.iconColor + '44' }}>
                     <item.icon size={18} style={{ color: item.iconColor }} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-medium text-charcoal-900 dark:text-white/90">{item.label}</p>
+                    <p className="text-[14px] font-medium text-ink">{t(item.label)}</p>
                   </div>
-                  <ChevronRight size={16} className="text-charcoal-600/90 dark:text-white/55 group-hover:text-charcoal-500 dark:group-hover:text-white/40 transition-colors" />
+                  <ChevronRight size={16} className="text-ink/40 group-hover:text-ink transition-colors" />
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Settings — iOS grouped list */}
+          {/* Settings — grouped journal lists */}
           <div ref={el => { itemsRef.current[3] = el }}>
-            <div className="rounded-[20px] bg-white/15 dark:bg-white/[0.06] backdrop-blur-xl border border-white/25 dark:border-white/[0.08] overflow-hidden">
+            <div className="rounded-2xl bg-white border-2 border-ink/70 overflow-hidden">
               {/* Language */}
               <div className="px-5 pt-4 pb-3">
-                <p className="text-[11px] font-semibold text-charcoal-700 dark:text-white/60 uppercase tracking-wider mb-2.5">Language</p>
+                <p className="aura-meta mb-2.5">Language</p>
                 <div className="flex gap-2">
                   {[
                     { key: 'en' as const, label: 'English' },
@@ -201,10 +208,10 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                     <button
                       key={lang.key}
                       onClick={() => setLanguage(lang.key)}
-                      className={`flex-1 py-2.5 rounded-[10px] text-[13px] font-medium transition-all duration-200 ${
+                      className={`flex-1 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-200 ${
                         language === lang.key
-                          ? 'bg-white/20 dark:bg-white/10 text-charcoal-900 dark:text-white/95 border border-white/30 dark:border-white/15'
-                          : 'text-charcoal-700 dark:text-white/55 hover:bg-white/10 dark:hover:bg-white/[0.04] border border-transparent'
+                          ? 'bg-sagesoft/40 text-ink border-2 border-leaf/60'
+                          : 'text-ink/60 hover:bg-sagesoft/15 border-2 border-transparent'
                       }`}
                     >
                       {lang.label}
@@ -213,45 +220,45 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                 </div>
               </div>
 
-              <div className="mx-5 h-px bg-white/10 dark:bg-white/[0.05]" />
+              <div className="mx-5 h-px bg-ink/10" />
 
               {/* View Mode */}
               <div className="px-5 py-3">
-                <p className="text-[11px] font-semibold text-charcoal-700 dark:text-white/60 uppercase tracking-wider mb-2.5">View Mode</p>
+                <p className="aura-meta mb-2.5">View Mode</p>
                 <div className="flex gap-2">
                   <button
                     onClick={() => { playTapSound(); setElderMode(true) }}
-                    className={`flex-1 py-2.5 rounded-[10px] text-[13px] font-medium flex items-center justify-center gap-1.5 transition-all duration-200 ${
+                    className={`flex-1 py-2.5 rounded-lg text-[13px] font-medium flex items-center justify-center gap-1.5 transition-all duration-200 ${
                       elderMode
-                        ? 'bg-sage-500/20 text-sage-600 dark:text-sage-400 border border-sage-500/30'
-                        : 'text-charcoal-700 dark:text-white/55 hover:bg-white/10 dark:hover:bg-white/[0.04] border border-transparent'
+                        ? 'bg-sagesoft/40 text-ink border-2 border-leaf/60'
+                        : 'text-ink/60 hover:bg-sagesoft/15 border-2 border-transparent'
                     }`}>
                     <Eye size={14} /> Elder
                   </button>
                   <button
                     onClick={() => { playTapSound(); setElderMode(false) }}
-                    className={`flex-1 py-2.5 rounded-[10px] text-[13px] font-medium flex items-center justify-center gap-1.5 transition-all duration-200 ${
+                    className={`flex-1 py-2.5 rounded-lg text-[13px] font-medium flex items-center justify-center gap-1.5 transition-all duration-200 ${
                       !elderMode
-                        ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30'
-                        : 'text-charcoal-700 dark:text-white/55 hover:bg-white/10 dark:hover:bg-white/[0.04] border border-transparent'
+                        ? 'bg-mist/40 text-ink border-2 border-[#7d9bbd]/70'
+                        : 'text-ink/60 hover:bg-mist/20 border-2 border-transparent'
                     }`}>
                     <Users size={14} /> Adult
                   </button>
                 </div>
               </div>
 
-              <div className="mx-5 h-px bg-white/10 dark:bg-white/[0.05]" />
+              <div className="mx-5 h-px bg-ink/10" />
 
               {/* Role */}
               <div className="px-5 py-3">
-                <p className="text-[11px] font-semibold text-charcoal-700 dark:text-white/60 uppercase tracking-wider mb-2.5">I am a</p>
+                <p className="aura-meta mb-2.5">I am a</p>
                 <div className="flex gap-2">
                   <button
                     onClick={() => { playTapSound(); setRole('patient'); setShowCaregiverPin(false); setCgPin(''); setCgPinError('') }}
-                    className={`flex-1 py-2.5 rounded-[10px] text-[13px] font-medium flex items-center justify-center gap-1.5 transition-all duration-200 ${
+                    className={`flex-1 py-2.5 rounded-lg text-[13px] font-medium flex items-center justify-center gap-1.5 transition-all duration-200 ${
                       (user?.role || 'patient') === 'patient'
-                        ? 'bg-sage-500/20 text-sage-600 dark:text-sage-400 border border-sage-500/30'
-                        : 'text-charcoal-700 dark:text-white/55 hover:bg-white/10 dark:hover:bg-white/[0.04] border border-transparent'
+                        ? 'bg-sagesoft/40 text-ink border-2 border-leaf/60'
+                        : 'text-ink/60 hover:bg-sagesoft/15 border-2 border-transparent'
                     }`}>
                     <Eye size={14} /> Patient
                   </button>
@@ -266,10 +273,10 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                         setCgPinError('')
                       }
                     }}
-                    className={`flex-1 py-2.5 rounded-[10px] text-[13px] font-medium flex items-center justify-center gap-1.5 transition-all duration-200 ${
+                    className={`flex-1 py-2.5 rounded-lg text-[13px] font-medium flex items-center justify-center gap-1.5 transition-all duration-200 ${
                       user?.role === 'caregiver'
-                        ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30'
-                        : 'text-charcoal-700 dark:text-white/55 hover:bg-white/10 dark:hover:bg-white/[0.04] border border-transparent'
+                        ? 'bg-peachy/50 text-ink border-2 border-[#b06a35]/60'
+                        : 'text-ink/60 hover:bg-peachy/20 border-2 border-transparent'
                     }`}>
                     <Users size={14} /> Caregiver
                   </button>
@@ -278,20 +285,20 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
 
               {/* Caregiver PIN Modal */}
               {showCaregiverPin && (
-                <div className="mx-5 mb-3 rounded-[14px] bg-white/10 dark:bg-white/[0.04] border border-blue-500/20 p-4">
-                  <p className="text-[12px] font-medium text-charcoal-700 dark:text-white/80 mb-2">Enter caregiver PIN</p>
+                <div className="mx-5 mb-3 rounded-xl bg-ivory border-2 border-[#b06a35]/40 p-4">
+                  <p className="text-[12px] font-medium text-ink mb-2">Enter caregiver PIN</p>
                   <div className="flex justify-center gap-2 mb-2">
                     {[0, 1, 2, 3].map(i => (
                       <div key={i} className={`w-9 h-9 rounded-lg flex items-center justify-center text-lg font-bold transition-all ${
                         i < cgPin.length
-                          ? 'bg-blue-500 text-white scale-110'
-                          : 'bg-white/20 dark:bg-white/5 border border-white/20 dark:border-white/10 text-charcoal-400'
+                          ? 'bg-ink text-ivory scale-105'
+                          : 'bg-transparent border-2 border-ink/25 text-ink/40'
                       }`}>
                         {i < cgPin.length ? '•' : ''}
                       </div>
                     ))}
                   </div>
-                  {cgPinError && <p className="text-[11px] text-red-500 text-center mb-2">{cgPinError}</p>}
+                  {cgPinError && <p className="text-[11px] text-red-600 text-center mb-2">{cgPinError}</p>}
                   <div className="grid grid-cols-3 gap-1.5 max-w-[180px] mx-auto">
                     {['1','2','3','4','5','6','7','8','9'].map(d => (
                       <button key={d} type="button" onClick={() => {
@@ -310,7 +317,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                             }
                           }
                         }
-                      }} className="h-9 rounded-lg bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 text-sm font-bold text-charcoal-700 dark:text-white hover:bg-white/50 active:scale-95 transition-all">
+                      }} className="h-9 rounded-lg bg-transparent border-2 border-ink/20 text-sm font-bold text-ink hover:bg-ink hover:text-ivory active:scale-95 transition-all">
                         {d}
                       </button>
                     ))}
@@ -331,60 +338,65 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                           }
                         }
                       }
-                    }} className="h-9 rounded-lg bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 text-sm font-bold text-charcoal-700 dark:text-white hover:bg-white/50 active:scale-95 transition-all">
+                    }} className="h-9 rounded-lg bg-transparent border-2 border-ink/20 text-sm font-bold text-ink hover:bg-ink hover:text-ivory active:scale-95 transition-all">
                       0
                     </button>
-                    <button type="button" onClick={() => { setCgPin(p => p.slice(0, -1)); setCgPinError('') }} className="h-9 rounded-lg bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 flex items-center justify-center text-charcoal-400 hover:bg-white/50 active:scale-95 transition-all">
+                    <button type="button" onClick={() => { setCgPin(p => p.slice(0, -1)); setCgPinError('') }} className="h-9 rounded-lg bg-transparent border-2 border-ink/15 flex items-center justify-center text-ink/50 hover:border-ink/40 active:scale-95 transition-all">
                       <Delete size={12} />
                     </button>
                   </div>
                 </div>
               )}
 
-              <div className="mx-5 h-px bg-white/10 dark:bg-white/[0.05]" />
+              <div className="mx-5 h-px bg-ink/10" />
 
               {/* Dark Mode */}                <button
                   onClick={() => { playTapSound(); toggleDark() }}
-                  className="w-full flex items-center gap-3.5 px-5 py-3.5 hover:bg-white/10 dark:hover:bg-white/[0.04] transition-all duration-200 text-left"
+                  className="w-full flex items-center gap-3.5 px-5 py-3.5 hover:bg-sagesoft/20 transition-all duration-200 text-left"
                 >
-                <div className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0" style={{ backgroundColor: isDark ? 'rgba(99,102,241,0.15)' : 'rgba(245,158,11,0.15)' }}>
-                  {isDark ? <Moon size={18} style={{ color: '#818CF8' }} /> : <Sun size={18} style={{ color: '#F59E0B' }} />}
+                <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 border" style={{
+                  backgroundColor: isDark ? 'rgba(175,203,239,0.35)' : 'rgba(241,217,138,0.4)',
+                  borderColor: isDark ? 'rgba(125,155,189,0.4)' : 'rgba(163,131,46,0.3)',
+                }}>
+                  {isDark ? <Moon size={18} style={{ color: '#4a6a92' }} /> : <Sun size={18} style={{ color: '#a3832e' }} />}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[14px] font-medium text-charcoal-900 dark:text-white/90">{isDark ? 'Dark Mode' : 'Light Mode'}</p>
+                  <p className="text-[14px] font-medium text-ink">{isDark ? 'Dark Mode' : 'Light Mode'}</p>
                 </div>
-                <div className={`w-[46px] h-[28px] rounded-full flex items-center transition-all duration-300 ${isDark ? 'bg-sage-500 justify-end' : 'bg-charcoal-300/40 dark:bg-white/15 justify-start'}`}>
-                  <div className="w-[22px] h-[22px] bg-white rounded-full mx-[3px] shadow-sm" />
+                <div className={`w-[46px] h-[28px] rounded-full flex items-center transition-all duration-300 ${isDark ? 'bg-leaf justify-end' : 'bg-ink/20 justify-start'}`}>
+                  <div className="w-[22px] h-[22px] bg-white rounded-full mx-[3px] shadow-sm border border-ink/10" />
                 </div>
               </button>
             </div>
           </div>
 
-          {/* About */}
+          {/* About — the colophon */}
           <div ref={el => { itemsRef.current[4] = el }}>
-            <div className="rounded-[20px] bg-white/15 dark:bg-white/[0.06] backdrop-blur-xl border border-white/25 dark:border-white/[0.08] p-5">
-              <p className="text-[11px] font-semibold text-charcoal-700 dark:text-white/60 uppercase tracking-wider mb-3">About AURA-NER</p>
+            <div className="rounded-2xl bg-white border-2 border-ink/70 p-5">
+              <p className="aura-meta mb-3">About AURA-NER</p>
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-[12px] bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center shadow-lg shadow-sage-500/15">
-                  <Flower2 size={18} className="text-white" />
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center border-2" style={{ background: 'rgba(184,217,154,0.35)', borderColor: '#B8D99A', color: '#5d7a51' }}>
+                  <Flower2 size={18} />
                 </div>
                 <div>
-                  <p className="text-[14px] font-semibold text-charcoal-900 dark:text-white/90">AURA-NER</p>
-                  <p className="text-[11px] text-charcoal-700 dark:text-white/60">v1.0.0</p>
+                  <p className="font-serif-display text-lg text-ink">AURA-NER</p>
+                  <p className="text-[11px] text-ink/50">v1.0.0</p>
                 </div>
               </div>
-              <p className="text-[13px] text-charcoal-700 dark:text-white/60 leading-relaxed mb-3">
-                AI-powered cognitive gaming and memory assistance for elderly people in the North Eastern Region.
+              <p className="text-[13px] text-ink/60 leading-relaxed mb-3">
+                Cognitive gaming and memory assistance for elderly people in the North Eastern Region.
               </p>
               <div className="space-y-2">
                 {[
-                  { icon: Gamepad2, text: '7 cognitive games' },
-                  { icon: Mic, text: 'Voice AI assistant' },
-                  { icon: BarChart3, text: t('Caregiver insights') },
-                  { icon: Brain, text: 'AI personalization' },
+                  { icon: Gamepad2, text: t('16 cognitive games'), color: '#5d7a51', bg: 'rgba(184,217,154,0.3)' },
+                  { icon: Mic, text: t('Voice assistant'), color: '#4a6a92', bg: 'rgba(175,203,239,0.35)' },
+                  { icon: BarChart3, text: t('Caregiver insights'), color: '#b06a35', bg: 'rgba(243,198,165,0.4)' },
+                  { icon: Brain, text: t('Adaptive personalization'), color: '#b45a74', bg: 'rgba(242,182,198,0.35)' },
                 ].map((f, i) => (
-                  <div key={i} className="flex items-center gap-2.5 text-[13px] text-charcoal-700 dark:text-white/60">
-                    <f.icon size={13} style={{ color: '#EC4899' }} />
+                  <div key={i} className="flex items-center gap-2.5 text-[13px] text-ink/70">
+                    <span className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: f.bg, color: f.color }}>
+                      <f.icon size={12} />
+                    </span>
                     <span>{f.text}</span>
                   </div>
                 ))}
@@ -392,14 +404,12 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
             </div>
           </div>
 
-
-
-          {/* Disclaimer */}
-          <div ref={el => { itemsRef.current[6] = el }} className="rounded-[16px] bg-amber-500/[0.06] dark:bg-amber-500/[0.04] border border-amber-500/10 px-4 py-3">
+          {/* Disclaimer — a quiet note */}
+          <div ref={el => { itemsRef.current[6] = el }} className="rounded-xl border-2 border-dashed border-ink/20 bg-white/60 px-4 py-3">
             <div className="flex items-start gap-2.5">
-              <Shield size={14} className="text-amber-500/70 mt-0.5 flex-shrink-0" />
-              <p className="text-[11px] text-charcoal-700 dark:text-white/55 leading-relaxed">
-                <strong className="text-charcoal-700 dark:text-white/60">Disclaimer:</strong> AURA-NER is a support prototype, not a medical tool.
+              <Shield size={14} className="text-[#a3832e] mt-0.5 flex-shrink-0" />
+              <p className="text-[11px] text-ink/60 leading-relaxed">
+                <strong className="text-ink/75">Disclaimer:</strong> AURA-NER is a support prototype, not a medical tool.
               </p>
             </div>
           </div>
@@ -408,7 +418,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
           <div ref={el => { itemsRef.current[7] = el }}>
             <button
               onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-[14px] text-red-500/80 dark:text-red-400/70 hover:bg-red-500/[0.08] dark:hover:bg-red-500/[0.06] transition-all duration-200 text-[14px] font-medium border border-red-500/10 dark:border-red-500/[0.06]"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-all duration-200 text-[14px] font-medium border-2 border-red-300/60"
             >
               <LogOut size={16} />
               Sign Out
@@ -417,11 +427,11 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
 
           {/* Footer */}
           <div ref={el => { itemsRef.current[8] = el }} className="text-center pt-1 pb-2">
-            <p className="text-[11px] text-charcoal-500 dark:text-white/40">
-              Made with <Heart size={9} className="inline text-sage-400" /> for memory that matters
+            <p className="text-[11px] text-ink/50">
+              Made with <Heart size={9} className="inline text-rose-400" /> for memory that matters
             </p>
-            <p className="text-[11px] text-charcoal-500 dark:text-white/40 mt-1">
-              © 2024 · <span className="text-sage-400/80 font-medium">Developed by Team OriginX</span>
+            <p className="text-[11px] text-ink/50 mt-1">
+              © 2025 · <span className="text-leaf font-medium">Developed by Team OriginX</span>
             </p>
           </div>
         </div>

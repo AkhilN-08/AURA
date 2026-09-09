@@ -6,6 +6,7 @@ import { useTranslation } from '../hooks/useTranslation'
 import AuraWordmark from '../components/branding/AuraWordmark'
 import gsap from 'gsap'
 import MemoryGarden from '../components/garden/MemoryGarden'
+import GardenGlyph from '../components/ui/GardenGlyph'
 
 export default function Login() {
   const [mode, setMode] = useState<'pin' | 'signup'>('pin')
@@ -105,7 +106,10 @@ export default function Login() {
         <div className="relative z-10 flex flex-col justify-between px-14 py-12 text-ink h-full">
           <AuraWordmark className="h-14" />
           <div className="max-w-md">
-            <div className="aura-meta mb-4">№ 01 — {t('A quiet door')}</div>
+            <div className="aura-meta mb-4 flex items-center gap-2.5">
+              <GardenGlyph name="sprout" size={16} className="text-leaf" />
+              {t('A quiet door')}
+            </div>
             <h1 className="font-serif-display text-5xl leading-[1.05] text-ink mb-5">
               {t('Every memory')}<br />{t('matters.')}
             </h1>
@@ -130,7 +134,10 @@ export default function Login() {
 
           {mode === 'pin' ? (
             <>
-              <div className="aura-meta mb-3 login-anim">{t('№ 02 — Your page')}</div>
+              <div className="aura-meta mb-3 login-anim flex items-center gap-2.5">
+                <GardenGlyph name="leaf" size={16} className="text-leaf" />
+                {t('Your page')}
+              </div>
               <h2 className="font-serif-display text-4xl text-ink dark:text-white mb-3 login-anim">
                 {t('Welcome back')}
               </h2>
@@ -194,7 +201,10 @@ export default function Login() {
           ) : (
             /* Signup mode */
             <>
-              <div className="aura-meta mb-3 login-anim">{t('№ 02 — Your page')}</div>
+              <div className="aura-meta mb-3 login-anim flex items-center gap-2.5">
+                <GardenGlyph name="leaf" size={16} className="text-leaf" />
+                {t('Your page')}
+              </div>
               <h2 className="font-serif-display text-4xl text-ink dark:text-white mb-3 login-anim">
                 {t('Create your account')}
               </h2>

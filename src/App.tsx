@@ -90,21 +90,19 @@ function AuthenticatedLayout({ children, hideNav }: { children: ReactNode; hideN
           onClick={() => { playTapSound(); navigate('/') }}
           className="fixed bottom-6 left-6 z-50 w-10 h-10 rounded-full flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300"
           style={{
-            background: 'linear-gradient(135deg, rgba(134,239,172,0.4) 0%, rgba(134,239,172,0.2) 100%)',
-            backdropFilter: 'blur(12px) saturate(150%)',
-            WebkitBackdropFilter: 'blur(12px) saturate(150%)',
-            border: '1px solid rgba(134,239,172,0.3)',
-            boxShadow: '0 4px 16px rgba(134,239,172,0.15), inset 0 1px 0 rgba(255,255,255,0.3)',
+            background: '#F8F5EE',
+            border: '1.5px solid rgba(23,23,23,0.6)',
+            boxShadow: '0 4px 14px -4px rgba(23,23,23,0.25)',
           }}
           aria-label={t('Go Home')}
         >
-          <Home size={18} style={{ color: '#22c55e' }} />
+          <Home size={18} style={{ color: '#171717' }} />
         </button>
       )}
       <SOSButton />
       {isHome && (
-        <div className="fixed bottom-6 left-6 z-40 flex items-center gap-2 text-xs text-charcoal-400 dark:text-white/50 bg-white/40 dark:bg-white/5 backdrop-blur-sm rounded-full px-3 py-1.5 border border-white/40 dark:border-white/10">
-          <span className="inline-block w-1.5 h-1.5 rounded-full bg-sage-400 animate-pulse" />
+        <div className="fixed bottom-6 left-6 z-40 flex items-center gap-2 text-xs text-ink/60 dark:text-white/50 bg-ivory/90 dark:bg-white/5 backdrop-blur-sm rounded-full px-3 py-1.5 border border-ink/25 dark:border-white/10">
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-leaf animate-pulse" />
           {t("You're home")}
         </div>
       )}

@@ -832,6 +832,9 @@ const HI: Record<string, string> = {
   'Tomorrow adapts': 'कल अनुकूल होता है',
   'The next challenge meets you exactly where you are — a little bolder, or a little calmer.': 'अगली चुनौती आपको ठीक वहीं मिलती है जहां आप हैं — थोड़ी निडर, या थोड़ी सुकून भरी।',
   'a quiet example': 'एक छोटा उदाहरण',
+  '16 cognitive games': '16 संज्ञानात्मक खेल',
+  'Voice assistant': 'आवाज़ सहायक',
+  'Adaptive personalization': 'अनुकूली व्यक्तिगतकरण',
   'Your recall was strong today, so tomorrow the pattern grows a little.': 'आज आपकी स्मृति बढ़िया थी, तो कल पैटर्न थोड़ा बड़ा होगा।',
   'AURA, after a good session': 'AURA, एक अच्छे सत्र के बाद',
   '07 — MEMORY': '०७ — स्मृति',
@@ -904,6 +907,7 @@ const HI: Record<string, string> = {
   'matters.': 'अनमोल है।',
   '№': 'क्रमांक',
   '№ 02 — Your page': 'क्रमांक 02 — आपका पृष्ठ',
+  'Your page': 'आपका पृष्ठ',
   'REMEMBER WHAT MATTERS': 'जो अनमोल है उसे याद रखें',
   'Gentle exercise': 'कोमल व्यायाम',
   'Always here to listen': 'सुनने के लिए सदा तैयार',
@@ -941,6 +945,25 @@ const HI: Record<string, string> = {
   '{n} min': '{n} मिनट',
   'You remember {skill} quickly and confidently.': 'आप {skill} जल्दी और आत्मविश्वास से याद रखते हैं।',
   'You take a little more time with {skill}.': 'आप {skill} में थोड़ा और समय लेते हैं।',
+
+  /* ── About page ── */
+  'A companion': 'एक साथी',
+  'for remembering.': 'यादों के लिए।',
+  'WHAT IT IS': 'यह क्या है',
+  'WHO IT IS FOR': 'किसके लिए है',
+  'A quiet garden of practice.': 'अभ्यास का एक शांत बगीचा।',
+  'AURA-NER is a cognitive gaming and memory companion designed for elderly people in the North Eastern Region of India. Gentle exercises, a voice that listens, and a garden that grows with every memory you revisit.': 'AURA-NER भारत के पूर्वोत्तर क्षेत्र के बुज़ुर्गों के लिए बना संज्ञानात्मक गेमिंग और स्मृति साथी है। कोमल व्यायाम, सुनने वाली आवाज़, और एक बगीचा जो हर याद के साथ बढ़ता है।',
+  'Families, together.': 'परिवार, साथ में।',
+  "Built for elderly individuals experiencing memory challenges, and for the caregivers who love them. The experience adapts to each person through a gentle first assessment — then keeps adapting, quietly.": 'स्मृति की चुनौतियों का सामना कर रहे बुज़ुर्गों और उन्हें प्यार करने वाले देखभालकर्ताओं के लिए। अनुभव एक कोमल पहले आकलन से हर व्यक्ति के अनुसार ढलता है — और फिर चुपचाप ढलता रहता है।',
+  'What lives inside': 'इसके भीतर क्या है',
+  'Sixteen Memory Activities': 'सोलह स्मृति गतिविधियाँ',
+  'From shopping-list recall to a personal memory album — every game draws on the people and places you know, and adapts to your pace.': 'खरीदी सूची से लेकर निजी स्मृति एल्बम तक — हर खेल आपके जाने-पहचाने लोगों और जगहों से बनता है, और आपकी गति पर ढलता है।',
+  'A Voice That Listens': 'सुनने वाली आवाज़',
+  '“Remind me to take medicine at 8.” “Call my daughter.” Speak naturally — AURA sets reminders, makes calls, and keeps the day moving.': '"8 बजे दवा याद दिलाएं।" "बेटी को कॉल करें।" सहज होकर बोलें — AURA रिमाइंडर लगाता है, कॉल करता है, और दिन को चलाता रहता है।',
+  'Gentle Insight': 'कोमल समझ',
+  'Not scores — stories. AURA notices what you remember easily, offers more of it, and practices the rest quietly with you.': 'अंक नहीं — कहानियाँ। AURA देखता है कि आप क्या आसानी से याद रखते हैं, उसका और देता है, और बाकी चुपचाप आपके साथ अभ्यास करता है।',
+  'Family, Close By': 'परिवार, पास ही',
+  'Messages and photos from loved ones appear right on the home screen. A familiar face is never more than a tap away.': 'प्रियजनों के संदेश और तस्वीरें सीधे होम स्क्रीन पर आती हैं। एक जाना-पहचाना चेहरा कभी दूर नहीं।',
 }
 
 export function TranslationProvider({ children }: { children: ReactNode }) {

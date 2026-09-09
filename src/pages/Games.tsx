@@ -24,6 +24,18 @@ import PatternRecall from '../components/games/PatternRecall'
 import WhatChanged from '../components/games/WhatChanged'
 import MemorySequence from '../components/games/MemorySequence'
 import MemoryStory from '../components/games/MemoryStory'
+import GardenGlyph, { type GlyphName } from '../components/ui/GardenGlyph'
+
+/* Each category gets its own garden mark instead of a number */
+const CATEGORY_GLYPHS: Record<GameCategory, GlyphName> = {
+  memory: 'flower',
+  routine: 'sun',
+  recognition: 'branch',
+  attention: 'leaf',
+}
+
+/* Rows cycle through quiet garden marks in reading order */
+const ROW_GLYPHS: GlyphName[] = ['sprout', 'leaf', 'flower', 'sun', 'path', 'branch']
 
 type SelectType = 'select' | GameType
 
@@ -254,7 +266,9 @@ export default function Games() {
         {CATEGORIES.map((cat, ci) => (
           <section key={cat.id} className="mb-14">
             <div className="flex items-baseline gap-4 mb-2">
-              <span className="font-serif-display text-3xl text-ink/30 dark:text-charcoal-500">0{ci + 1}</span>
+              <span className="text-sagesoft dark:text-sagesoft/70 flex-shrink-0 self-center">
+                <GardenGlyph name={CATEGORY_GLYPHS[cat.id]} size={26} />
+              </span>
               <h2 className="font-serif-display text-2xl md:text-3xl text-ink dark:text-white">{t(cat.title)}</h2>
               <div className="flex-1 h-px bg-ink/15" />
               <span className="aura-meta hidden sm:block">{t('{n} activities', { n: cat.games.length })}</span>
@@ -271,7 +285,9 @@ export default function Games() {
                     onClick={() => openGame(id)}
                     className={`aura-index-row group ${isChallenge ? 'bg-blush/20' : ''}`}
                   >
-                    <span className="aura-meta w-8 flex-shrink-0">{String(gi + 1).padStart(2, '0')}</span>
+                    <span className="text-leaf/70 flex-shrink-0 self-center">
+                      <GardenGlyph name={ROW_GLYPHS[gi % ROW_GLYPHS.length]} size={18} />
+                    </span>
                     <span className="font-serif-display text-xl md:text-2xl text-ink dark:text-white flex-1">
                       {t(def.titleKey)}
                       {isChallenge && <span className="aura-meta ml-3 align-middle text-rose-500">· {t('Challenge')}</span>}
