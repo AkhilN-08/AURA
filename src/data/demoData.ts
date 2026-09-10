@@ -71,12 +71,12 @@ export function generateDemoCapsule(): MemoryCapsuleItem[] {
     },
     {
       type: 'person', id: 'capsule-lakshmi', name: 'Lakshmi', relationship: 'Wife',
-      emoji: '👩', description: 'Ravi\'s wife. Makes the best filter coffee in the house.',
+      emoji: '👩', description: 'Ravi\'s wife. Evenings are for the radio and her filter coffee.',
       enabled: true, createdAt: now,
     },
     {
       type: 'place', id: 'capsule-garden', name: 'Family Garden',
-      emoji: '🌿', description: 'The small garden behind the house with rose plants.',
+      emoji: '🌿', description: 'The small garden behind the house with rose plants. Ravi\'s favorite place.',
       people: ['Ananya', 'Lakshmi'],
       memory: 'Ravi spends his mornings here watering the roses with Ananya.',
       enabled: true, createdAt: now,
@@ -95,16 +95,16 @@ export function generateDemoCapsule(): MemoryCapsuleItem[] {
       enabled: true, createdAt: now,
     },
     {
-      type: 'object', id: 'capsule-radio', name: 'Favorite Radio',
+      type: 'object', id: 'capsule-radio', name: 'Old Radio',
       emoji: '📻', belongsTo: 'On the kitchen shelf',
-      description: 'An old radio that plays morning bhajans every day at 6 AM.',
+      description: 'The old radio that fills every evening with familiar songs.',
       enabled: true, createdAt: now,
     },
     {
-      type: 'event', id: 'capsule-gathering', name: 'Family Gathering',
+      type: 'event', id: 'capsule-gathering', name: 'Sunday Family Gathering',
       dateLabel: '2025',
       emoji: '📸', people: ['Ananya', 'Lakshmi'],
-      story: 'Ananya visited Ravi during the family gathering. Everyone planted a new rose bush in the garden together.',
+      story: 'One Sunday, everyone gathered in the garden. Ananya visited Ravi, and the family planted a new rose bush together.',
       enabled: true, createdAt: now,
     },
     {
@@ -113,6 +113,35 @@ export function generateDemoCapsule(): MemoryCapsuleItem[] {
       steps: ['Wake up', 'Breakfast', 'Morning walk', 'Memory activity'],
       notes: 'Radio plays bhajans during breakfast.',
       enabled: true, createdAt: now,
+    },
+  ]
+}
+
+// Demo assistant conversation for the judge demo loop.
+export interface DemoAssistantMessage {
+  id: string
+  role: 'user' | 'assistant'
+  text: string
+  timestamp: string
+}
+
+export function generateDemoAssistantMessages(): DemoAssistantMessage[] {
+  const now = Date.now()
+  return [
+    {
+      id: 'demo-asst-1', role: 'assistant' as const,
+      text: 'Good morning, Ravi. The radio is playing your bhajans. What would you like to do today?',
+      timestamp: new Date(now - 3600_000).toISOString(),
+    },
+    {
+      id: 'demo-asst-2', role: 'user' as const,
+      text: 'What is on today?',
+      timestamp: new Date(now - 3500_000).toISOString(),
+    },
+    {
+      id: 'demo-asst-3', role: 'assistant' as const,
+      text: 'A calm day: morning medicine at 8, a walk in the family garden with Lakshmi, and tea with Ananya at 6. I will remind you at each step.',
+      timestamp: new Date(now - 3400_000).toISOString(),
     },
   ]
 }

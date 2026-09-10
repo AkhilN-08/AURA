@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { User, ArrowRight, Delete, Sprout } from 'lucide-react'
+
+import { User, ArrowRight, Delete, Sprout, PlayCircle } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
+import { useDemoMode } from '../hooks/useDemoMode'
 import { useTranslation } from '../hooks/useTranslation'
 import AuraWordmark from '../components/branding/AuraWordmark'
 import gsap from 'gsap'
@@ -17,6 +19,7 @@ export default function Login() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const { login, signup, pinLogin, hasPin, user } = useAuth()
+  const { enter: enterDemo, isDemo } = useDemoMode()
   const { t } = useTranslation()
   const navigate = useNavigate()
   const formRef = useRef<HTMLDivElement>(null)
@@ -190,6 +193,25 @@ export default function Login() {
                 </div>
               )}
 
+              {/* Judge demo — one tap into the controlled presentation */}
+              <div className="mt-8 login-anim">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="aura-rule flex-1" />
+                  <span className="aura-meta !text-[10px] text-ink/40">{t('for presenters')}</span>
+                  <div className="aura-rule flex-1" />
+                </div>
+                <button
+                  type="button"
+                  onClick={enterDemo}
+                  disabled={isDemo}
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-lg border-2 border-dashed border-ink/30 text-ink/70 hover:border-leaf hover:text-ink hover:bg-sagesoft/20 transition-all duration-200 disabled:opacity-50"
+                >
+                  <PlayCircle size={18} className="text-leaf" />
+                  <span className="font-medium">{t('Start Judge Demo')}</span>
+                  <span className="aura-meta !text-[10px] text-ink/40">· {t('Ravi — DEMO DATA')}</span>
+                </button>
+              </div>
+
               <p className="text-center text-charcoal-400 dark:text-charcoal-500 text-base mt-8 login-anim">
                 {t("Don't have an account?")}{' '}
                 <button onClick={() => { setMode('signup'); setError(''); setPin('') }}
@@ -313,6 +335,25 @@ export default function Login() {
                   {t('Sign in with PIN')}
                 </button>
               </p>
+
+              {/* Judge demo — one tap into the controlled presentation */}
+              <div className="mt-6 login-anim">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="aura-rule flex-1" />
+                  <span className="aura-meta !text-[10px] text-ink/40">{t('for presenters')}</span>
+                  <div className="aura-rule flex-1" />
+                </div>
+                <button
+                  type="button"
+                  onClick={enterDemo}
+                  disabled={isDemo}
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-lg border-2 border-dashed border-ink/30 text-ink/70 hover:border-leaf hover:text-ink hover:bg-sagesoft/20 transition-all duration-200 disabled:opacity-50"
+                >
+                  <PlayCircle size={18} className="text-leaf" />
+                  <span className="font-medium">{t('Start Judge Demo')}</span>
+                  <span className="aura-meta !text-[10px] text-ink/40">· {t('Ravi — DEMO DATA')}</span>
+                </button>
+              </div>
             </>
           )}
         </div>

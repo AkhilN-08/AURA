@@ -605,7 +605,10 @@ html.elder-mode p, html.elder-mode span, html.elder-mode li,
 html.elder-mode label, html.elder-mode td, html.elder-mode th,
 html.elder-mode div { font-size: 1.1rem !important; line-height: 1.7 !important; }
 html.elder-mode button { min-height: 52px !important; font-size: 1.05rem !important; padding: 0.875rem 1.75rem !important; }
-html.elder-mode input, html.elder-mode select, html.elder-mode textarea { font-size: 1.15rem !important; padding: 1rem 1.25rem !important; min-height: 52px !important; }
+/* Vertical padding only — horizontal padding stays with each field's own
+   px-* utility, so icon-padded inputs (pl-12) keep their icon clearance and
+   text can never slide under a leading icon. */
+html.elder-mode input, html.elder-mode select, html.elder-mode textarea { font-size: 1.15rem !important; padding-top: 1rem !important; padding-bottom: 1rem !important; min-height: 52px !important; }
 html.elder-mode .card, html.elder-mode .card-hover { padding: 1.75rem !important; }
 html.elder-mode .text-charcoal-400 { color: #616161 !important; }
 html.elder-mode .text-charcoal-300 { color: #757575 !important; }
@@ -680,13 +683,29 @@ html.dark .aura-index-row:focus-visible {
 }
 
 /* Profile panel — night journal */
-html.dark [style*="linear-gradient(180deg, #F8F5EE"] {
+html.dark .profile-panel {
   background: linear-gradient(180deg, #17131f 0%, #12101a 100%) !important;
   border-left-color: rgba(255, 255, 255, 0.25) !important;
 }
-html.dark [style*="linear-gradient(180deg, #F8F5EE"] .text-ink {
+html.dark .profile-panel .text-ink {
   color: #f1f5f9 !important;
 }
+/* Muted tones inside the panel — slate-300/400 level for real contrast */
+html.dark .profile-panel .text-ink\/50 { color: #b6c2d4 !important; }
+html.dark .profile-panel .text-ink\/60 { color: #c3cede !important; }
+html.dark .profile-panel .text-ink\/70 { color: #d3dce8 !important; }
+html.dark .profile-panel .text-ink\/40 { color: #94a3b8 !important; }
+html.dark .profile-panel .aura-meta { color: rgba(226, 232, 240, 0.65) !important; }
+/* Card surfaces inside the panel — slightly lighter than the page so borders read */
+html.dark .profile-panel .bg-white {
+  background-color: #1d1a2b !important;
+}
+html.dark .profile-panel .bg-ivory { background-color: #1a1727 !important; }
+html.dark .profile-panel .border-ink\/70 { border-color: rgba(255, 255, 255, 0.28) !important; }
+html.dark .profile-panel .border-ink\/10 { border-color: rgba(255, 255, 255, 0.12) !important; }
+/* Recent-game pills: lighten to readable night tones */
+html.dark .profile-panel .profile-pill { color: #dbe4f0 !important; }
+html.dark .profile-panel .text-charcoal-500 { color: #94a3b8 !important; }
 html.dark .glass-card {
   background: rgba(30,30,50,0.7) !important;
   border-color: rgba(255,255,255,0.08) !important;

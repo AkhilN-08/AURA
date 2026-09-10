@@ -95,7 +95,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
       {/* Panel — a warm paper journal page sliding in */}
       <div
         ref={panelRef}
-        className="absolute top-0 right-0 bottom-0 w-[min(460px,100vw)] overflow-y-auto overscroll-contain"
+        className="profile-panel absolute top-0 right-0 bottom-0 w-[min(460px,100vw)] overflow-y-auto overscroll-contain"
         style={{
           transform: 'translateX(100%)',
           background: 'linear-gradient(180deg, #F8F5EE 0%, #F6F1E4 100%)',
@@ -118,7 +118,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
 
           {/* User card — a pressed flower in the journal */}
           <div ref={el => { itemsRef.current[1] = el }}>
-            <div className="rounded-2xl border-2 border-ink/70 bg-white p-5 relative overflow-hidden">
+            <div className="rounded-2xl border-2 border-ink/70 dark:border-white/25 bg-white p-5 relative overflow-hidden">
               <span className="absolute top-0 left-0 right-0 h-2" style={{ background: 'linear-gradient(90deg, #B8D99A, #AFCBEF, #F2B6C6, #F3C6A5, #F1D98A)' }} />
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold text-white" style={{ background: '#7c9a6d' }}>
@@ -126,14 +126,14 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-serif-display text-xl text-ink truncate">{user?.name || 'User'}</p>
-                  <p className="text-[13px] text-ink/50 truncate flex items-center gap-1.5 mt-0.5">
+                  <p className="text-[13px] text-ink/50 dark:text-slate-400 truncate flex items-center gap-1.5 mt-0.5">
                     <Mail size={12} /> {user?.email || t('No email')}
                   </p>
                 </div>
               </div>
               {/* Stats — warm summary, not cold metrics */}
-              <div className="text-center border-t border-ink/10 pt-3">
-                <p className="text-sm text-ink/60 mb-2">
+              <div className="text-center border-t border-ink/10 dark:border-white/10 pt-3">
+                <p className="text-sm text-ink/60 dark:text-slate-300 mb-2">
                   {sessions.length > 0
                     ? sessions.length + ' games played — you are building a lovely routine'
                     : 'No games yet — start when you are ready'}
@@ -141,7 +141,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                 {sessions.length > 0 && (
                   <div className="flex gap-2 justify-center flex-wrap">
                     {sessions.slice(-3).map((s, i) => (
-                      <div key={s.gameType} className="text-[11px] font-medium px-2.5 py-1 rounded-full border" style={{
+                      <div key={s.gameType} className="profile-pill text-[11px] font-medium px-2.5 py-1 rounded-full border" style={{
                         color: ['#5d7a51', '#4a6a92', '#b45a74'][i % 3],
                         background: ['rgba(184,217,154,0.25)', 'rgba(175,203,239,0.3)', 'rgba(242,182,198,0.3)'][i % 3],
                         borderColor: ['#B8D99A', '#AFCBEF', '#F2B6C6'][i % 3],
@@ -172,7 +172,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                 </div>
               </button>
             )}
-            <div className="rounded-2xl bg-white border-2 border-ink/70 overflow-hidden">
+            <div className="rounded-2xl bg-white border-2 border-ink/70 dark:border-white/25 overflow-hidden">
               {[
                 { icon: Gamepad2, label: 'Memory Games', path: '/games', iconBg: 'rgba(184,217,154,0.35)', iconColor: '#5d7a51', show: true },
                 { icon: Brain, label: 'Memory Assistant', path: '/assistant', iconBg: 'rgba(175,203,239,0.4)', iconColor: '#4a6a92', show: true },
@@ -189,7 +189,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                   <div className="flex-1 min-w-0">
                     <p className="text-[14px] font-medium text-ink">{t(item.label)}</p>
                   </div>
-                  <ChevronRight size={16} className="text-ink/40 group-hover:text-ink transition-colors" />
+                  <ChevronRight size={16} className="text-ink/40 dark:text-slate-500 group-hover:text-ink dark:group-hover:text-white transition-colors" />
                 </button>
               ))}
             </div>
@@ -197,7 +197,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
 
           {/* Settings — grouped journal lists */}
           <div ref={el => { itemsRef.current[3] = el }}>
-            <div className="rounded-2xl bg-white border-2 border-ink/70 overflow-hidden">
+            <div className="rounded-2xl bg-white border-2 border-ink/70 dark:border-white/25 overflow-hidden">
               {/* Language */}
               <div className="px-5 pt-4 pb-3">
                 <p className="aura-meta mb-2.5">Language</p>

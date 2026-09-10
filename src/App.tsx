@@ -16,6 +16,7 @@ import AssistantButton from './components/assistant/AssistantButton'
 import CustomCursor from './components/ui/CustomCursor'
 import AmbientBackground from './components/ui/AmbientBackground'
 import { TranslationProvider, useTranslation } from './hooks/useTranslation'
+import { DemoModeProvider, useDemoMode } from './hooks/useDemoMode'
 import { useGenderTheme } from './hooks/useGenderTheme'
 import { useElderMode } from './hooks/useElderMode'
 import { useDemoData } from './hooks/useDemoData'
@@ -26,6 +27,7 @@ import GenderThemeApplier from './components/ui/GenderThemeApplier'
 import { Home, Phone } from 'lucide-react'
 import { playTapSound } from './utils/audio'
 import InstallExperience from './components/pwa/InstallExperience'
+import DemoBadge from './components/demo/DemoBadge'
 import type { ReactNode } from 'react'
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
@@ -121,6 +123,7 @@ function AppRoutes() {
     <>
       <GenderThemeApplier />
       <CustomCursor />
+      <DemoBadge />
       <Routes>
         <Route path="/login" element={user ? <Navigate to="/" replace /> : <PageTransition><Login /></PageTransition>} />
         {/* Cinematic scroll story — the front door of AURA */}
@@ -189,7 +192,9 @@ export default function App() {
       <SplashScreen onDone={() => {}} />
       <AuthProvider>
         <TranslationProvider>
-          <AppRoutes />
+          <DemoModeProvider>
+            <AppRoutes />
+          </DemoModeProvider>
         </TranslationProvider>
       </AuthProvider>
     </>

@@ -31,7 +31,7 @@ const BASE_OBJECTS: SceneObject[] = [
 ]
 
 const PERSONAL_EMOJI: Record<string, string> = {
-  'Walking Stick': '🦯', 'Favorite Radio': '📻', 'Radio': '📻',
+  'Walking Stick': '🦯', 'Favorite Radio': '📻', 'Radio': '📻', 'Old Radio': '📻',
 }
 
 function shuffle<T>(arr: T[]): T[] {
