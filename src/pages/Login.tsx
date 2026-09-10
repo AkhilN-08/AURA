@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { User, ArrowRight, Delete, Sprout, PlayCircle } from 'lucide-react'
+import { User, ArrowRight, Delete, Sprout, PlayCircle, Phone } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 import { useDemoMode } from '../hooks/useDemoMode'
 import { useTranslation } from '../hooks/useTranslation'
@@ -16,6 +16,7 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [pin, setPin] = useState('')
   const [caregiverPin, setCaregiverPin] = useState('')
+  const [emergencyPhone, setEmergencyPhone] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const { login, signup, pinLogin, hasPin, user } = useAuth()
@@ -65,7 +66,7 @@ export default function Login() {
     setTimeout(() => {
       if (!name.trim()) { setError('Please enter your name.'); setLoading(false); return }
       if (pin.length !== 4 || !/^\d{4}$/.test(pin)) { setError('PIN must be 4 digits.'); setLoading(false); return }
-      const result = signup(name, email || `${name.toLowerCase().replace(/\s/g, '')}@aura.local`, 'pin-set', undefined, pin, undefined, caregiverPin || undefined)
+      const result = signup(name, email || `${name.toLowerCase().replace(/\s/g, '')}@aura.local`, 'pin-set', undefined, pin, undefined, caregiverPin || undefined, emergencyPhone || undefined)
       if (result.success) {
         gsap.to(formRef.current, { opacity: 0, y: -20, duration: 0.5, ease: 'power2.in', onComplete: () => navigate('/') })
       } else {
@@ -242,6 +243,19 @@ export default function Login() {
                     <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/40" />
                     <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder={t('What should we call you?')}
                       className="w-full pl-12 pr-4 py-3.5 rounded-lg bg-transparent border-2 border-ink/20 text-ink dark:text-white placeholder-ink/30 focus:outline-none focus:border-leaf focus:ring-1 focus:ring-leaf transition-all" required />
+                  </div>
+                </div>
+
+                {/* Emergency contact number */}
+                <div className="login-anim">
+                  <label className="aura-meta mb-2 block">
+                    {t('Emergency Contact Number')} <span className="text-ink/40 font-normal normal-case">({t('optional')})</span>
+                  </label>
+                  <p className="text-xs text-charcoal-400 dark:text-charcoal-500 mb-2">{t('The number the call button will dial when pressed.')}</p>
+                  <div className="relative">
+                    <Phone size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/40" />
+                    <input type="tel" value={emergencyPhone} onChange={e => setEmergencyPhone(e.target.value)} placeholder="e.g. +91 98765 43210"
+                      className="w-full pl-12 pr-4 py-3.5 rounded-lg bg-transparent border-2 border-ink/20 text-ink dark:text-white placeholder-ink/30 focus:outline-none focus:border-leaf focus:ring-1 focus:ring-leaf transition-all" />
                   </div>
                 </div>
 

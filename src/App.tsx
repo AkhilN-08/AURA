@@ -51,11 +51,14 @@ function CaregiverGate({ children }: { children: ReactNode }) {
 }
 
 function SOSButton() {
+  const { user } = useAuth()
   const { t } = useTranslation()
+  const number = user?.emergencyPhone?.replace(/[^0-9+]/g, '')
+  const target = number && number.length >= 7 ? number : '112'
   const handleClick = () => {
     playTapSound()
     if ('vibrate' in navigator) navigator.vibrate([200, 100, 200, 200, 100, 200])
-    window.open('tel:112', '_self')
+    window.open(`tel:${target}`, '_self')
   }
   return (
     <button

@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import gsap from 'gsap'
 import { useState, useEffect as useEff } from 'react'
-import { X, Mail, Flower2, Heart, LogOut, Gamepad2, Brain, Mic, BarChart3, Shield, ChevronRight, Moon, Sun, Eye, Users, Delete } from 'lucide-react'
+import { X, Mail, Flower2, Heart, LogOut, Gamepad2, Brain, Mic, BarChart3, Shield, ChevronRight, Moon, Sun, Eye, Users, Delete, Phone } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { GAME_TYPES } from '../../data/models'
@@ -24,11 +24,12 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
   const { language, setLanguage, t } = useTranslation()
   const { isDark, toggle: toggleDark } = useDarkMode()
   const { elderMode, setElderMode } = useElderMode()
-  const { setRole, validateCaregiverPin } = useAuth()
+  const { setRole, validateCaregiverPin, setEmergencyPhone } = useAuth()
   const { installed, offerInstall } = useAuraInstall()
   const [showCaregiverPin, setShowCaregiverPin] = useState(false)
   const [cgPin, setCgPin] = useState('')
   const [cgPinError, setCgPinError] = useState('')
+  const [editEmergency, setEditEmergency] = useState(user?.emergencyPhone || '')
   const navigate = useNavigate()
   const panelRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -405,6 +406,54 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
             </div>
           </div>
 
+          {/* Emergency contact — the call button uses this number */}
+          <div ref={el => { itemsRef.current[5] = el }}>
+            <div className="rounded-2xl bg-rose-50/70 border-2 border-rose-200/60 p-5">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-9 h-9 rounded-lg bg-rose-200/60 flex items-center justify-center flex-shrink-0">
+                  <Phone size={17} className="text-rose-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[14px] font-medium text-ink">{t('Emergency Contact')}</p>
+                  <p className="text-[11px] text-rose-600/70">{t('The call button will dial this number')}</p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="tel"
+                  value={editEmergency}
+                  onChange={e => {
+                    const cleaned = e.target.value.replace(/[^0-9+]/g, '')
+                    setEditEmergency(cleaned)
+                  }}
+                  placeholder="e.g. +91 98765 43210"
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-white border-2 border-rose-200/60 text-sm focus:outline-none focus:border-rose-400 transition-all"
+                />
+                <button
+                  onClick={() => { if (editEmergency.length >= 7) { setEmergencyPhone(editEmergency); playTapSound() } }}
+                  className="px-4 py-2.5 rounded-xl bg-rose-500 text-white text-sm font-medium hover:bg-rose-600 active:translate-y-0.5 transition-all flex items-center gap-1.5"
+                  title={t('Save')}
+                >
+                  <Mail size={13} /> Save
+                </button>
+                <button
+                  onClick={() => {
+                    if (editEmergency.length >= 7) {
+                      window.open(`tel:${editEmergency.replace(/[^0-9+]/g, '')}`, '_self')
+                    }
+                  }}
+                  className="px-4 py-2.5 rounded-xl bg-rose-200/60 text-rose-700 text-sm font-medium hover:bg-rose-300 active:translate-y-0.5 transition-all flex items-center gap-1.5"
+                  title={t('Call now')}
+                >
+                  <Phone size={13} /> Call
+                </button>
+              </div>
+              {user?.emergencyPhone && (
+                <p className="text-[10px] text-rose-500/60 mt-1.5">{t('Saved locally — never shared')}</p>
+              )}
+            </div>
+          </div>
+
           {/* Disclaimer — a quiet note */}
           <div ref={el => { itemsRef.current[6] = el }} className="rounded-xl border-2 border-dashed border-ink/20 bg-white/60 px-4 py-3">
             <div className="flex items-start gap-2.5">
@@ -427,7 +476,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
           </div>
 
           {/* Footer */}
-          <div ref={el => { itemsRef.current[8] = el }} className="text-center pt-1 pb-2">
+          <div ref={el => { itemsRef.current[9] = el }} className="text-center pt-1 pb-2">
             <p className="text-[11px] text-ink/50">
               Made with <Heart size={9} className="inline text-rose-400" /> for memory that matters
             </p>

@@ -615,6 +615,19 @@ html.elder-mode .text-charcoal-300 { color: #757575 !important; }
 html.elder-mode .section-heading { font-size: 2.5rem !important; }
 html.elder-mode .section-subheading { font-size: 1.2rem !important; }
 
+/* Floating action buttons stay visible and usable in elder mode */
+html.elder-mode .fixed.bottom-6,
+html.elder-mode .fixed.bottom-28 { z-index: 50 !important; }
+html.elder-mode .fixed.bottom-6 button,
+html.elder-mode .fixed.bottom-28 button {
+  min-height: 56px !important;
+  min-width: 56px !important;
+  width: 56px !important;
+  height: 56px !important;
+}
+html.elder-mode .fixed.bottom-28 { bottom: 4rem !important; }
+html.elder-mode .fixed.bottom-6 { bottom: 2rem !important; }
+
 /* ── Dark Mode ──────────────────────────────────────────────── */
 html.dark {
   background-color: #0f0f1a !important;

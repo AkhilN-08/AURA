@@ -183,6 +183,15 @@ const HI: Record<string, string> = {
   'Language': 'भाषा',
   'English': 'अंग्रेज़ी',
   'Hindi': 'हिंदी',
+  // Emergency contact
+  'Emergency Contact': 'आपातकालीन संपर्क',
+  'Emergency Contact Number': 'आपातकालीन संपर्क नंबर',
+  'The call button will dial this number': 'कॉल बटन इस नंबर पर कॉल करेगा',
+  'The number the call button will dial when pressed.': 'कॉल बटन दबाने पर यह नंबर डायल करेगा।',
+  'Saved locally — never shared': 'स्थानीय रूप से सहेजा — कभी साझा नहीं किया गया',
+  'optional': 'वैकल्पिक',
+  'Test call': 'टेस्ट कॉल',
+  'Call now': 'अभी कॉल करें',
 
   // Accessibility
   'Elder Mode Active — Tap to switch': 'वरिष्ठ मोड सक्रिय — स्विच करने के लिए टैप करें',
@@ -925,7 +934,6 @@ const HI: Record<string, string> = {
   'Always here to listen': 'सुनने के लिए सदा तैयार',
   'The people who matter': 'जो लोग अनमोल हैं',
   'Gentle exercise for the mind': 'मन के लिए कोमल व्यायाम',
-  'optional': 'वैकल्पिक',
   'A separate PIN for caregiver access. Only caregivers should know this.': 'देखभालकर्ता के लिए अलग पिन। यह केवल देखभालकर्ता को पता होना चाहिए।',
 
   /* ── Room redesign strings ── */
