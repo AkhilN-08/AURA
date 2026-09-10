@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useDarkMode } from '../../hooks/useDarkMode'
 
 /**
  * The AURA cursor — a pen on paper.
@@ -12,6 +13,7 @@ export default function CustomCursor() {
   const [interactive, setInteractive] = useState(false)
   const [hidden, setHidden] = useState(true)
   const cursorRef = useRef<HTMLDivElement>(null)
+  const { isDark } = useDarkMode()
 
   useEffect(() => {
     // Touch devices use their finger — no drawn cursor at all
@@ -58,8 +60,8 @@ export default function CustomCursor() {
           height: interactive ? 40 : 30,
           left: interactive ? -20 : -15,
           top: interactive ? -20 : -15,
-          border: `1.5px solid ${interactive ? 'rgba(124, 154, 109, 0.9)' : 'rgba(23, 23, 23, 0.35)'}`,
-          background: interactive ? 'rgba(184, 217, 154, 0.16)' : 'transparent',
+          border: `1.5px solid ${interactive ? 'rgba(184, 217, 154, 0.85)' : isDark ? 'rgba(232, 227, 216, 0.35)' : 'rgba(23, 23, 23, 0.35)'}`,
+          background: interactive ? 'rgba(184, 217, 154, 0.18)' : 'transparent',
           transition: 'width 0.2s ease, height 0.2s ease, left 0.2s ease, top 0.2s ease, border-color 0.2s ease, background 0.2s ease',
         }}
       />
@@ -71,7 +73,7 @@ export default function CustomCursor() {
           height: 6,
           left: -3,
           top: -3,
-          background: interactive ? '#5d7a51' : '#171717',
+          background: interactive ? (isDark ? '#9dc080' : '#5d7a51') : (isDark ? '#e8e3d8' : '#171717'),
           transition: 'background 0.2s ease',
         }}
       />
