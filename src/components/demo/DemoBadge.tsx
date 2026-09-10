@@ -16,7 +16,7 @@ export default function DemoBadge() {
 
   return (
     <div
-      className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[80] flex items-center gap-1.5 sm:gap-2.5 rounded-full border-2 border-ink px-2.5 py-1.5 sm:px-4 sm:py-2 shadow-[0_6px_18px_-6px_rgba(23,23,23,0.35)] max-w-[calc(100vw-88px)]"
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[80] flex items-center gap-1.5 sm:gap-2.5 rounded-full border-2 border-ink px-2.5 py-1.5 sm:px-4 sm:py-2 shadow-[0_6px_18px_-6px_rgba(23,23,23,0.35)] max-w-[calc(100vw-140px)]"
       style={{ background: '#F1D98A' }}
       role="status"
       aria-live="polite"

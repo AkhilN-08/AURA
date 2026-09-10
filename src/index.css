@@ -706,6 +706,9 @@ html.dark .profile-panel .border-ink\/10 { border-color: rgba(255, 255, 255, 0.1
 /* Recent-game pills: lighten to readable night tones */
 html.dark .profile-panel .profile-pill { color: #dbe4f0 !important; }
 html.dark .profile-panel .text-charcoal-500 { color: #94a3b8 !important; }
+/* Mobile drawer uses the same panel class — night shades for its ink tones */
+html.dark .profile-panel .text-ink\/30 { color: #7c8aa0 !important; }
+html.dark .profile-panel .bg-sagesoft\/25 { background-color: rgba(184, 217, 154, 0.12) !important; }
 html.dark .glass-card {
   background: rgba(30,30,50,0.7) !important;
   border-color: rgba(255,255,255,0.08) !important;

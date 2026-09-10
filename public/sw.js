@@ -12,7 +12,7 @@
  *   - everything else          → network, no interference
  */
 
-const VERSION = 'aura-v1'
+const VERSION = 'aura-v2'
 const SHELL_CACHE = `${VERSION}-shell`
 const ASSET_CACHE = `${VERSION}-assets`
 const FONT_CACHE = `${VERSION}-fonts`
