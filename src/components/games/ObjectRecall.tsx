@@ -165,7 +165,10 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
           <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
             {targetObjects.map((obj) => (
               <div key={obj.id} className="card text-center py-6 animate-fade-in">
-                <div className="text-4xl mb-2">{obj.emoji}</div>
+                <div className="w-14 h-14 mx-auto mb-2 rounded-xl overflow-hidden bg-cream-100 flex items-center justify-center border border-cream-200">
+                  <img src={obj.image} alt={obj.label} className="w-full h-full object-cover" loading="lazy" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; (e.target as HTMLImageElement).nextElementSibling?.removeAttribute('style') }} />
+                  <span className="text-3xl" style={{display:'none'}}>{obj.emoji}</span>
+                </div>
                 <p className="text-sm text-charcoal-500">{t(obj.label)}</p>
               </div>
             ))}
@@ -192,7 +195,10 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
                     ${isSelected ? 'ring-2 ring-forest-500 bg-sage-50 scale-105' : 'hover:bg-cream-50'}
                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-400`}
                 >
-                  <div className="text-4xl mb-2">{obj.emoji}</div>
+                  <div className="w-14 h-14 mx-auto mb-2 rounded-xl overflow-hidden bg-cream-100 flex items-center justify-center border border-cream-200">
+                  <img src={obj.image} alt={obj.label} className="w-full h-full object-cover" loading="lazy" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; (e.target as HTMLImageElement).nextElementSibling?.removeAttribute('style') }} />
+                  <span className="text-3xl" style={{display:'none'}}>{obj.emoji}</span>
+                </div>
                   <p className="text-sm text-charcoal-500">{t(obj.label)}</p>
                 </button>
               )
@@ -222,7 +228,10 @@ export default function ObjectRecall({ onComplete }: ObjectRecallProps) {
 
               return (
                 <div key={obj.id} className={`card text-center py-6 border-2 ${borderColor}`}>
-                  <div className="text-4xl mb-2">{obj.emoji}</div>
+                  <div className="w-14 h-14 mx-auto mb-2 rounded-xl overflow-hidden bg-cream-100 flex items-center justify-center border border-cream-200">
+                  <img src={obj.image} alt={obj.label} className="w-full h-full object-cover" loading="lazy" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; (e.target as HTMLImageElement).nextElementSibling?.removeAttribute('style') }} />
+                  <span className="text-3xl" style={{display:'none'}}>{obj.emoji}</span>
+                </div>
                   <p className="text-sm text-charcoal-500">{t(obj.label)}</p>
                   {wasTarget && wasSelected && <p className="text-xs text-green-600 mt-1">✓ {t('Correct')}</p>}
                   {wasTarget && !wasSelected && <p className="text-xs text-amber-600 mt-1">{t('Missed')}</p>}

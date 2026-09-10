@@ -5,17 +5,18 @@ import { calculateDifficulty, getDifficultyConfig } from '../../utils/adaptiveDi
 import { playMatchChime, playWinChime, playTapSound, speakText } from '../../utils/audio'
 import { useTranslation } from '../../hooks/useTranslation'
 import type { GameSession } from '../../data/models'
+import { MEMORY_MATCH_ICONS } from '../../data/games'
 
 interface Card {
   id: number
   emoji: string
+  image: string
+  label: string
   isFlipped: boolean
   isMatched: boolean
 }
 
-const EMOJI_SETS = [
-  ['🌺', '🏠', '🎵', '🌊', '🍃', '☀️', '🎹', '🧘', '🐘', '🏡', '🎶', '🌸', '🐟', '🎋', '🍵', '🏮'],
-]
+const CARD_POOL = MEMORY_MATCH_ICONS
 
 function shuffle<T>(array: T[]): T[] {
   const arr = [...array]
@@ -52,10 +53,10 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
   ]
 
   const initGame = useCallback(() => {
-    const emojis = shuffle(EMOJI_SETS[0]).slice(0, config.pairs)
-    const pairs = [...emojis, ...emojis]
+    const chosen = shuffle(CARD_POOL).slice(0, config.pairs)
+    const pairs = [...chosen, ...chosen]
     const shuffled = shuffle(pairs)
-    setCards(shuffled.map((emoji, i) => ({ id: i, emoji, isFlipped: false, isMatched: false })))
+    setCards(shuffled.map((item, i) => ({ id: i, emoji: item.emoji, image: item.image, label: item.label, isFlipped: false, isMatched: false })))
     setFlippedIds([])
     setMatches(0)
     setGameStarted(false)
@@ -161,9 +162,15 @@ export default function MemoryMatch({ onComplete }: MemoryMatchProps) {
                          ? 'bg-white border-2 border-sage-300 shadow-lg scale-105'
                          : 'bg-sage-500 hover:bg-sage-400 hover:scale-[1.02] shadow-soft cursor-pointer'
                        }`}
-            aria-label={card.isFlipped || card.isMatched ? card.emoji : 'Hidden card'}
+            aria-label={card.isFlipped || card.isMatched ? card.label : 'Hidden card'}
           >
-            {card.isFlipped || card.isMatched ? card.emoji : ''}
+            {card.isFlipped || card.isMatched ? (
+              <div className="flex flex-col items-center justify-center gap-1">
+                <img src={card.image} alt={card.label} className="w-10 h-10 md:w-14 md:h-14 object-cover rounded-lg" loading="lazy" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; (e.target as HTMLImageElement).nextElementSibling?.removeAttribute('style') }} />
+                <span className="text-lg md:text-xl hidden" style={{display:'none'}}>{card.emoji}</span>
+                <span className="text-[10px] md:text-xs text-charcoal-500 font-medium">{card.label}</span>
+              </div>
+            ) : ''}
           </button>
         ))}
       </div>
