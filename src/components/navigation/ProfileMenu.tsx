@@ -10,6 +10,7 @@ import { useTranslation } from '../../hooks/useTranslation'
 import { useDarkMode } from '../../hooks/useDarkMode'
 import { useElderMode } from '../../hooks/useElderMode'
 import { useAuraInstall } from '../../pwa/useAuraInstall'
+import { useDemoMode } from '../../hooks/useDemoMode'
 import { buildVersion } from '../../buildVersion'
 import { playTapSound } from '../../utils/audio'
 
@@ -25,6 +26,7 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
   const { isDark, toggle: toggleDark } = useDarkMode()
   const { elderMode, setElderMode } = useElderMode()
   const { setRole, validateCaregiverPin, setEmergencyPhone } = useAuth()
+  const { isDemo } = useDemoMode()
   const { installed, offerInstall } = useAuraInstall()
   const [showCaregiverPin, setShowCaregiverPin] = useState(false)
   const [cgPin, setCgPin] = useState('')
@@ -269,6 +271,9 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
                       playTapSound()
                       if (user?.role === 'caregiver') {
                         setRole('patient')
+                      } else if (isDemo) {
+                        // Demo mode: no PIN gate — presenters switch instantly.
+                        setRole('caregiver')
                       } else {
                         setShowCaregiverPin(true)
                         setCgPin('')

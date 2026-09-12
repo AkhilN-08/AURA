@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { Camera, Clock, Play, ArrowRight, CheckCircle2, XCircle } from 'lucide-react'
+import { Camera, Clock, Play, ArrowRight, CheckCircle2, XCircle, Info } from 'lucide-react'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { useMemoryCapsule } from '../../hooks/useMemoryCapsule'
+import { useAuth } from '../../hooks/useAuth'
+import { buildMemoryProfile, DEMO_PROFILE } from '../../utils/memoryProfile'
 import { playMatchChime, playWinChime, playTapSound, speakText } from '../../utils/audio'
 import { useTranslation } from '../../hooks/useTranslation'
 import type { GameSession } from '../../data/models'
@@ -11,24 +13,32 @@ import type { GameSession } from '../../data/models'
 interface MemoryMoment {
   scene: string
   items: { label: string; emoji: string }[]
+  source: 'personal' | 'demo'
 }
 
 interface RecallQuestion {
   q: string
-  answer: string       // item label
+  answer: string
   type: 'person' | 'place' | 'object' | 'event'
+  source: 'personal' | 'demo'
 }
 
-function buildMoments(
-  people: { name: string; emoji: string; relationship: string }[],
-  places: { name: string; emoji: string; memory: string }[],
-): { moments: MemoryMoment[]; questions: RecallQuestion[] } {
-  // Personalized version from Memory Capsule
-  const person = people[0]
-  const place = places[0]
+/**
+ * Build the memory album from one understood profile.
+ *
+ * Previously this built its own ad-hoc version from raw capsule fields.
+ * Now it uses the shared MemoryProfile so the same memories appear the
+ * same way across games that are designed to use them.
+ */
+function buildMoments(profile: { people: { name: string; emoji: string }[]; places: { name: string; emoji: string; memory: string }[]; personalized: boolean }): { moments: MemoryMoment[]; questions: RecallQuestion[] } {
+  const person = profile.people[0]
+  const place = profile.places[0]
+  const sourceFlag: 'personal' | 'demo' = profile.personalized ? 'personal' : 'demo'
+
   const moments: MemoryMoment[] = [
     {
       scene: 'Morning at the {place}',
+      source: sourceFlag,
       items: [
         { label: place ? place.name : 'Garden', emoji: place ? place.emoji : '🌿' },
         { label: person ? person.name : 'Ananya', emoji: person ? person.emoji : '👧' },
@@ -38,6 +48,7 @@ function buildMoments(
     },
     {
       scene: 'Evening on the porch',
+      source: sourceFlag,
       items: [
         { label: 'Radio', emoji: '📻' },
         { label: person ? person.name : 'Ananya', emoji: person ? person.emoji : '👧' },
@@ -45,18 +56,18 @@ function buildMoments(
       ],
     },
   ]
+
   const p = person ? person.name : 'Ananya'
   const questions: RecallQuestion[] = [
-    { q: 'Where did the morning happen?', answer: place ? place.name : 'Garden', type: 'place' },
-    { q: 'Who was there in the morning?', answer: p, type: 'person' },
-    { q: 'What did they see among the plants?', answer: 'Roses', type: 'object' },
-    { q: 'What was shared on the porch in the evening?', answer: 'Radio', type: 'object' },
+    { q: 'Where did the morning happen?', answer: place ? place.name : 'Garden', type: 'place', source: sourceFlag },
+    { q: 'Who was there in the morning?', answer: p, type: 'person', source: sourceFlag },
+    { q: 'What did they see among the plants?', answer: 'Roses', type: 'object', source: sourceFlag },
+    { q: 'What was shared on the porch in the evening?', answer: 'Radio', type: 'object', source: sourceFlag },
   ]
   return { moments, questions }
 }
 
-// Demo fallback when capsule is empty or personalization is off
-const DEMO = buildMoments([], [])
+const DEMO_MOMENTS = buildMoments({ people: DEMO_PROFILE.people.map(p => ({ name: p.name, emoji: p.emoji })), places: DEMO_PROFILE.places.map(p => ({ name: p.name, emoji: p.emoji, memory: p.memory })), personalized: false })
 
 interface MemoryReplayProps {
   onComplete?: (session: GameSession) => void
@@ -69,12 +80,16 @@ export default function MemoryReplay({ onComplete }: MemoryReplayProps) {
   const { seedDemo } = capsule
   useEffect(() => { seedDemo() }, [seedDemo])
 
-  const { moments, questions } = capsule.places.length > 0 || capsule.people.length > 0
-    ? buildMoments(
-        capsule.people.map(p => ({ name: p.name, emoji: p.emoji, relationship: p.relationship })),
-        capsule.places.map(pl => ({ name: pl.name, emoji: pl.emoji, memory: pl.memory })),
-      )
-    : DEMO
+  const { user } = useAuth()
+  const profile = buildMemoryProfile(capsule)
+
+  const { moments, questions } = profile.personalized
+    ? buildMoments({ people: profile.people.map(p => ({ name: p.name, emoji: p.emoji })), places: profile.places.map(p => ({ name: p.name, emoji: p.emoji, memory: p.memory })), personalized: true })
+    : DEMO_MOMENTS
+
+  const displaySource = profile.personalized
+    ? t('Built from your own memories')
+    : t('Built from familiar demo memories')
 
   const [phase, setPhase] = useState<'intro' | 'showing' | 'questions' | 'result'>('intro')
   const [momentIdx, setMomentIdx] = useState(0)
@@ -86,6 +101,8 @@ export default function MemoryReplay({ onComplete }: MemoryReplayProps) {
   const { addSession } = useGameProgress()
 
   const accuracyRef = useRef(0)
+
+  useEffect(() => { seedDemo() }, [seedDemo])
 
   const start = useCallback(() => {
     playTapSound()
@@ -104,7 +121,10 @@ export default function MemoryReplay({ onComplete }: MemoryReplayProps) {
       } else {
         setPhase('questions')
         questionStart.current = Date.now()
-        speakText(t('Now, a few gentle questions about the album.'), language)
+        const firstSource = questions[0].source
+        speakText(firstSource === 'personal'
+          ? t('Now, a few gentle questions about the album from your own memories.')
+          : t('Now, a few gentle questions about the album.'), language)
       }
     }, momentIdx === 0 ? 7000 : 6000)
     return () => clearTimeout(timer)
@@ -159,9 +179,15 @@ export default function MemoryReplay({ onComplete }: MemoryReplayProps) {
   const choices = (() => {
     const q = questions[qIdx]
     const pool = new Set<string>([q.answer])
-    // distractors from other items in the album
     for (const m of moments) for (const it of m.items) {
       if (pool.size < 4 && it.label !== q.answer) pool.add(it.label)
+    }
+    // Keep distractors readable: if we don't have enough album items, add the
+    // most relevant other person/place from the profile so the choices still
+    // feel like the user's world rather than random words.
+    if (profile.personalized && pool.size < 4) {
+      for (const p of profile.people) if (!pool.has(p.name)) pool.add(p.name)
+      for (const p of profile.places) if (!pool.has(p.name)) pool.add(p.name)
     }
     return [...pool].sort(() => Math.random() - 0.5)
   })()
@@ -200,7 +226,9 @@ export default function MemoryReplay({ onComplete }: MemoryReplayProps) {
           ))}
         </div>
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
-          <p className="text-xs font-semibold text-amber-700 uppercase tracking-widest mb-2">{t('AURA Insight')}</p>
+          <p className="text-xs font-semibold text-amber-700 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+            <Info size={12} /> {t('AURA Insight')}
+          </p>
           <p className="text-stone-700 text-lg leading-relaxed" style={{ fontFamily: 'Georgia, serif' }}>
             "{insight}"
           </p>
@@ -289,15 +317,18 @@ export default function MemoryReplay({ onComplete }: MemoryReplayProps) {
   }
 
   // ── Intro ──
-  return (
-    <div className="text-center py-10">
+  return (      <div className="text-center py-10">
       <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center mb-5">
         <Camera size={36} className="text-amber-600" />
       </div>
       <h3 className="text-2xl font-bold text-stone-800 mb-3" style={{ fontFamily: 'Georgia, serif' }}>{t('Memory Replay')}</h3>
-      <p className="text-stone-500 max-w-md mx-auto mb-8 leading-relaxed">
+      <p className="text-stone-500 max-w-md mx-auto mb-4 leading-relaxed">
         {t('We will look through a small album of familiar moments together. Then I will ask what you remember. There are no wrong answers — only gentle practice.')}
       </p>
+      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 border border-amber-100 text-sm text-amber-700 mb-8">
+        <Info size={14} className="flex-shrink-0" />
+        <span>{displaySource}</span>
+      </div>
       <div className="flex items-center justify-center gap-6 text-sm text-stone-400 mb-8">
         <span className="flex items-center gap-1.5"><Play size={14} /> {t('{n} minutes', { n: 5 })}</span>
         <span className="flex items-center gap-1.5"><Clock size={14} /> {t('{n} questions', { n: questions.length })}</span>

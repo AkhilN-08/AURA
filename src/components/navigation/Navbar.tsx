@@ -85,10 +85,14 @@ export default function Navbar() {
                   className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white/60 dark:bg-white/10 backdrop-blur-sm border border-ink/15 dark:border-white/10 hover:bg-sagesoft/30 dark:hover:bg-white/15 transition-all duration-200 group"
                   aria-label="Open profile menu"
                 >
-                  <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: '#7c9a6d' }}>
-                    <span className="text-[10px] font-bold text-white">
-                      {user.name.charAt(0).toUpperCase()}
-                    </span>
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center overflow-hidden" style={{ background: '#7c9a6d', border: '1px solid rgba(255,255,255,0.3)' }}>
+                    {user.photo ? (
+                      <img src={user.photo} alt="avatar" className="w-full h-full rounded-full object-cover text-transparent" />
+                    ) : (
+                      <span className="text-[10px] font-bold text-white">
+                        {user.name.charAt(0).toUpperCase()}
+                      </span>
+                    )}
                   </div>
                   <span className="text-[11px] font-medium text-ink dark:text-charcoal-200 max-w-[80px] truncate hidden lg:inline">
                     {user.name}

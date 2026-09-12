@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { BookOpen, CheckCircle2, XCircle, BookMarked, Sparkles } from 'lucide-react'
+import { BookOpen, CheckCircle2, XCircle, BookMarked, Sparkles, Info } from 'lucide-react'
 import { useGameProgress } from '../../hooks/useGameProgress'
 import { useMemoryCapsule } from '../../hooks/useMemoryCapsule'
 import { useAuth } from '../../hooks/useAuth'
+import { buildMemoryProfile, DEMO_PROFILE } from '../../utils/memoryProfile'
+import StoryScene, { type StorySceneKey } from './StoryScene'
 import { playMatchChime, playWinChime, playTapSound, speakText } from '../../utils/audio'
 import { useTranslation } from '../../hooks/useTranslation'
 import type { GameSession } from '../../data/models'
@@ -16,15 +18,29 @@ interface StoryQuestion {
   name?: string
 }
 
+interface StoryPage {
+  text: string
+  emoji: string
+  name?: string
+  place?: string
+  companion?: string
+  relationship?: string
+  second?: string
+  event?: string
+  year?: string
+  scene: StorySceneKey
+  photoData?: string
+}
+
 interface Story {
   title: string
   titlePlace?: string
   place?: string
-  pages: { text: string; emoji: string; name?: string; place?: string; companion?: string; relationship?: string; second?: string; event?: string; year?: string }[]
+  pages: StoryPage[]
   questions: StoryQuestion[]
 }
 
-function storyVars(o: Record<string, unknown>): Record<string, string> | undefined {
+function storyVars(o: StoryPage): Record<string, string> | undefined {
   const out: Record<string, string> = {}
   for (const [k, v] of Object.entries(o)) {
     if (k !== 'text' && k !== 'emoji' && typeof v === 'string') out[k] = v
@@ -34,9 +50,9 @@ function storyVars(o: Record<string, unknown>): Record<string, string> | undefin
 
 function buildStory(
   user: string,
-  people: { name: string; emoji: string; relationship: string }[],
-  places: { name: string; emoji: string; memory: string }[],
-  events: { name: string; emoji: string; story: string; dateLabel: string }[],
+  people: { name: string; emoji: string; relationship: string; photoData?: string }[],
+  places: { name: string; emoji: string; memory: string; photoData?: string }[],
+  events: { name: string; emoji: string; story: string; dateLabel: string; photoData?: string }[],
 ): Story {
   const main = user || 'Ravi'
   const companion = people[0] ?? { name: 'Ananya', emoji: '👧', relationship: 'daughter' }
@@ -44,11 +60,11 @@ function buildStory(
   const place = places[0] ?? { name: 'Family Garden', emoji: '🌿', memory: '' }
   const event = events[0] ?? null
 
-  const pages: Story['pages'] = [
-    { text: '{name} went to the {place} in the morning. The air was cool and the flowers were awake.', name: main, place: place.name, emoji: '🌅' },
-    { text: '{companion}, {name}\'s {relationship}, joined him there.', name: main, companion: companion.name, relationship: companion.relationship, emoji: companion.emoji },
-    { text: 'Together they watered the roses and arranged the flowers.', emoji: '🌹' },
-    { text: 'Later, they had tea and watched the birds. {second} called them in for lunch.', second: second.name, emoji: '🍵' },
+  const pages: StoryPage[] = [
+    { text: '{name} went to the {place} in the morning. The air was cool and the flowers were awake.', name: main, place: place.name, emoji: '🌅', scene: 'morning', photoData: place.photoData },
+    { text: '{companion}, {name}\'s {relationship}, joined him there.', name: main, companion: companion.name, relationship: companion.relationship, emoji: companion.emoji, scene: 'companion', photoData: companion.photoData },
+    { text: 'Together they watered the roses and arranged the flowers.', emoji: '🌹', scene: 'watering', photoData: place.photoData },
+    { text: 'Later, they had tea and watched the birds. {second} called them in for lunch.', second: second.name, emoji: '🍵', scene: 'tea', photoData: undefined },
   ]
 
   const questions: StoryQuestion[] = [
@@ -59,11 +75,11 @@ function buildStory(
   ]
 
   if (event) {
-    pages.push({ text: 'It reminded {name} of the {event} of {year}. What a lovely day that was.', name: main, event: event.name, year: event.dateLabel, emoji: event.emoji })
+    pages.push({ text: 'It reminded {name} of the {event} of {year}. What a lovely day that was.', name: main, event: event.name, year: event.dateLabel, emoji: event.emoji, scene: 'event', photoData: event.photoData })
     questions.push({ q: 'Which memory did the morning remind {name} of?', name: main, answer: event.name, type: 'factual' })
   }
 
-  return { title: 'A Morning in the {place}', place: place.name, pages, questions }
+  return { title: 'A Morning in the {place}', titlePlace: place.name, pages, questions }
 }
 
 interface MSTProps {
@@ -82,9 +98,9 @@ export default function MemoryStory({ onComplete }: MSTProps) {
 
   const story = buildStory(
     user?.name ?? 'Ravi',
-    capsule.people.map(p => ({ name: p.name, emoji: p.emoji, relationship: p.relationship.toLowerCase() })),
-    capsule.places.map(p => ({ name: p.name, emoji: p.emoji, memory: p.memory })),
-    capsule.events.map(e => ({ name: e.name, emoji: e.emoji, story: e.story, dateLabel: e.dateLabel })),
+    capsule.people.map(p => ({ name: p.name, emoji: p.emoji, relationship: p.relationship.toLowerCase(), photoData: p.photoData })),
+    capsule.places.map(p => ({ name: p.name, emoji: p.emoji, memory: p.memory, photoData: p.photoData })),
+    capsule.events.map(e => ({ name: e.name, emoji: e.emoji, story: e.story, dateLabel: e.dateLabel, photoData: e.photoData })),
   )
 
   const [phase, setPhase] = useState<'intro' | 'reading' | 'questions' | 'result'>('intro')
@@ -304,9 +320,9 @@ export default function MemoryStory({ onComplete }: MSTProps) {
             <p className="text-xs uppercase tracking-[0.25em] text-amber-600 font-semibold mb-1">{t(story.title, story.titlePlace ? { place: t(story.titlePlace) } : undefined)}</p>
             <p className="text-[11px] text-amber-400">{t('page {n} of {total}', { n: pageIdx + 1, total: story.pages.length })}</p>
           </div>
-          <div className="px-8 py-10 text-center">
-            <span className="text-6xl block mb-6">{page.emoji}</span>
-            <p className="text-xl leading-relaxed text-stone-700" style={{ fontFamily: 'Georgia, serif' }}>
+          <div className="px-5 pt-5 pb-8">
+            <StoryScene scene={page.scene} emoji={page.emoji} photoData={page.photoData} />
+            <p className="text-xl leading-relaxed text-stone-700 text-center" style={{ fontFamily: 'Georgia, serif' }}>
               {t(page.text, storyVars(page))}
             </p>
           </div>

@@ -425,11 +425,71 @@ section {
   animation: gardenSway 8s ease-in-out infinite;
 }
 
+/* ── Story Scene — calm 2D vignettes for Memory Story pages ── */
+
+.story-scene-breathe {
+  animation: storySceneBreathe 5s ease-in-out infinite;
+  transform-origin: 318px 52px;
+}
+@keyframes storySceneBreathe {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.92; }
+}
+
+.story-scene-sway {
+  animation: storySceneSway 4.5s ease-in-out infinite;
+  transform-origin: center 160px;
+}
+.story-scene-sway-late {
+  animation: storySceneSway 4.5s ease-in-out 0.8s infinite;
+  transform-origin: center 160px;
+}
+@keyframes storySceneSway {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(2.5deg); }
+}
+
+.story-scene-arrive {
+  animation: storySceneArrive 2.4s ease-out 1 both;}
+@keyframes storySceneArrive {
+  from { opacity: 0; transform: translateX(56px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.story-scene-drop { animation: storySceneDrop 1.6s linear infinite; }
+.story-scene-drop-late { animation: storySceneDrop 1.6s linear 0.55s infinite; }
+.story-scene-drop-late2 { animation: storySceneDrop 1.6s linear 1.1s infinite; }
+@keyframes storySceneDrop {
+  0% { transform: translateY(-8px); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translateY(14px); opacity: 0; }}
+
+.story-scene-bird {
+  animation: storySceneBird 3.2s ease-in-out infinite;
+}
+@keyframes storySceneBird {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.story-scene-steam { animation: storySceneSteam 3.4s ease-in-out infinite; }
+.story-scene-steam-late { animation: storySceneSteam 3.4s ease-in-out 1.2s infinite; }
+@keyframes storySceneSteam {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.85; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .garden-sway, .garden-sway-slow, .animate-bounce-slow { animation: none; }
   .reveal { opacity: 1; transform: none; transition: none; }
   .aura-breath, .aura-breath-fast { animation: none; }
   .room-enter, .room-enter-active { opacity: 1; transform: none; transition: none; }
+  .story-scene-breathe, .story-scene-sway, .story-scene-sway-late,
+  .story-scene-arrive, .story-scene-drop, .story-scene-drop-late,
+  .story-scene-drop-late2, .story-scene-bird, .story-scene-steam,
+  .story-scene-steam-late { animation: none; }
+  .story-scene-arrive { opacity: 1; transform: none; }
+  .story-scene-drop, .story-scene-drop-late, .story-scene-drop-late2 { opacity: 0.85; }
 }
 
 /* ── AURA install experience — editorial card + growing leaf ── */
